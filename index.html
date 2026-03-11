@@ -413,13 +413,24 @@ alert(`Compiled ${name}`);
 }
 
 /* --- CORE SYSTEM LOGIC --- */
+function beginBootTransition() {
+setTimeout(() => {
+const b = document.getElementById('boot');
+const login = document.getElementById('login');
+if(!b || !login) return;
+b.style.opacity = '0';
+setTimeout(() => { b.style.display='none'; login.style.display='flex'; }, 1000);
+}, 3000);
+}
+
 window.onload = () => {
+beginBootTransition();
+try {
 addLog("System boot sequence initialized.");
 document.getElementById('os-root').style.background = OS.bg;
 simulateBootLogs();
 <<<<<<< codex/add-boot-code-log-simulation-qg5m3j
-// keep fullscreen hook from codex branch (resolved merge)
-setupFullscreenOnInteraction();
+initInteractionHooks();
 const customs = safeJSON("mc_custom_apps", {});
 =======
 const customs = JSON.parse(localStorage.getItem("mc_custom_apps")) || {};
@@ -428,15 +439,13 @@ Object.keys(customs).forEach(name => {
 Registry[name] = { icon: "🚀", content: () => buildAppFrame(customs[name]) };
 });
 updateBattery(); setInterval(updateBattery, 30000);
-setTimeout(() => {
-const b = document.getElementById('boot');
-b.style.opacity = '0';
-setTimeout(() => { b.style.display='none'; document.getElementById('login').style.display='flex'; }, 1000);
-}, 3000);
 updateTime(); setInterval(updateTime, 1000);
 renderLib();
 renderNotifCenter();
 renderWidgets();
+} catch (err) {
+console.error('Boot initialization warning:', err);
+}
 };
 
 function simulateBootLogs() {
@@ -470,6 +479,10 @@ panel.scrollTop = panel.scrollHeight;
 idx += 1;
 }, intervalMs);
 setTimeout(() => clearInterval(timer), 3000);
+}
+
+function initInteractionHooks() {
+setupFullscreenOnInteraction();
 }
 
 function setupFullscreenOnInteraction() {
@@ -688,31 +701,33 @@ raf = null;
 const onMove = (ev) => {
 pending = ev;
 if(!raf) raf = requestAnimationFrame(applyMove);
-<<<<<<< codex/add-boot-code-log-simulation-qg5m3j
 };
+<<<<<<< codex/add-boot-code-log-simulation-qg5m3j
 // keep drag cleanup block from codex branch (resolved merge)
 const onUp = () => {
-window.removeEventListener('mousemove', onMove);
-window.removeEventListener('mouseup', onUp);
-if(raf) cancelAnimationFrame(raf);
-el.classList.remove('dragging');
-localStorage.setItem("mc_pos", JSON.stringify(OS.pos));
-};
+cleanupIconDrag(el, onMove, onUp, raf);
 =======
-};
 const onUp = () => {
 window.removeEventListener('mousemove', onMove);
 window.removeEventListener('mouseup', onUp);
 if(raf) cancelAnimationFrame(raf);
 el.classList.remove('dragging');
 localStorage.setItem("mc_pos", JSON.stringify(OS.pos));
-};
 >>>>>>> main
+};
 window.addEventListener('mousemove', onMove);
 window.addEventListener('mouseup', onUp);
 };
 d.appendChild(el);
 });
+}
+
+function cleanupIconDrag(el, onMove, onUp, raf) {
+window.removeEventListener('mousemove', onMove);
+window.removeEventListener('mouseup', onUp);
+if(raf) cancelAnimationFrame(raf);
+el.classList.remove('dragging');
+localStorage.setItem("mc_pos", JSON.stringify(OS.pos));
 }
 
 function renderLib() {
