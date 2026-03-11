@@ -1,197 +1,845 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>McCrack Chat</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <style>
-        * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI', Tahoma, sans-serif; }
-        body, html { width:100%; height:100%; background:#0f0f0f; display:flex; justify-content:center; align-items:center; color: white; overflow: hidden; }
-        
-        #app { width:98%; max-width:1400px; height:95vh; display:flex; border-radius:15px; overflow:hidden; background:#1c1c1c; box-shadow:0 0 30px rgba(0,0,0,0.8); border: 1px solid #333; }
-        
-        #sidebar { width:260px; background:#111; padding:20px; display:flex; flex-direction:column; gap:15px; border-right: 1px solid #333; flex-shrink: 0; }
-        #sidebar h2 { color: #00aaff; letter-spacing: 1px; font-size: 24px; text-align: center; }
-        
-        .input-group { display: flex; flex-direction: column; gap: 5px; }
-        .input-group label { font-size: 11px; color: #666; font-weight: bold; }
-        
-        #sidebar input { padding:12px; border-radius:8px; border:1px solid #333; background:#222; color:white; outline: none; }
-        #sidebar button { padding:12px; border:none; border-radius:8px; background:#00aaff; color:white; cursor:pointer; font-weight:bold; transition: 0.2s; }
-        #sidebar button:hover { background:#0088cc; transform: translateY(-1px); }
+<meta charset="UTF-8">
+<title>𝕄𝕔ℂ𝕣𝕒𝕔𝕜OS V9.0</title>
+<style>
+/* --- CORE SYSTEM VARIABLES --- */
+:root {
+--accent: #0078d4;
+--top-bar-h: 32px;
+--taskbar-h: 65px;
+--panel: rgba(10, 10, 10, 0.98);
+--win-bg: #050505;
+--border: 1px solid rgba(255, 255, 255, 0.12);
+--shadow: 0 30px 60px rgba(0,0,0,0.95);
+--blur: blur(35px);
+--font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+--danger: #ff4b4b;
+}
 
-        #chat-area { flex:1; display:flex; flex-direction:column; background:#181818; }
-        #room-header { padding: 18px 25px; background: #222; border-bottom: 1px solid #333; font-weight: bold; color: #00aaff; font-size: 18px; }
-        
-        #chat { flex:1; overflow-y:auto; padding:25px; display:flex; flex-direction:column; gap:12px; }
-        .message { max-width:80%; padding:12px 16px; border-radius:15px; font-size: 14px; background:#333; align-self:flex-start; line-height: 1.4; position: relative; }
-        .mine { background:#00aaff; align-self:flex-end; border-bottom-right-radius: 2px; }
-        
-        #input-area { display:flex; padding:20px; background:#111; gap:12px; border-top: 1px solid #222; }
-        #message-input { flex:1; padding:14px 20px; border-radius:30px; border:none; background:#222; color:white; outline: none; }
-        #sendBtn { padding:0 30px; border-radius:30px; border:none; background:#00aaff; color:white; cursor:pointer; font-weight:bold; }
-        #sendBtn:disabled { background:#333; cursor: not-allowed; }
+/* --- GLOBAL RESET --- */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); -webkit-user-select: none; user-select: none; }
+body {
+height: 100vh; width: 100vw; overflow: hidden;
+background: #000; color: white; transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:1000; }
-        .modal.show { display:flex; }
-        .modal-content { background:#222; padding:35px; border-radius:15px; width:360px; display:flex; flex-direction:column; gap:18px; border: 1px solid #444; }
-        
-        #status-display { margin-top: auto; font-size: 10px; color: #444; font-weight: bold; }
-    </style>
+/* --- TOP BAR --- */
+#top-bar {
+position: fixed; top: 0; left: 0; right: 0; height: var(--top-bar-h);
+background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px);
+display: flex; justify-content: space-between; align-items: center;
+padding: 0 18px; z-index: 9500; border-bottom: var(--border);
+font-size: 0.75rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+}
+.top-right { display: flex; align-items: center; gap: 20px; }
+#lock-btn { cursor: pointer; color: #aaa; transition: 0.3s; }
+#lock-btn:hover { color: #ff4b4b; text-shadow: 0 0 10px rgba(255,75,75,0.5); }
+#battery-stat { display: flex; align-items: center; gap: 6px; color: #44ff44; }
+
+/* --- BOOT SEQUENCE --- */
+#boot { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; }
+.spin { width: 60px; height: 60px; border: 4px solid #111; border-top-color: var(--accent); border-radius: 50%; animation: s 0.8s linear infinite; margin-bottom: 25px; }
+@keyframes s { to { transform: rotate(360deg); } }
+.boot-text { font-family: monospace; font-size: 0.8rem; color: var(--accent); opacity: 0.8; }
+.boot-log-box {
+width: min(760px, 82vw);
+max-height: 180px;
+margin-top: 20px;
+padding: 14px 16px;
+border: 1px solid #143a14;
+border-radius: 10px;
+background: rgba(0,0,0,0.75);
+box-shadow: inset 0 0 22px rgba(24, 255, 72, 0.1);
+overflow: hidden;
+font-family: monospace;
+font-size: 0.8rem;
+line-height: 1.35;
+color: #39ff88;
+text-align: left;
+}
+.boot-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
+
+/* --- AUTHENTICATION --- */
+#login {
+position: fixed; inset: 0; display: none; background: rgba(0,0,0,0.8);
+backdrop-filter: var(--blur); z-index: 9000; align-items: center; justify-content: center;
+}
+.login-box {
+background: var(--panel); padding: 70px; border-radius: 30px; border: var(--border);
+width: 420px; text-align: center; box-shadow: var(--shadow);
+}
+.login-box input {
+width: 100%; padding: 16px; margin: 25px 0; background: #111; border: var(--border);
+border-radius: 12px; color: white; text-align: center; outline: none; font-size: 1.1rem;
+transition: 0.3s;
+}
+.login-box input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,120,212,0.2); }
+.login-box button {
+width: 100%; padding: 16px; background: var(--accent); color: white; border: none;
+border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 1rem; transition: 0.3s;
+}
+.login-box button:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+/* --- WORKSPACE --- */
+#desktop { position: absolute; inset: var(--top-bar-h) 0 var(--taskbar-h) 0; display: none; z-index: 100; padding: 30px; }
+/* Drag and Drop Styling */
+.icon {
+position: absolute; width: 110px; height: 120px; display: flex; flex-direction: column;
+align-items: center; justify-content: center; border-radius: 18px; cursor: grab;
+transition: transform 0.2s, left 0.08s linear, top 0.08s linear;
+will-change: left, top, transform;
+user-select: none;
+z-index: 150;
+}
+.icon.dragging { transition: transform 0.08s linear; }
+.icon:active { cursor: grabbing; }
+.icon:hover { background: rgba(255,255,255,0.08); transform: scale(1.05); }
+.icon div { font-size: 55px; margin-bottom: 10px; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6)); pointer-events: none;}
+.icon span { font-size: 0.85rem; text-align: center; font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,1); pointer-events: none;}
+
+/* --- DELETE BIN --- */
+#delete-bin {
+position: absolute; bottom: 120px; right: 30px; width: 100px; height: 120px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+background: rgba(255, 75, 75, 0.05); border: 2px dashed rgba(255, 75, 75, 0.2);
+border-radius: 20px; transition: 0.3s; z-index: 110;
+}
+#delete-bin.drag-over {
+background: rgba(255, 75, 75, 0.3); border-color: #ff4b4b;
+transform: scale(1.1); box-shadow: 0 0 30px rgba(255, 75, 75, 0.4);
+}
+#delete-bin div { font-size: 50px; margin-bottom: 5px; }
+#delete-bin span { font-size: 0.7rem; font-weight: 800; color: #ff4b4b; letter-spacing: 1px; }
+
+/* --- APPLICATION LIBRARY --- */
+#start-menu {
+position: absolute; bottom: 80px; left: 20px; width: 380px; height: 550px;
+background: var(--panel); border: var(--border); border-radius: 24px;
+backdrop-filter: var(--blur); display: none; flex-direction: column; padding: 30px; z-index: 9999; box-shadow: var(--shadow);
+}
+.start-item { display: flex; align-items: center; gap: 18px; padding: 14px; border-radius: 14px; cursor: pointer; transition: 0.2s; }
+.start-item:hover { background: rgba(255,255,255,0.08); transform: translateX(8px); }
+.start-item span { font-size: 28px; }
+
+/* --- MULTI-WINDOW ARCHITECTURE --- */
+.window {
+position: absolute; background: var(--win-bg); border-radius: 20px; border: var(--border);
+display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow);
+transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s, opacity 0.2s, transform 0.2s;
+}
+.win-head { background: #121212; padding: 16px 24px; display: flex; justify-content: space-between; cursor: move; align-items: center; }
+.win-body { flex: 1; background: #000; position: relative; overflow: auto; }
+.win-ctrls { display: flex; gap: 22px; align-items: center; }
+.win-ctrls span { cursor: pointer; opacity: 0.5; transition: 0.2s; font-size: 1.2rem; }
+.win-ctrls span:hover { opacity: 1; transform: scale(1.2); }
+.resizer { position: absolute; bottom: 0; right: 0; width: 22px; height: 22px; cursor: nwse-resize; z-index: 10; }
+
+/* --- SYSTEM TASKBAR --- */
+#taskbar {
+position: fixed; bottom: 0; left: 0; right: 0; height: var(--taskbar-h);
+background: rgba(5, 5, 5, 0.9); backdrop-filter: blur(25px);
+display: flex; align-items: center; padding: 0 25px; z-index: 8500; border-top: var(--border);
+}
+#task-list { flex: 1; display: flex; justify-content: flex-start; gap: 14px; margin-left: 30px; overflow-x: auto; padding: 8px 0; }
+.task-tab { padding: 10px 22px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 0.85rem; cursor: pointer; transition: 0.3s; white-space: nowrap; border: 1px solid transparent; color: #888; }
+.task-tab.active { background: rgba(0, 120, 212, 0.15); border-color: var(--accent); box-shadow: 0 0 20px rgba(0,120,212,0.25); color: white; }
+
+/* --- APP CONTENT STYLING --- */
+.full-app-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; }
+.app-iframe { width: 100%; height: 100%; border: none; background: #000; }
+.explorer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 20px; padding: 30px; }
+.file-item { text-align: center; padding: 20px; border-radius: 12px; background: #0a0a0a; border: 1px solid #1a1a1a; cursor: pointer; transition: 0.2s; }
+.file-item:hover { background: #151515; border-color: var(--accent); }
+
+.store-card { background: #0a0a0a; padding: 20px; border-radius: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1a1a1a; }
+.install-btn { padding: 8px 20px; border-radius: 8px; border: none; background: var(--accent); color: white; cursor: pointer; font-weight: 700; }
+
+/* --- NOTIFICATIONS + WIDGETS --- */
+#notif-bell { cursor: pointer; opacity: 0.8; transition: 0.2s; }
+#notif-bell:hover { opacity: 1; transform: scale(1.12); }
+#notif-center { position: fixed; top: calc(var(--top-bar-h) + 12px); right: 15px; width: 300px; max-height: 420px; overflow: auto; background: rgba(8,8,8,0.95); border: var(--border); border-radius: 14px; padding: 12px; display: none; z-index: 11000; }
+.notif-item { font-size: 0.8rem; border-bottom: 1px solid #1c1c1c; padding: 10px 4px; }
+.notif-item:last-child { border-bottom: none; }
+#toast-wrap { position: fixed; right: 16px; bottom: calc(var(--taskbar-h) + 14px); z-index: 12000; display: flex; flex-direction: column; gap: 10px; }
+.toast { min-width: 220px; max-width: 320px; background: #0f0f0f; border: 1px solid #262626; color: #e8e8e8; border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; box-shadow: var(--shadow); }
+.toast.warn { border-left-color: #ff9f1a; }
+.toast.system { border-left-color: #ff4b4b; }
+#widget-layer { position: absolute; inset: 0; pointer-events: none; z-index: 120; }
+.widget-card { position: absolute; width: 220px; min-height: 120px; background: rgba(10,10,10,0.85); border: var(--border); border-radius: 14px; padding: 14px; pointer-events: auto; box-shadow: var(--shadow); }
+
+/* --- ANIMATIONS --- */
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+@keyframes pulse-delete { 0% { box-shadow: 0 0 0 0 rgba(255, 75, 75, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(255, 75, 75, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 75, 75, 0); } }
+</style>
 </head>
-<body>
+<body id="os-root">
 
-<div id="app">
-    <div id="sidebar">
-        <h2>McCrack</h2>
-        <div class="input-group">
-            <label>DISPLAY NAME</label>
-            <input id="user-display-name" placeholder="Who are you?">
-        </div>
-        <hr style="border: 0; border-top: 1px solid #333; margin: 10px 0;">
-        <button id="createBtn">Create Room</button>
-        <button id="joinBtn">Join Room</button>
-        <div id="status-display">System: Connecting...</div>
-    </div>
-    
-    <div id="chat-area">
-        <div id="room-header">Not Connected</div>
-        <div id="chat"></div>
-        <div id="input-area">
-            <input id="message-input" placeholder="Join a room to chat..." disabled>
-            <button id="sendBtn" disabled>Send</button>
-        </div>
-    </div>
+<div id="top-bar">
+<div>𝕄𝕔ℂ𝕣𝕒𝕔𝕜OS <span style="opacity:0.3; margin-left:10px;">V9.0.4</span></div>
+<div class="top-right">
+<div id="battery-stat"><span>100%</span> 🔋</div>
+<div id="notif-bell" onclick="toggleNotifCenter()">🔔</div>
+<div id="lock-btn" onclick="lockSystem()">TERMINATE SESSION</div>
+</div>
 </div>
 
-<div id="room-modal" class="modal">
-    <div class="modal-content">
-        <h3 id="modal-title" style="color:#00aaff; text-align:center">Room</h3>
-        <input id="room-name-input" placeholder="Room name...">
-        <button id="confirmRoomBtn">Confirm</button>
-        <button onclick="closeModal()" style="background:#444; border:none; color:white; padding:10px; border-radius:8px; cursor:pointer;">Cancel</button>
-    </div>
+<div id="boot">
+<h1 style="letter-spacing: 12px; font-weight: 200; font-size: 2.5rem;">𝕄𝕔ℂ𝕣𝕒𝕔𝕜<span style="font-weight:700;">OS</span></h1>
+<div class="spin"></div>
+<p class="boot-text">INITIALIZING OPERATING SYSTEM...</p>
+<div id="boot-logs" class="boot-log-box"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div id="login">
+<div class="login-box">
+<div style="font-size:70px; margin-bottom:20px; filter: drop-shadow(0 0 15px var(--accent));">👤</div>
+<h2 style="font-weight: 300; letter-spacing: 1px;">SYSTEM ACCESS</h2>
+<input type="password" id="pass-in" placeholder="DECRYPT KEY">
+<button onclick="unlock()">AUTHORIZE</button>
+<p id="log-msg" style="color:#ff4b4b; font-size:0.75rem; margin-top:20px; font-weight: 800; letter-spacing:1px;"></p>
+</div>
+</div>
+
+<div id="desktop"></div>
+<div id="widget-layer" style="display:none;"></div>
+<div id="toast-wrap"></div>
+<div id="notif-center"></div>
+
+<div id="delete-bin" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropDelete(event)">
+<div>🗑️</div>
+<span>DELETE BIN</span>
+</div>
+
+<div id="start-menu">
+<div style="border-bottom: 1px solid #222; padding-bottom: 20px; margin-bottom: 20px;">
+<h3 style="font-weight: 500; color: var(--accent); letter-spacing: 1px;">INSTALLED MODULES</h3>
+</div>
+<div id="lib-cont" style="overflow-y:auto; flex:1;"></div>
+</div>
+
+<div id="taskbar">
+<div id="start-btn" onclick="toggleStart()" style="cursor:pointer; font-size:30px; width:55px; height:55px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.06); border-radius:15px; transition: 0.3s;">💠</div>
+<div id="task-list"></div>
+<div style="text-align:right; border-left: 1px solid #222; padding-left:25px;">
+<div id="clock" style="font-weight:800; font-size:1.1rem; letter-spacing: 1px; color: #fff;"></div>
+<div id="date" style="font-size:0.7rem; opacity:0.4; font-weight: 700; text-transform: uppercase;"></div>
+</div>
+</div>
 
 <script>
-    const SUPABASE_URL = "https://agcrweayleevlkgcmqpy.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnY3J3ZWF5bGVldmxrZ2NtcXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1MzI5ODcsImV4cCI6MjA4NzEwODk4N30.6ROZmRjDORSrfHP9yeZ_ofRHueHnq5K-C9c_jjxqBwQ";
-    
-    // Initialize with standard settings for GitHub
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* --- KERNEL DATA & REGISTRY --- */
+function safeJSON(key, fallback) {
+try {
+const value = localStorage.getItem(key);
+return value ? JSON.parse(value) : fallback;
+} catch {
+return fallback;
+}
+}
 
-    let activeRoom = "";
-    let myUsername = "";
-    let chatChannel = null;
+const OS = {
+z: 1000,
+pass: localStorage.getItem("mc_pass") || "1234",
+bg: localStorage.getItem("mc_bg") || "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
+installed: safeJSON("mc_apps", ["Browser", "Terminal", "Files", "Store", "Settings", "Widgets"]),
+pos: safeJSON("mc_pos", {}),
+running: {},
+battery: 100,
+logs: [],
+notifications: safeJSON("mc_notifications", []),
+widgets: safeJSON("mc_widgets", []),
+restricted: ["Browser", "Store", "Terminal", "Files", "Settings"],
+storeApps: ["Movies", "Games", "McCrackChat", "Calculator", "Music", "AppFactory", "Notepad", "Widgets"]
+};
 
-    const chatBox = document.getElementById("chat");
-    const msgInput = document.getElementById("message-input");
-    const sendBtn = document.getElementById("sendBtn");
-    const statusDisplay = document.getElementById("status-display");
-    const roomModal = document.getElementById("room-modal");
-    const roomInput = document.getElementById("room-name-input");
-    const nameInput = document.getElementById("user-display-name");
+const Registry = {
+Notepad: { icon: "📝", content: () => `<textarea oninput="localStorage.setItem('mc_note', this.value)" style="width:100%;height:100%;background:transparent;color:#ddd;padding:40px;border:none;outline:none;resize:none;font-family:monospace;font-size:1.2rem;line-height:1.6;">${localStorage.getItem('mc_note')||''}</textarea>` },
+Browser: { icon: "🌐", content: () => buildAppFrame("https://siuuu.pagostepeapulco.gob.mx/") },
+Movies: { icon: "📺", content: () => buildAppFrame("https://mccrack.neocities.org/movies") },
+Games: { icon: "🎮", content: () => buildAppFrame("https://mccrack.neocities.org/games") },
+McCrackChat: { icon: "💬", content: () => buildAppFrame("https://patrickmango49.github.io/McCrack-Chat/") },
+Terminal: { icon: "⌨️", content: () => `<div id="t-out" style="padding:25px;color:#0f0;font-family:monospace;height:calc(100% - 60px);overflow:auto;line-height:1.5;font-size:0.9rem;">McCrack Kernel Console [Version 9.0.4]<br>(c) 2026 McCrack Industries.<br><br></div><input onkeydown="cmd(event, this)" style="width:100%;background:#050505;border:none;border-top:1px solid #222;color:#0f0;padding:18px;outline:none;font-family:monospace;font-size:1rem;">` },
+Files: { icon: "📁", content: () => `<div style="padding:30px;">
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<h2>File Explorer</h2>
+<button onclick="document.getElementById('bg-upload').click()" style="padding:8px 15px; border-radius:8px; background:var(--accent); color:white; border:none; cursor:pointer;">Upload BG Image</button>
+<input type="file" id="bg-upload" style="display:none" onchange="handleFileUpload(event)" accept="image/*">
+</div>
+<hr style="opacity:0.1; margin:20px 0;">
+<div class="explorer-grid">
+<div class="file-item">📁<br><br>Root</div>
+<div class="file-item">📁<br><br>System</div>
+<div class="file-item">📁<br><br>Users</div>
+<div class="file-item" onclick="launch('Settings')">🖼️<br><br>Wallpapers</div>
+</div>
+</div>` },
+Store: { icon: "🛒", content: () => `<div style="padding:40px;">
+<h1 style="font-weight:300; margin-bottom:10px;">Integrated Store</h1>
+<p style="opacity:0.4; margin-bottom:30px;">Acquire and deploy official system modules.</p>
+<div id="store-list">
+${renderStoreItem('Movies', 'Streaming Movies Player')}
+${renderStoreItem('Games', 'McCrack Game Hub')}
+${renderStoreItem('McCrackChat', 'Global Relay Service')}
+${renderStoreItem('Calculator', 'Advanced Math Engine')}
+${renderStoreItem('Music', 'High-Fidelity Audio')}
+${renderStoreItem('AppFactory', 'Custom Module Compiler')}
+${renderStoreItem('Notepad', 'Secure Text Buffer')}
+${renderStoreItem('Widgets', 'Desktop Widget Manager')}
+</div>
+</div>` },
+Settings: { icon: "⚙️", content: () => `<div style="padding:40px;">
+<h2 style="font-weight:400; margin-bottom:25px;">Control Panel</h2>
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
+<div style="background:#0a0a0a; padding:25px; border-radius:20px; border:1px solid #1a1a1a;">
+<h4>Personalization</h4><br>
+<p style="font-size:0.8rem; opacity:0.5;">Paste an image URL or upload an image to update the workspace visual.</p><br>
+<input type="text" id="bg-url" placeholder="https://..." style="width:100%; background:#111; border:var(--border); color:white; padding:12px; border-radius:10px;"><br><br>
+<button onclick="setBG(document.getElementById('bg-url').value)" style="width:100%; padding:10px; cursor:pointer; background:var(--accent); border:none; color:white; border-radius:8px;">Apply URL</button><br><br>
+<button onclick="document.getElementById('bg-upload-settings').click()" style="width:100%; padding:10px; cursor:pointer; background:#1e1e1e; border:1px solid #2b2b2b; color:white; border-radius:8px;">Upload Image</button>
+<input type="file" id="bg-upload-settings" style="display:none" onchange="handleFileUpload(event)" accept="image/*">
+</div>
+<div style="background:#0a0a0a; padding:25px; border-radius:20px; border:1px solid #1a1a1a;">
+<h4>Security</h4><br>
+<p style="font-size:0.8rem; opacity:0.5;">Update your system decryption key.</p><br>
+<input type="password" id="new-p" placeholder="New Access Key" style="width:100%; background:#111; border:var(--border); color:white; padding:12px; border-radius:10px;"><br><br>
+<button onclick="setPass(document.getElementById('new-p').value)" style="width:100%; padding:10px; cursor:pointer; background:#333; border:none; color:white; border-radius:8px;">Update Key</button>
+</div>
+</div>
+</div>` },
+Widgets: { icon: "🧩", content: () => `<div style="padding:28px;">
+<h2 style="font-weight:400; margin-bottom:10px;">Desktop Widgets</h2>
+<p style="opacity:0.55; margin-bottom:20px;">Install quick desktop widgets.</p>
+<div class="store-card"><div><strong>🌤️ Weather</strong><br><small style="opacity:0.5;">Simulated local conditions</small></div><button class="install-btn" onclick="installWidget('weather')">Install</button></div>
+<div class="store-card"><div><strong>🕒 Time & Date</strong><br><small style="opacity:0.5;">Live clock panel</small></div><button class="install-btn" onclick="installWidget('time')">Install</button></div>
+<div class="store-card"><div><strong>📅 Calendar</strong><br><small style="opacity:0.5;">Current month snapshot</small></div><button class="install-btn" onclick="installWidget('calendar')">Install</button></div>
+<div style="margin-top:20px;"><button class="install-btn" style="background:#333; width:100%;" onclick="clearWidgets()">Remove All Widgets</button></div>
+</div>` },
+Music: { icon: "🎵", content: () => `<div style="padding:60px;text-align:center;"><div style="font-size:120px;margin-bottom:30px;filter:drop-shadow(0 0 20px var(--accent));">🎧</div><h2>McCrack Music</h2><p style="opacity:0.5;">Library Empty. Connect to stream.</p></div>` },
+AppFactory: { icon: "🛠️", content: () => `<div style="padding:50px; max-width:600px; margin:0 auto;">
+<h2>Compiler Console</h2>
+<p style="opacity:0.4; margin-bottom:10px;">Encapsulate any web protocol into a local app.</p>
+<p style="color: #ff4b4b; font-weight: 800; font-size: 0.75rem; margin-bottom: 25px; letter-spacing: 1px;">THIS IS NOT AN COMPLETE UNBLOCKER!</p>
+<label style="font-size:0.8rem; color:var(--accent);">MODULE NAME</label>
+<input type="text" id="fac-name" placeholder="e.g. YouTube" style="width:100%; padding:15px; background:#111; border:var(--border); color:white; border-radius:12px; margin:10px 0 20px 0; outline:none;">
+<label style="font-size:0.8rem; color:var(--accent);">TARGET URL</label>
+<input type="text" id="fac-link" placeholder="https://..." style="width:100%; padding:15px; background:#111; border:var(--border); color:white; border-radius:12px; margin:10px 0 20px 0; outline:none;">
+<button onclick="createCustomApp()" style="width:100%; padding:18px; background:white; color:black; font-weight:900; border-radius:12px; cursor:pointer; border:none; transition:0.3s;">COMPILE MODULE</button>
+</div>` },
+Calculator: { icon: "🧮", content: () => `<div style="padding:50px; text-align:center;">
+<input id="c-in" style="width:100%; font-size:45px; background:#000; color:white; border:2px solid #222; padding:30px; text-align:right; border-radius:20px; margin-bottom:20px; font-family:monospace;">
+<button onclick="calcResult()" style="width:100%; padding:25px; background:var(--accent); color:white; border:none; border-radius:15px; font-size:1.5rem; font-weight:bold; cursor:pointer;">RUN CALCULATION</button>
+</div>` },
+SystemLogs: { icon: "📑", content: () => `<div style="padding:30px;">
+<h3>System Session Logs</h3><br>
+<div id="log-list" style="font-family:monospace; font-size:0.8rem; color:#aaa;">
+${OS.logs.map(l => `<div>[${l.time}] ${l.msg}</div>`).join('')}
+</div>
+</div>` }
+};
 
-    // Test Connection to ensure the "house is built"
-    async function checkSystem() {
-        try {
-            const { error } = await _supabase.from('rooms').select('name').limit(1);
-            if (error) throw error;
-            statusDisplay.innerText = "System: Online";
-        } catch (e) {
-            statusDisplay.innerText = "System: Offline / Blocked";
-            console.error(e);
-        }
-    }
-    checkSystem();
+/* --- DRAG & DROP LOGIC --- */
+function allowDrop(ev) {
+ev.preventDefault();
+document.getElementById('delete-bin').classList.add('drag-over');
+}
+function dragLeave(ev) { document.getElementById('delete-bin').classList.remove('drag-over'); }
+function startDrag(ev, id) {
+ev.dataTransfer.setData("appId", id);
+ev.currentTarget.style.opacity = "0.4";
+}
+function endDrag(ev) {
+ev.currentTarget.style.opacity = "1";
+document.getElementById('delete-bin').classList.remove('drag-over');
+}
+function dropDelete(ev) {
+ev.preventDefault();
+document.getElementById('delete-bin').classList.remove('drag-over');
+const id = ev.dataTransfer.getData("appId");
 
-    function openModal(title, mode) {
-        window.modalMode = mode;
-        document.getElementById("modal-title").innerText = title;
-        roomModal.classList.add('show');
-        roomInput.focus();
-    }
+// logic to block apps NOT in the storeApps list (and core restricted apps)
+const isStoreApp = OS.storeApps.includes(id);
 
-    function closeModal() { roomModal.classList.remove('show'); roomInput.value = ""; }
+if (!isStoreApp || OS.restricted.includes(id)) {
+alert(`CRITICAL ERROR: ${id} is a protected system kernel module and cannot be deleted.`);
+return;
+}
 
-    document.getElementById("createBtn").onclick = () => openModal("Create Room", "create");
-    document.getElementById("joinBtn").onclick = () => openModal("Join Room", "join");
+if (confirm(`Purge ${id}?`)) {
+if (OS.running[id]) closeW(id);
+OS.installed = OS.installed.filter(app => app !== id);
+localStorage.setItem("mc_apps", JSON.stringify(OS.installed));
+renderDesktop(); renderLib();
+}
+}
 
-    document.getElementById("confirmRoomBtn").onclick = async () => {
-        const r = roomInput.value.trim();
-        const u = nameInput.value.trim();
-        if(!r || !u) return;
+/* --- FRAMEWORK FUNCTIONS --- */
+function buildAppFrame(url) {
+return `<div class="full-app-view">
+<iframe class="app-iframe" src="${url}"></iframe>
+</div>`
+; }
 
-        try {
-            if (window.modalMode === "create") {
-                const { error } = await _supabase.from('rooms').insert([{ name: r }]);
-                if (error && error.code !== '23505') throw error; 
-            } else {
-                const { data, error } = await _supabase.from('rooms').select('*').eq('name', r).maybeSingle();
-                if (error) throw error;
-                if (!data) { alert("Room doesn't exist!"); return; }
-            }
-            
-            activeRoom = r;
-            myUsername = u;
-            document.getElementById("room-header").innerText = "# " + r;
-            msgInput.disabled = false;
-            sendBtn.disabled = false;
-            msgInput.placeholder = `Chatting as ${u}...`;
-            closeModal();
-            connectToRoom();
-        } catch (err) {
-            alert("Database Error: " + err.message);
-        }
-    };
+function renderStoreItem(id, desc) {
+const isInst = OS.installed.includes(id);
+return `<div class="store-card">
+<div><strong>${Registry[id] ? Registry[id].icon : "📦"} ${id}</strong><br><small style="opacity:0.4">${desc}</small></div>
+<button class="install-btn" style="${isInst?'background:#222;cursor:default':''}" onclick="${isInst?'':'install(\''+id+'\')'}">${isInst?'Deployed':'Install'}</button>
+</div>`
+; }
 
-    async function connectToRoom() {
-        chatBox.innerHTML = "<p style='text-align:center; opacity:0.3'>Loading history...</p>";
-        
-        const { data } = await _supabase.from("messages").select("*").eq("room", activeRoom).order("created_at", { ascending: true });
-        chatBox.innerHTML = "";
-        if (data) data.forEach(msg => addMessage(msg));
+function install(id) {
+OS.installed.push(id);
+localStorage.setItem("mc_apps", JSON.stringify(OS.installed));
+renderDesktop(); renderLib();
+notify("app", `${id} installed.`);
+const storeWin = OS.running['Store'];
+if(storeWin) storeWin.querySelector('.win-body').innerHTML = Registry['Store'].content();
+}
 
-        if(chatChannel) _supabase.removeChannel(chatChannel);
-        
-        chatChannel = _supabase.channel('room_' + activeRoom)
-            .on('postgres_changes', { 
-                event: 'INSERT', 
-                schema: 'public', 
-                table: 'messages', 
-                filter: `room=eq.${activeRoom}` 
-            }, payload => addMessage(payload.new))
-            .subscribe();
-    }
+function createCustomApp() {
+const name = document.getElementById('fac-name').value.trim();
+const link = document.getElementById('fac-link').value.trim();
+if(!name || !link) return alert("Missing fields.");
+const customs = safeJSON("mc_custom_apps", {});
+customs[name] = link;
+localStorage.setItem("mc_custom_apps", JSON.stringify(customs));
+Registry[name] = { icon: "🚀", content: () => buildAppFrame(link) };
+OS.installed.push(name);
+localStorage.setItem("mc_apps", JSON.stringify(OS.installed));
+renderDesktop(); renderLib();
+alert(`Compiled ${name}`);
+}
 
-    function addMessage(msg) {
-        const div = document.createElement("div");
-        const isMe = msg.username === myUsername;
-        div.className = `message ${isMe ? 'mine' : ''}`;
-        div.innerHTML = `<span style="display:block;font-size:10px;font-weight:bold;opacity:0.5;margin-bottom:2px;">${msg.username}</span>${msg.content}`;
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+/* --- CORE SYSTEM LOGIC --- */
+window.onload = () => {
+addLog("System boot sequence initialized.");
+document.getElementById('os-root').style.background = OS.bg;
+simulateBootLogs();
+<<<<<<< codex/add-boot-code-log-simulation-qg5m3j
+// keep fullscreen hook from codex branch (resolved merge)
+setupFullscreenOnInteraction();
+const customs = safeJSON("mc_custom_apps", {});
+=======
+const customs = JSON.parse(localStorage.getItem("mc_custom_apps")) || {};
+>>>>>>> main
+Object.keys(customs).forEach(name => {
+Registry[name] = { icon: "🚀", content: () => buildAppFrame(customs[name]) };
+});
+updateBattery(); setInterval(updateBattery, 30000);
+setTimeout(() => {
+const b = document.getElementById('boot');
+b.style.opacity = '0';
+setTimeout(() => { b.style.display='none'; document.getElementById('login').style.display='flex'; }, 1000);
+}, 3000);
+updateTime(); setInterval(updateTime, 1000);
+renderLib();
+renderNotifCenter();
+renderWidgets();
+};
 
-    async function send() {
-        const text = msgInput.value.trim();
-        if(!text) return;
-        msgInput.value = "";
-        
-        const { error } = await _supabase.from("messages").insert([{ 
-            room: activeRoom, 
-            username: myUsername, 
-            content: text 
-        }]);
-        
-        if (error) alert("Send failed: " + error.message);
-    }
+function simulateBootLogs() {
+const panel = document.getElementById('boot-logs');
+if(!panel) return;
+const bootLines = [
+"[BOOT] Power rails stabilized at 12.0V",
+"[KERNEL] Loading microkernel v9.0.4",
+"[MEMORY] Mapping core pages... OK",
+"[SECURITY] Initializing access-control matrix",
+"[DRIVER] Mounting synthetic file system",
+"[NET] Negotiating loopback interface",
+"[AUDIO] DSP handoff complete",
+"[GPU] Shader cache restored",
+"[SERVICES] Spawning userland daemons",
+"[SYSTEM] Startup checks complete"
+];
+panel.innerHTML = '';
+let idx = 0;
+const intervalMs = 300;
+const timer = setInterval(() => {
+if(idx >= bootLines.length) {
+clearInterval(timer);
+return;
+}
+const line = document.createElement('div');
+line.className = 'boot-line';
+line.textContent = `${new Date().toLocaleTimeString()} ${bootLines[idx]}`;
+panel.appendChild(line);
+panel.scrollTop = panel.scrollHeight;
+idx += 1;
+}, intervalMs);
+setTimeout(() => clearInterval(timer), 3000);
+}
 
-    sendBtn.onclick = send;
-    msgInput.onkeypress = (e) => { if(e.key === "Enter") send(); };
+function setupFullscreenOnInteraction() {
+const request = () => {
+if(document.fullscreenElement) return;
+const root = document.documentElement;
+if(root.requestFullscreen) root.requestFullscreen().catch(() => {});
+};
+window.addEventListener('pointerdown', request, { once: true });
+window.addEventListener('touchstart', request, { once: true });
+window.addEventListener('click', request, { once: true });
+}
+
+function notify(type, msg) {
+const item = { type, msg, time: new Date().toLocaleTimeString() };
+OS.notifications.unshift(item);
+OS.notifications = OS.notifications.slice(0, 30);
+localStorage.setItem('mc_notifications', JSON.stringify(OS.notifications));
+renderNotifCenter();
+const wrap = document.getElementById('toast-wrap');
+if(!wrap) return;
+const t = document.createElement('div');
+t.className = `toast ${type === 'system' ? 'system' : (type === 'warning' ? 'warn' : '')}`;
+t.innerHTML = `<strong>${type.toUpperCase()}</strong><div>${msg}</div>`;
+wrap.appendChild(t);
+setTimeout(() => t.remove(), 3400);
+}
+
+function renderNotifCenter() {
+const c = document.getElementById('notif-center');
+if(!c) return;
+if(OS.notifications.length === 0) {
+c.innerHTML = '<div class="notif-item" style="opacity:0.6;">No notifications yet.</div>';
+return;
+}
+c.innerHTML = OS.notifications.map(n => `<div class="notif-item"><div style="font-size:0.68rem; opacity:0.55;">${n.time} • ${n.type.toUpperCase()}</div><div>${n.msg}</div></div>`).join('');
+}
+
+function toggleNotifCenter() {
+const c = document.getElementById('notif-center');
+if(!c) return;
+c.style.display = c.style.display === 'block' ? 'none' : 'block';
+}
+
+function installWidget(id) {
+if(OS.widgets.includes(id)) return notify('warning', `${id} widget already installed.`);
+OS.widgets.push(id);
+localStorage.setItem('mc_widgets', JSON.stringify(OS.widgets));
+renderWidgets();
+notify('app', `${id} widget installed.`);
+}
+
+function clearWidgets() {
+OS.widgets = [];
+localStorage.setItem('mc_widgets', JSON.stringify(OS.widgets));
+renderWidgets();
+notify('app', 'All widgets removed.');
+}
+
+function renderWidgets() {
+const layer = document.getElementById('widget-layer');
+if(!layer) return;
+layer.innerHTML = '';
+const now = new Date();
+const cards = {
+weather: `<h4 style="margin:0 0 10px 0;">🌤️ Weather</h4><div style="font-size:1.6rem; font-weight:700;">${18 + (now.getMinutes() % 12)}°C</div><div style="opacity:0.7; font-size:0.8rem;">Partly Cloudy • McCrack City</div>`,
+time: `<h4 style="margin:0 0 10px 0;">🕒 Time & Date</h4><div style="font-size:1.6rem; font-weight:700;">${now.toLocaleTimeString()}</div><div style="opacity:0.7; font-size:0.8rem;">${now.toDateString()}</div>`,
+calendar: `<h4 style="margin:0 0 10px 0;">📅 Calendar</h4><div style="font-size:1.1rem; font-weight:700;">${now.toLocaleString([], { month:'long', year:'numeric' })}</div><div style="opacity:0.7; font-size:0.8rem;">Day ${now.getDate()} of ${new Date(now.getFullYear(), now.getMonth()+1, 0).getDate()}</div>`
+};
+OS.widgets.forEach((id, i) => {
+if(!cards[id]) return;
+const el = document.createElement('div');
+el.className = 'widget-card';
+el.style.top = `${20 + (i * 135)}px`;
+el.style.right = '20px';
+el.innerHTML = cards[id];
+layer.appendChild(el);
+});
+}
+
+
+function simulateBootLogs() {
+const panel = document.getElementById('boot-logs');
+if(!panel) return;
+const bootLines = [
+"[BOOT] Power rails stabilized at 12.0V",
+"[KERNEL] Loading microkernel v9.0.4",
+"[MEMORY] Mapping core pages... OK",
+"[SECURITY] Initializing access-control matrix",
+"[DRIVER] Mounting synthetic file system",
+"[NET] Negotiating loopback interface",
+"[AUDIO] DSP handoff complete",
+"[GPU] Shader cache restored",
+"[SERVICES] Spawning userland daemons",
+"[SYSTEM] Startup checks complete"
+];
+panel.innerHTML = '';
+let idx = 0;
+const intervalMs = 300;
+const timer = setInterval(() => {
+if(idx >= bootLines.length) {
+clearInterval(timer);
+return;
+}
+const line = document.createElement('div');
+line.className = 'boot-line';
+line.textContent = `${new Date().toLocaleTimeString()} ${bootLines[idx]}`;
+panel.appendChild(line);
+panel.scrollTop = panel.scrollHeight;
+idx += 1;
+}, intervalMs);
+setTimeout(() => clearInterval(timer), 3000);
+}
+
+function addLog(msg) {
+OS.logs.push({time: new Date().toLocaleTimeString(), msg: msg});
+if(OS.running['SystemLogs']) OS.running['SystemLogs'].querySelector('.win-body').innerHTML = Registry['SystemLogs'].content();
+}
+
+function updateTime() {
+const now = new Date();
+document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'short', month: 'short', day: 'numeric'});
+if(OS.widgets.length) renderWidgets();
+}
+
+function updateBattery() {
+if (navigator.getBattery) {
+navigator.getBattery().then(bat => {
+OS.battery = Math.floor(bat.level * 100);
+document.getElementById('battery-stat').querySelector('span').innerText = OS.battery + "%";
+});
+}
+}
+
+function setBG(url) {
+OS.bg = `url('${url}') center/cover no-repeat`;
+document.getElementById('os-root').style.background = OS.bg;
+localStorage.setItem("mc_bg", OS.bg);
+notify("app", "Wallpaper updated");
+}
+
+function handleFileUpload(event) {
+const file = event.target.files && event.target.files[0];
+if(!file) return;
+const reader = new FileReader();
+reader.onload = (e) => {
+setBG(e.target.result);
+addLog(`Wallpaper updated from file: ${file.name}`);
+};
+reader.readAsDataURL(file);
+event.target.value = '';
+}
+
+function handleFileUpload(event) {
+const file = event.target.files && event.target.files[0];
+if(!file) return;
+const reader = new FileReader();
+reader.onload = (e) => {
+setBG(e.target.result);
+addLog(`Wallpaper updated from file: ${file.name}`);
+};
+reader.readAsDataURL(file);
+event.target.value = '';
+}
+
+function setPass(p) { OS.pass = p; localStorage.setItem("mc_pass", p); }
+
+function unlock() {
+if(document.getElementById('pass-in').value === OS.pass) {
+document.getElementById('login').style.opacity = '0';
+setTimeout(() => {
+document.getElementById('login').style.display = 'none';
+document.getElementById('desktop').style.display = 'block';
+document.getElementById('widget-layer').style.display = 'block';
+renderDesktop();
+addLog("User authenticated successfully.");
+}, 500);
+} else {
+addLog("Warning: Unauthorized access attempt.");
+notify("system", "System Warning: Unauthorized access attempt.");
+document.getElementById('log-msg').innerText = "DENIED";
+}
+}
+
+function lockSystem() { location.reload(); }
+
+function renderDesktop() {
+const d = document.getElementById('desktop'); d.innerHTML = "";
+OS.installed.forEach((id, index) => {
+const p = OS.pos[id] || {x: 50 + (index*130 % (window.innerWidth - 300)), y: 50 + (Math.floor(index/8)*150)};
+const el = document.createElement('div'); el.className = 'icon';
+el.style.left = p.x+'px'; el.style.top = p.y+'px';
+el.setAttribute("draggable", "true");
+el.innerHTML = `<div>${Registry[id] ? Registry[id].icon : "📦"}</div><span>${id}</span>`;
+el.ondragstart = (e) => startDrag(e, id);
+el.ondragend = (e) => endDrag(e);
+el.ondblclick = () => launch(id);
+el.onmousedown = (e) => {
+if (e.button !== 0) return;
+e.preventDefault();
+el.classList.add('dragging');
+let ox = e.clientX - el.offsetLeft, oy = e.clientY - el.offsetTop;
+let raf = null;
+let pending = null;
+const applyMove = () => {
+if(!pending) return;
+const { clientX, clientY } = pending;
+const nx = clientX - ox;
+const ny = clientY - oy;
+el.style.left = nx + 'px';
+el.style.top = ny + 'px';
+OS.pos[id] = {x: nx, y: ny};
+raf = null;
+};
+const onMove = (ev) => {
+pending = ev;
+if(!raf) raf = requestAnimationFrame(applyMove);
+<<<<<<< codex/add-boot-code-log-simulation-qg5m3j
+};
+// keep drag cleanup block from codex branch (resolved merge)
+const onUp = () => {
+window.removeEventListener('mousemove', onMove);
+window.removeEventListener('mouseup', onUp);
+if(raf) cancelAnimationFrame(raf);
+el.classList.remove('dragging');
+localStorage.setItem("mc_pos", JSON.stringify(OS.pos));
+};
+=======
+};
+const onUp = () => {
+window.removeEventListener('mousemove', onMove);
+window.removeEventListener('mouseup', onUp);
+if(raf) cancelAnimationFrame(raf);
+el.classList.remove('dragging');
+localStorage.setItem("mc_pos", JSON.stringify(OS.pos));
+};
+>>>>>>> main
+window.addEventListener('mousemove', onMove);
+window.addEventListener('mouseup', onUp);
+};
+d.appendChild(el);
+});
+}
+
+function renderLib() {
+const c = document.getElementById('lib-cont'); c.innerHTML = "";
+OS.installed.forEach(id => {
+if(!Registry[id]) return;
+const i = document.createElement('div'); i.className = 'start-item';
+i.innerHTML = `<span>${Registry[id].icon}</span><strong>${id}</strong>`;
+i.onclick = () => { launch(id); toggleStart(); };
+c.appendChild(i);
+});
+}
+
+function toggleStart() { const s = document.getElementById('start-menu'); s.style.display = (s.style.display==='flex')?'none':'flex'; }
+
+function launch(id) {
+if(OS.running[id]) { focusWin(id); return; }
+if(!Registry[id]) return;
+addLog(`Launched module: ${id}`);
+const w = document.createElement('div'); w.className = 'window';
+w.style.width='950px'; w.style.height='650px'; w.style.left='100px'; w.style.top='80px'; w.style.zIndex = ++OS.z;
+w.innerHTML = `<div class="win-head">
+<div style="display:flex; align-items:center; gap:10px;">
+<span style="font-size:1.2rem;">${Registry[id].icon}</span>
+<span style="font-weight:700; font-size:0.8rem; letter-spacing:1px; opacity:0.8;">${id.toUpperCase()}</span>
+</div>
+<div class="win-ctrls">
+<span onclick="toggleIntegratedFullscreen('${id}')">⛶</span>
+<span onclick="min('${id}')">─</span>
+<span style="font-weight:bold; color:#ff4b4b;" onclick="closeW('${id}')">✕</span>
+</div>
+</div>
+<div class="win-body">${Registry[id].content()}</div>
+<div class="resizer"></div>`
+; document.body.appendChild(w); OS.running[id] = w;
+w.querySelector('.win-head').onmousedown = (e) => {
+if(w.dataset.fs === "true") return;
+focusWin(id); let ox = e.clientX - w.offsetLeft, oy = e.clientY - w.offsetTop;
+document.onmousemove = (ev) => { w.style.left = (ev.clientX-ox)+'px'; w.style.top = (ev.clientY-oy)+'px'; };
+document.onmouseup = () => document.onmousemove = null;
+};
+w.querySelector('.resizer').onmousedown = (e) => {
+let sw=w.offsetWidth, sh=w.offsetHeight, sx=e.clientX, sy=e.clientY;
+document.onmousemove = (ev) => { w.style.width = (sw+(ev.clientX-sx))+'px'; w.style.height = (sh+(ev.clientY-sy))+'px'; };
+document.onmouseup = () => document.onmousemove = null;
+};
+updateTask();
+}
+
+function focusWin(id) { if(OS.running[id]) OS.running[id].style.zIndex = ++OS.z; updateTask(); }
+function closeW(id) { if(OS.running[id]) { OS.running[id].remove(); delete OS.running[id]; updateTask(); addLog(`Closed module: ${id}`); } }
+function min(id) { if(OS.running[id]) { OS.running[id].style.display = 'none'; updateTask(); } }
+
+function toggleIntegratedFullscreen(id) {
+const w = OS.running[id];
+if(w.dataset.fs !== "true") {
+w.dataset.oldW = w.style.width; w.dataset.oldH = w.style.height;
+w.dataset.oldL = w.style.left; w.dataset.oldT = w.style.top;
+w.style.width = '100vw'; w.style.height = `calc(100vh - var(--top-bar-h) - var(--taskbar-h))`;
+w.style.top = `var(--top-bar-h)`; w.style.left = '0';
+w.style.borderRadius = '0'; w.dataset.fs = "true";
+} else {
+w.style.width = w.dataset.oldW; w.style.height = w.dataset.oldH;
+w.style.left = w.dataset.oldL; w.style.top = w.dataset.oldT;
+w.style.borderRadius = '20px'; w.dataset.fs = "false";
+}
+}
+
+function updateTask() {
+const tl = document.getElementById('task-list'); tl.innerHTML = "";
+Object.keys(OS.running).forEach(id => {
+const t = document.createElement('div'); t.className = 'task-tab' + (OS.running[id].style.display!=='none'?' active':'');
+t.innerText = id;
+t.onclick = () => {
+if(OS.running[id].style.display === 'none') {
+OS.running[id].style.display = 'flex';
+focusWin(id);
+} else {
+focusWin(id);
+}
+};
+tl.appendChild(t);
+});
+}
+
+/* --- TERMINAL COMMAND ENGINE --- */
+function cmd(e, el) {
+if(e.key !== "Enter") return;
+const out = document.getElementById('t-out');
+const raw = el.value.trim();
+const [command, ...args] = raw.split(' ');
+const v = (command || '').toLowerCase();
+out.innerHTML += `<div><span style="color:white;">></span> ${raw}</div>`;
+if(v === "help") out.innerHTML += "<div>Commands: help, clear, exit, logs, apps, ver, time, date, battery, whoami, echo, open, install, uninstall, notify, setbg, calc, widgets, lock, reboot</div>";
+else if(v === "clear") out.innerHTML = "";
+else if(v === "logs") out.innerHTML += `<div>Total session events: ${OS.logs.length}</div>`;
+else if(v === "apps") out.innerHTML += `<div>Installed: ${OS.installed.join(', ')}</div>`;
+else if(v === "ver") out.innerHTML += "<div>McCrackOS Kernel v9.0.4. Build 2026.03.10</div>";
+else if(v === "time") out.innerHTML += `<div>${new Date().toLocaleTimeString()}</div>`;
+else if(v === "date") out.innerHTML += `<div>${new Date().toDateString()}</div>`;
+else if(v === "battery") out.innerHTML += `<div>Battery: ${OS.battery}%</div>`;
+else if(v === "whoami") out.innerHTML += "<div>user@McCrackOS</div>";
+else if(v === "echo") out.innerHTML += `<div>${args.join(' ')}</div>`;
+else if(v === "open") { const app = args.join(' '); if(Registry[app]) { launch(app); out.innerHTML += `<div>Opened ${app}</div>`; } else out.innerHTML += `<div style="color:var(--danger);">Unknown app: ${app}</div>`; }
+else if(v === "install") { const app = args.join(' '); if(Registry[app] && !OS.installed.includes(app)) { install(app); out.innerHTML += `<div>Installed ${app}</div>`; } else out.innerHTML += `<div>Unable to install ${app}</div>`; }
+else if(v === "uninstall") { const app = args.join(' '); if(OS.installed.includes(app) && !OS.restricted.includes(app)) { OS.installed = OS.installed.filter(a => a !== app); localStorage.setItem('mc_apps', JSON.stringify(OS.installed)); renderDesktop(); renderLib(); out.innerHTML += `<div>Removed ${app}</div>`; notify('warning', `${app} removed.`); } else out.innerHTML += `<div>Cannot remove ${app}</div>`; }
+else if(v === "notify") { const msg = args.join(' ') || 'System Warning'; notify('system', msg); out.innerHTML += `<div>Notification pushed.</div>`; }
+else if(v === "setbg") { const u = args.join(' '); if(u) { setBG(u); out.innerHTML += `<div>Wallpaper updated.</div>`; } else out.innerHTML += `<div>Usage: setbg https://...</div>`; }
+else if(v === "calc") { try { out.innerHTML += `<div>${eval(args.join(' '))}</div>`; } catch { out.innerHTML += `<div>Calculation error.</div>`; } }
+else if(v === "widgets") out.innerHTML += `<div>Installed widgets: ${OS.widgets.join(', ') || 'none'}</div>`;
+else if(v === "lock") lockSystem();
+else if(v === "reboot") location.reload();
+else if(v === "exit") closeW('Terminal');
+else out.innerHTML += `<div style="color:var(--danger);">Command not found: ${v}</div>`;
+el.value = "";
+out.scrollTop = out.scrollHeight;
+}
+
+/* --- MATH ENGINE --- */
+function calcResult() {
+try {
+const res = eval(document.getElementById('c-in').value);
+document.getElementById('c-in').value = res;
+} catch(e) {
+document.getElementById('c-in').value = "ERROR";
+}
+}
 </script>
 </body>
 </html>
