@@ -3,279 +3,153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>𝕄𝕔ℂ𝕣𝕒𝕔𝕜</title>
-  <style>
-    :root {
-      --bg-1: #050505;
-      --bg-2: #141414;
-      --bg-3: #2a2a2a;
-      --text: #f5f5f5;
-      --muted: #cfcfcf;
-      --glass: rgba(255, 255, 255, 0.06);
-      --border: rgba(255, 255, 255, 0.2);
-      --shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      color: var(--text);
-      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
-
-    .noise {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.14;
-      background-image: radial-gradient(circle at 20% 20%, #ffffff14 0 2px, transparent 3px),
-        radial-gradient(circle at 80% 60%, #ffffff10 0 2px, transparent 3px);
-      background-size: 120px 120px, 140px 140px;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.35));
-      backdrop-filter: blur(10px);
-    }
-
-    .nav {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .nav button {
-      color: var(--text);
-      background: var(--glass);
-      border: 1px solid transparent;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.95rem;
-      letter-spacing: 0.2px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .nav button:hover {
-      border-color: var(--border);
-      transform: translateY(-1px);
-      background: rgba(255, 255, 255, 0.12);
-      box-shadow: var(--shadow);
-    }
-
-    main {
-      flex: 1;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 36px 20px;
-    }
-
-    .hero {
-      width: min(860px, 100%);
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 42px 24px 36px;
-      box-shadow: var(--shadow);
-      display: grid;
-      justify-items: center;
-      gap: 18px;
-    }
-
-    .logo {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 24px;
-      border: 1px solid var(--border);
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    h1 {
-      font-size: clamp(2.4rem, 7vw, 4.8rem);
-      font-weight: 700;
-      line-height: 1.06;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
-      text-shadow: 0 8px 40px rgba(255, 255, 255, 0.18);
-    }
-
-    p {
-      color: var(--muted);
-      font-size: 1.02rem;
-      letter-spacing: 0.02em;
-    }
-
-    .feature-grid {
-      width: 100%;
-      margin-top: 8px;
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      align-items: stretch;
-    }
-
-    .feature-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: left;
-    }
-
-    .feature-card h2 {
-      font-size: 1rem;
-      margin-bottom: 6px;
-    }
-
-    .feature-card p {
-      font-size: 0.92rem;
-      color: #e5e5e5;
-    }
-
-    .widget {
-      justify-self: center;
-      background: linear-gradient(135deg, #000, #333, #fff);
-      background-size: 300% 300%;
-      animation: gradient 8s ease infinite, float 4s ease-in-out infinite;
-      padding: 16px 18px;
-      border-radius: 16px;
-      width: 160px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(6px);
-    }
-
-    @keyframes gradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-
-    .grad {
-      background: linear-gradient(90deg, #fff, #bbb, #fff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .widget h3 {
-      margin: 6px 0;
-      font-size: 0.85em;
-      letter-spacing: 0.5px;
-    }
-
-    .value {
-      font-size: 1.2em;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .counter-wrap {
-      margin-top: 8px;
-      text-align: center;
-    }
-  </style>
+  <title>McCrack</title>
+  <link rel="icon" href="https://example.com" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="noise" aria-hidden="true"></div>
-
-  <header class="topbar">
-    <nav class="nav" aria-label="Primary">
-      <button type="button">Home</button>
-      <button type="button">Games</button>
-      <button type="button">Movies</button>
-      <button type="button">Chat</button>
-      <button type="button">Proxies</button>
-      <button type="button">Bypass</button>
-      <button type="button">More</button>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero">
-      <img
-        class="logo"
-        src="https://lh3.googleusercontent.com/sitesv/APaQ0STJTV-xmb7PxaVVdAku6d6yMFZe_B-VxbAV7RZpaDcFrB_wGEmXJgYamvFgzrBoROMhwgqsK9fcaxtXAtyXhjaDDTAxPqLZevOuL642Mn0tKK_Ij9TG3jC8wDeElkF8pSIm10kQDtGEo_EjvlvVYFrgkdISVxFNADSG1_OouJB9l_qUrsB-ycB9D1I=w16383"
-        alt="McCrack logo"
-      />
-      <h1>𝕄𝕔ℂ𝕣𝕒𝕔𝕜</h1>
-      <p>Modern. Clean. Monochrome.</p>
-
-      <div class="feature-grid" aria-label="Homepage highlights">
-        <article class="feature-card">
-          <h2>Quick Launch</h2>
-          <p>Jump into your favorite tools from one polished dashboard.</p>
-        </article>
-        <article class="feature-card">
-          <h2>Minimal UX</h2>
-          <p>Fast-loading interface with smooth animations and crisp contrast.</p>
-        </article>
-        <article class="feature-card">
-          <h2>Always-on Info</h2>
-          <p>Live local time + battery status widget built right into the homepage.</p>
-        </article>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="topbar-row">
+        <nav class="nav" aria-label="Primary">
+          <a class="active" href="index.html">Home</a>
+          <a href="games.html">Games</a>
+          <a href="movies.html">Movies</a>
+          <a href="chat.html">Chat</a>
+          <a href="proxies.html">Proxies</a>
+          <a href="bypass.html">Bypass</a>
+          <a href="more.html">More</a>
+        </nav>
+        <a class="settings-link" href="settings.html" aria-label="Settings">⚙️</a>
       </div>
+    </header>
 
-      <div class="widget">
-        <h3 class="grad">⏰ Time</h3>
-        <div id="time" class="grad value"></div>
+    <main>
+      <section class="hero">
+        <h1>McCrack Hub</h1>
+        <p>More tools, less fluff.</p>
+      </section>
 
-        <h3 class="grad">🔋 Battery</h3>
-        <div id="battery" class="grad value">Loading…</div>
-      </div>
+      <section class="grid">
+        <article class="card">
+          <h3>Live Stats</h3>
+          <div class="small">Time: <span id="time" class="mono"></span></div>
+          <div class="small">Battery: <span id="battery" class="mono">Loading…</span></div>
+          <div class="small">Online: <span id="online" class="mono"></span></div>
+        </article>
 
-      <div class="counter-wrap" align="center">
-        <a href="https://www.counter12.com">
-          <img src="https://www.counter12.com/img-8Zdb8CWzZ97WZ79B-63.gif" border="0" alt="contador de visitas gratis" />
-        </a>
-        <script type="text/javascript" src="https://www.counter12.com/ad.js?id=8Zdb8CWzZ97WZ79B"></script>
-      </div>
-    </section>
-  </main>
+        <article class="card">
+          <h3>Quick Search</h3>
+          <input id="searchInput" class="input" placeholder="Search web..." />
+          <button id="searchBtn" class="btn">Go</button>
+        </article>
 
+        <article class="card">
+          <h3>Notes</h3>
+          <input id="todoInput" class="input" placeholder="Add quick note" />
+          <button id="todoBtn" class="btn">Add</button>
+          <div id="todoList" class="list"></div>
+        </article>
+
+        <article class="card">
+          <h3>Quick Links</h3>
+          <div class="quick-links">
+            <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://youtube.com" target="_blank" rel="noreferrer">YouTube</a>
+            <a href="https://discord.com" target="_blank" rel="noreferrer">Discord</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Random Quote</h3>
+          <p id="quote" class="small">Click for a quote.</p>
+          <button id="quoteBtn" class="btn">New Quote</button>
+        </article>
+
+        <article class="card">
+          <h3>Theme Preview</h3>
+          <p class="small">Pick wallpapers and tab style in Settings.</p>
+          <a class="btn" style="display:block;text-align:center;text-decoration:none;" href="settings.html">Open Settings</a>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
   <script>
     function updateTime() {
-      document.getElementById("time").textContent = new Date().toLocaleTimeString();
+      document.getElementById('time').textContent = new Date().toLocaleTimeString();
+      document.getElementById('online').textContent = navigator.onLine ? 'Yes' : 'No';
     }
-
     setInterval(updateTime, 1000);
     updateTime();
 
     if (navigator.getBattery) {
       navigator.getBattery().then((battery) => {
-        function updateBattery() {
-          document.getElementById("battery").textContent = Math.round(battery.level * 100) + "%";
-        }
-
-        updateBattery();
-        battery.addEventListener("levelchange", updateBattery);
+        const render = () => document.getElementById('battery').textContent = Math.round(battery.level * 100) + '%';
+        render();
+        battery.addEventListener('levelchange', render);
       });
     } else {
-      document.getElementById("battery").textContent = "N/A";
+      document.getElementById('battery').textContent = 'N/A';
     }
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const q = document.getElementById('searchInput').value.trim();
+      if (q) window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, '_blank');
+    });
+
+    const todoKey = 'mc_home_notes';
+    const todoInput = document.getElementById('todoInput');
+    const todoList = document.getElementById('todoList');
+
+    function readTodos() {
+      return JSON.parse(localStorage.getItem(todoKey) || '[]');
+    }
+
+    function saveTodos(items) {
+      localStorage.setItem(todoKey, JSON.stringify(items));
+    }
+
+    function renderTodos() {
+      const todos = readTodos();
+      todoList.innerHTML = '';
+      todos.forEach((item, i) => {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+        row.innerHTML = `<span>${item}</span><button class="btn" data-i="${i}" style="width:auto;margin:0">x</button>`;
+        todoList.appendChild(row);
+      });
+      todoList.querySelectorAll('button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const todos = readTodos();
+          todos.splice(Number(btn.dataset.i), 1);
+          saveTodos(todos);
+          renderTodos();
+        });
+      });
+    }
+
+    document.getElementById('todoBtn').addEventListener('click', () => {
+      const value = todoInput.value.trim();
+      if (!value) return;
+      const todos = readTodos();
+      todos.push(value);
+      saveTodos(todos);
+      todoInput.value = '';
+      renderTodos();
+    });
+    renderTodos();
+
+    const quotes = [
+      'Small steps stack fast.',
+      'Build first, polish second.',
+      'Momentum beats motivation.',
+      'Make it simple, then powerful.'
+    ];
+    document.getElementById('quoteBtn').addEventListener('click', () => {
+      document.getElementById('quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    });
   </script>
 </body>
 </html>
