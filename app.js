@@ -25,7 +25,7 @@
     if (wallType === 'url' && wallData) {
       document.body.style.background = `center / cover no-repeat url('${wallData}')`;
     } else {
-      document.body.style.background = 'linear-gradient(135deg, #09090d, #151726 40%, #1e2235)';
+      document.body.style.background = 'linear-gradient(170deg, #050505 0%, #1a1a1a 35%, #7d7d7d 70%, #dadada 100%)';
     }
   }
 
