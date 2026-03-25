@@ -24,53 +24,64 @@
       </div>
     </header>
 
-    <main>
-      <section class="hero">
-        <h1>McCrack Hub</h1>
-        <p>More tools, less fluff.</p>
+    <main class="home-main">
+      <section class="hero home-hero">
+        <p class="home-kicker">Dashboard</p>
+        <h1>McCrack Control Center</h1>
+        <p>Everything important in one place with a layout built for quick actions.</p>
       </section>
 
-      <section class="grid">
-        <article class="card">
-          <h3>Live Stats</h3>
-          <div class="small">Time: <span id="time" class="mono"></span></div>
-          <div class="small">Battery: <span id="battery" class="mono">Loading…</span></div>
-          <div class="small">Online: <span id="online" class="mono"></span></div>
-        </article>
+      <section class="home-layout">
+        <aside class="home-sidebar">
+          <article class="card home-stat-card">
+            <h3>Live Stats</h3>
+            <div class="small">Time: <span id="time" class="mono"></span></div>
+            <div class="small">Battery: <span id="battery" class="mono">Loading…</span></div>
+            <div class="small">Online: <span id="online" class="mono"></span></div>
+          </article>
 
-        <article class="card">
-          <h3>Quick Search</h3>
-          <input id="searchInput" class="input" placeholder="Search web..." />
-          <button id="searchBtn" class="btn">Go</button>
-        </article>
+          <article class="card home-links-card">
+            <h3>Quick Links</h3>
+            <div class="quick-links">
+              <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+              <a href="https://youtube.com" target="_blank" rel="noreferrer">YouTube</a>
+              <a href="https://discord.com" target="_blank" rel="noreferrer">Discord</a>
+            </div>
+          </article>
 
-        <article class="card">
-          <h3>Notes</h3>
-          <input id="todoInput" class="input" placeholder="Add quick note" />
-          <button id="todoBtn" class="btn">Add</button>
-          <div id="todoList" class="list"></div>
-        </article>
+          <article class="card home-theme-card">
+            <h3>Theme Preview</h3>
+            <p class="small">Pick wallpapers and tab style in Settings.</p>
+            <a class="btn" style="display:block;text-align:center;text-decoration:none;" href="settings.html">Open Settings</a>
+          </article>
+        </aside>
 
-        <article class="card">
-          <h3>Quick Links</h3>
-          <div class="quick-links">
-            <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer">YouTube</a>
-            <a href="https://discord.com" target="_blank" rel="noreferrer">Discord</a>
+        <div class="home-content">
+          <div class="home-row">
+            <article class="card">
+              <h3>Quick Search</h3>
+              <p class="small">Launch a new tab search instantly.</p>
+              <input id="searchInput" class="input" placeholder="Search web..." />
+              <button id="searchBtn" class="btn">Go</button>
+            </article>
+
+            <article class="card">
+              <h3>Random Quote</h3>
+              <p id="quote" class="small">Click for a quote.</p>
+              <button id="quoteBtn" class="btn">New Quote</button>
+            </article>
           </div>
-        </article>
 
-        <article class="card">
-          <h3>Random Quote</h3>
-          <p id="quote" class="small">Click for a quote.</p>
-          <button id="quoteBtn" class="btn">New Quote</button>
-        </article>
-
-        <article class="card">
-          <h3>Theme Preview</h3>
-          <p class="small">Pick wallpapers and tab style in Settings.</p>
-          <a class="btn" style="display:block;text-align:center;text-decoration:none;" href="settings.html">Open Settings</a>
-        </article>
+          <article class="card home-notes-card">
+            <h3>Notes Board</h3>
+            <p class="small">Pin short reminders for this browser session.</p>
+            <div class="home-notes-inputs">
+              <input id="todoInput" class="input" placeholder="Add quick note" />
+              <button id="todoBtn" class="btn">Add</button>
+            </div>
+            <div id="todoList" class="list"></div>
+          </article>
+        </div>
       </section>
     </main>
   </div>

@@ -266,3 +266,82 @@ select:focus {
   color: #344f9f;
   font-weight: 600;
 }
+
+.home-main {
+  max-width: 1120px;
+  margin: 32px auto;
+  padding: 0 16px 28px;
+}
+
+.home-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #9bc8ff;
+  margin-bottom: 8px;
+}
+
+.home-hero {
+  margin-bottom: 14px;
+}
+
+.home-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.home-sidebar,
+.home-content {
+  display: grid;
+  gap: 14px;
+}
+
+.home-stat-card .small,
+.home-theme-card .small {
+  margin-bottom: 6px;
+}
+
+.home-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.home-notes-card {
+  min-height: 240px;
+}
+
+.home-notes-inputs {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr auto;
+  margin-top: 10px;
+}
+
+.home-notes-inputs .btn {
+  margin-top: 0;
+  min-width: 92px;
+}
+
+@media (max-width: 940px) {
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .home-row {
+    grid-template-columns: 1fr;
+  }
+
+  .home-sidebar {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 540px) {
+  .home-notes-inputs {
+    grid-template-columns: 1fr;
+  }
+}
