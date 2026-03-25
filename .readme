@@ -1,0 +1,8 @@
+McCrack UI Refresh
+
+This project now includes a full visual redesign through styles.css while preserving the original behavior and JavaScript functionality.
+
+Files of interest:
+- index.html for homepage layout and features
+- styles.css for global look and feel
+- app.js for shared settings behavior
