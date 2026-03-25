@@ -67,7 +67,17 @@ body {
   background: rgba(255, 255, 255, 0.07);
 }
 
-main { max-width: 1100px; margin: 28px auto; padding: 0 16px 24px; }
+main {
+  max-width: 1100px;
+  margin: 28px auto;
+  padding: 0 16px 24px;
+}
+
+.centered-page {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+}
 
 .hero {
   border: 1px solid var(--border);
@@ -76,6 +86,12 @@ main { max-width: 1100px; margin: 28px auto; padding: 0 16px 24px; }
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   padding: 20px;
   margin-bottom: 16px;
+}
+
+.hero-centered {
+  width: min(980px, 100%);
+  text-align: center;
+  margin-bottom: 0;
 }
 
 .hero h1 { font-size: clamp(1.7rem, 4vw, 3rem); margin-bottom: 8px; }
@@ -96,6 +112,46 @@ main { max-width: 1100px; margin: 28px auto; padding: 0 16px 24px; }
 
 .card h3 { font-size: 1rem; margin-bottom: 8px; }
 .small { color: var(--muted); font-size: 0.9rem; }
+
+.media-grid {
+  width: min(980px, 100%);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.media-tile {
+  text-decoration: none;
+  color: var(--text);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 185px;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.media-tile img {
+  width: 100%;
+  height: 125px;
+  object-fit: cover;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.media-tile span {
+  padding: 10px;
+  text-align: center;
+  font-size: 0.92rem;
+  color: #d6def6;
+}
+
+.media-tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(125, 162, 255, 0.45);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.35);
+}
 
 .input, .btn, select {
   width: 100%;
