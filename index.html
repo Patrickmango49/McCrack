@@ -29,7 +29,7 @@
       background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     .noise {
@@ -89,12 +89,15 @@
     }
 
     .hero {
-      width: min(760px, 100%);
+      width: min(860px, 100%);
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid var(--border);
       border-radius: 28px;
       padding: 42px 24px 36px;
       box-shadow: var(--shadow);
+      display: grid;
+      justify-items: center;
+      gap: 18px;
     }
 
     .logo {
@@ -104,7 +107,6 @@
       border-radius: 24px;
       border: 1px solid var(--border);
       box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
-      margin-bottom: 22px;
     }
 
     h1 {
@@ -112,7 +114,7 @@
       font-weight: 700;
       line-height: 1.06;
       letter-spacing: 0.05em;
-      margin-bottom: 10px;
+      margin-bottom: 4px;
       text-shadow: 0 8px 40px rgba(255, 255, 255, 0.18);
     }
 
@@ -120,6 +122,80 @@
       color: var(--muted);
       font-size: 1.02rem;
       letter-spacing: 0.02em;
+    }
+
+    .feature-grid {
+      width: 100%;
+      margin-top: 8px;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      align-items: stretch;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+    }
+
+    .feature-card h2 {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .feature-card p {
+      font-size: 0.92rem;
+      color: #e5e5e5;
+    }
+
+    .widget {
+      justify-self: center;
+      background: linear-gradient(135deg, #000, #333, #fff);
+      background-size: 300% 300%;
+      animation: gradient 8s ease infinite, float 4s ease-in-out infinite;
+      padding: 16px 18px;
+      border-radius: 16px;
+      width: 160px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .grad {
+      background: linear-gradient(90deg, #fff, #bbb, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .widget h3 {
+      margin: 6px 0;
+      font-size: 0.85em;
+      letter-spacing: 0.5px;
+    }
+
+    .value {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .counter-wrap {
+      margin-top: 8px;
+      text-align: center;
     }
   </style>
 </head>
@@ -147,7 +223,59 @@
       />
       <h1>𝕄𝕔ℂ𝕣𝕒𝕔𝕜</h1>
       <p>Modern. Clean. Monochrome.</p>
+
+      <div class="feature-grid" aria-label="Homepage highlights">
+        <article class="feature-card">
+          <h2>Quick Launch</h2>
+          <p>Jump into your favorite tools from one polished dashboard.</p>
+        </article>
+        <article class="feature-card">
+          <h2>Minimal UX</h2>
+          <p>Fast-loading interface with smooth animations and crisp contrast.</p>
+        </article>
+        <article class="feature-card">
+          <h2>Always-on Info</h2>
+          <p>Live local time + battery status widget built right into the homepage.</p>
+        </article>
+      </div>
+
+      <div class="widget">
+        <h3 class="grad">⏰ Time</h3>
+        <div id="time" class="grad value"></div>
+
+        <h3 class="grad">🔋 Battery</h3>
+        <div id="battery" class="grad value">Loading…</div>
+      </div>
+
+      <div class="counter-wrap" align="center">
+        <a href="https://www.counter12.com">
+          <img src="https://www.counter12.com/img-8Zdb8CWzZ97WZ79B-63.gif" border="0" alt="contador de visitas gratis" />
+        </a>
+        <script type="text/javascript" src="https://www.counter12.com/ad.js?id=8Zdb8CWzZ97WZ79B"></script>
+      </div>
     </section>
   </main>
+
+  <script>
+    function updateTime() {
+      document.getElementById("time").textContent = new Date().toLocaleTimeString();
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    if (navigator.getBattery) {
+      navigator.getBattery().then((battery) => {
+        function updateBattery() {
+          document.getElementById("battery").textContent = Math.round(battery.level * 100) + "%";
+        }
+
+        updateBattery();
+        battery.addEventListener("levelchange", updateBattery);
+      });
+    } else {
+      document.getElementById("battery").textContent = "N/A";
+    }
+  </script>
 </body>
 </html>
