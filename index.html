@@ -19,148 +19,56 @@
           <a href="proxies.html">Proxies</a>
           <a href="bypass.html">Bypass</a>
           <a href="more.html">More</a>
+          <a href="https://patrickmango49.github.io/McCrackOS/" target="_blank" rel="noreferrer">Browser</a>
+          <a href="https://patrickmango49.github.io/McCrackOS/" target="_blank" rel="noreferrer">McCrackOS</a>
         </nav>
         <a class="settings-link" href="settings.html" aria-label="Settings">⚙️</a>
       </div>
     </header>
 
     <main class="home-main">
-      <section class="hero home-hero">
-        <p class="home-kicker">Dashboard</p>
-        <h1>McCrack Control Center</h1>
-        <p>Everything important in one place with a layout built for quick actions.</p>
+      <section class="hero hero-centered home-hero-title">
+        <h1>McCrack</h1>
+        <p>Your launchpad for everything.</p>
       </section>
 
-      <section class="home-layout">
-        <aside class="home-sidebar">
-          <article class="card home-stat-card">
-            <h3>Live Stats</h3>
-            <div class="small">Time: <span id="time" class="mono"></span></div>
-            <div class="small">Battery: <span id="battery" class="mono">Loading…</span></div>
-            <div class="small">Online: <span id="online" class="mono"></span></div>
-          </article>
-
-          <article class="card home-links-card">
-            <h3>Quick Links</h3>
-            <div class="quick-links">
-              <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
-              <a href="https://youtube.com" target="_blank" rel="noreferrer">YouTube</a>
-              <a href="https://discord.com" target="_blank" rel="noreferrer">Discord</a>
-            </div>
-          </article>
-
-          <article class="card home-theme-card">
-            <h3>Theme Preview</h3>
-            <p class="small">Pick wallpapers and tab style in Settings.</p>
-            <a class="btn" style="display:block;text-align:center;text-decoration:none;" href="settings.html">Open Settings</a>
-          </article>
-        </aside>
-
-        <div class="home-content">
-          <div class="home-row">
-            <article class="card">
-              <h3>Quick Search</h3>
-              <p class="small">Launch a new tab search instantly.</p>
-              <input id="searchInput" class="input" placeholder="Search web..." />
-              <button id="searchBtn" class="btn">Go</button>
-            </article>
-
-            <article class="card">
-              <h3>Random Quote</h3>
-              <p id="quote" class="small">Click for a quote.</p>
-              <button id="quoteBtn" class="btn">New Quote</button>
-            </article>
-          </div>
-
-          <article class="card home-notes-card">
-            <h3>Notes Board</h3>
-            <p class="small">Pin short reminders for this browser session.</p>
-            <div class="home-notes-inputs">
-              <input id="todoInput" class="input" placeholder="Add quick note" />
-              <button id="todoBtn" class="btn">Add</button>
-            </div>
-            <div id="todoList" class="list"></div>
-          </article>
-        </div>
+      <section class="media-grid home-launch-grid" aria-label="Main sections">
+        <a class="media-tile" href="games.html">
+          <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80" alt="Games" />
+          <span>Games</span>
+        </a>
+        <a class="media-tile" href="movies.html">
+          <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80" alt="Movies" />
+          <span>Movies</span>
+        </a>
+        <a class="media-tile" href="chat.html">
+          <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=900&q=80" alt="Chat" />
+          <span>Chat</span>
+        </a>
+        <a class="media-tile" href="proxies.html">
+          <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80" alt="Proxies" />
+          <span>Proxies</span>
+        </a>
+        <a class="media-tile" href="bypass.html">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Bypass" />
+          <span>Bypass</span>
+        </a>
+        <a class="media-tile" href="more.html">
+          <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=900&q=80" alt="More" />
+          <span>More</span>
+        </a>
+        <a class="media-tile" href="https://patrickmango49.github.io/McCrackOS/" target="_blank" rel="noreferrer">
+          <img src="https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=900&q=80" alt="Browser" />
+          <span>Browser</span>
+        </a>
+        <a class="media-tile" href="https://patrickmango49.github.io/McCrackOS/" target="_blank" rel="noreferrer">
+          <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80" alt="McCrackOS" />
+          <span>McCrackOS</span>
+        </a>
       </section>
     </main>
   </div>
 
   <script src="app.js"></script>
-  <script>
-    function updateTime() {
-      document.getElementById('time').textContent = new Date().toLocaleTimeString();
-      document.getElementById('online').textContent = navigator.onLine ? 'Yes' : 'No';
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    if (navigator.getBattery) {
-      navigator.getBattery().then((battery) => {
-        const render = () => document.getElementById('battery').textContent = Math.round(battery.level * 100) + '%';
-        render();
-        battery.addEventListener('levelchange', render);
-      });
-    } else {
-      document.getElementById('battery').textContent = 'N/A';
-    }
-
-    document.getElementById('searchBtn').addEventListener('click', () => {
-      const q = document.getElementById('searchInput').value.trim();
-      if (q) window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, '_blank');
-    });
-
-    const todoKey = 'mc_home_notes';
-    const todoInput = document.getElementById('todoInput');
-    const todoList = document.getElementById('todoList');
-
-    function readTodos() {
-      return JSON.parse(localStorage.getItem(todoKey) || '[]');
-    }
-
-    function saveTodos(items) {
-      localStorage.setItem(todoKey, JSON.stringify(items));
-    }
-
-    function renderTodos() {
-      const todos = readTodos();
-      todoList.innerHTML = '';
-      todos.forEach((item, i) => {
-        const row = document.createElement('div');
-        row.className = 'list-item';
-        row.innerHTML = `<span>${item}</span><button class="btn" data-i="${i}" style="width:auto;margin:0">x</button>`;
-        todoList.appendChild(row);
-      });
-      todoList.querySelectorAll('button').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const todos = readTodos();
-          todos.splice(Number(btn.dataset.i), 1);
-          saveTodos(todos);
-          renderTodos();
-        });
-      });
-    }
-
-    document.getElementById('todoBtn').addEventListener('click', () => {
-      const value = todoInput.value.trim();
-      if (!value) return;
-      const todos = readTodos();
-      todos.push(value);
-      saveTodos(todos);
-      todoInput.value = '';
-      renderTodos();
-    });
-    renderTodos();
-
-    const quotes = [
-      'Small steps stack fast.',
-      'Build first, polish second.',
-      'Momentum beats motivation.',
-      'Make it simple, then powerful.'
-    ];
-    document.getElementById('quoteBtn').addEventListener('click', () => {
-      document.getElementById('quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
-    });
-  </script>
 </body>
 </html>
