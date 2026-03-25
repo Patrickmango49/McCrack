@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings - McCrack</title>
+  <link rel="icon" href="https://example.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="topbar-row">
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="games.html">Games</a>
+          <a href="movies.html">Movies</a>
+          <a href="chat.html">Chat</a>
+          <a href="proxies.html">Proxies</a>
+          <a href="bypass.html">Bypass</a>
+          <a href="more.html">More</a>
+        </nav>
+        <a class="settings-link active" href="settings.html" aria-label="Settings">⚙️</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Settings</h1>
+        <p>Customize tab name, favicon, and wallpapers.</p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h3>Tab Name</h3>
+          <input id="tabName" class="input" placeholder="Tab name" />
+          <button id="saveTab" class="btn">Save Tab Name</button>
+        </article>
+
+        <article class="card">
+          <h3>Favicon by URL</h3>
+          <input id="faviconUrl" class="input" placeholder="https://example.com" />
+          <button id="saveFaviconUrl" class="btn">Save Favicon URL</button>
+          <p class="small">Default link is https://example.com.</p>
+        </article>
+
+        <article class="card">
+          <h3>Favicon Upload</h3>
+          <input id="faviconUpload" class="input" type="file" accept="image/*" />
+          <button id="saveFaviconUpload" class="btn">Use Uploaded Favicon</button>
+        </article>
+
+        <article class="card">
+          <h3>Wallpaper Preset</h3>
+          <select id="presetSelect">
+            <option value="gradient">Default Gradient</option>
+            <option value="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80">Mountains</option>
+            <option value="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1600&q=80">Night Sky</option>
+            <option value="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80">Forest</option>
+          </select>
+          <button id="savePreset" class="btn">Apply Preset</button>
+        </article>
+
+        <article class="card">
+          <h3>Wallpaper by URL</h3>
+          <input id="wallpaperUrl" class="input" placeholder="Paste image URL" />
+          <button id="saveWallpaperUrl" class="btn">Save Wallpaper URL</button>
+        </article>
+
+        <article class="card">
+          <h3>Wallpaper Upload</h3>
+          <input id="wallpaperUpload" class="input" type="file" accept="image/*" />
+          <button id="saveWallpaperUpload" class="btn">Use Uploaded Wallpaper</button>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    const defaults = window.mcApp.defaults;
+    const tabName = document.getElementById('tabName');
+    const faviconUrl = document.getElementById('faviconUrl');
+
+    tabName.value = localStorage.getItem('mc_tab_name') || defaults.DEFAULT_TITLE;
+    faviconUrl.value = localStorage.getItem('mc_favicon_url') || defaults.DEFAULT_FAVICON;
+
+    document.getElementById('saveTab').addEventListener('click', () => {
+      localStorage.setItem('mc_tab_name', tabName.value.trim() || defaults.DEFAULT_TITLE);
+      window.mcApp.applySettings();
+    });
+
+    document.getElementById('saveFaviconUrl').addEventListener('click', () => {
+      localStorage.setItem('mc_favicon_url', faviconUrl.value.trim() || defaults.DEFAULT_FAVICON);
+      window.mcApp.applySettings();
+    });
+
+    document.getElementById('saveFaviconUpload').addEventListener('click', () => {
+      const file = document.getElementById('faviconUpload').files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem('mc_favicon_url', String(reader.result));
+        window.mcApp.applySettings();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('savePreset').addEventListener('click', () => {
+      const selected = document.getElementById('presetSelect').value;
+      if (selected === 'gradient') {
+        localStorage.setItem('mc_wallpaper_type', 'gradient');
+        localStorage.removeItem('mc_wallpaper_value');
+      } else {
+        localStorage.setItem('mc_wallpaper_type', 'url');
+        localStorage.setItem('mc_wallpaper_value', selected);
+      }
+      window.mcApp.applySettings();
+    });
+
+    document.getElementById('saveWallpaperUrl').addEventListener('click', () => {
+      const url = document.getElementById('wallpaperUrl').value.trim();
+      if (!url) return;
+      localStorage.setItem('mc_wallpaper_type', 'url');
+      localStorage.setItem('mc_wallpaper_value', url);
+      window.mcApp.applySettings();
+    });
+
+    document.getElementById('saveWallpaperUpload').addEventListener('click', () => {
+      const file = document.getElementById('wallpaperUpload').files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem('mc_wallpaper_type', 'url');
+        localStorage.setItem('mc_wallpaper_value', String(reader.result));
+        window.mcApp.applySettings();
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
