@@ -8,6 +8,8 @@
   --border: #5a5a5a;
   --accent: #f8f8f8;
   --shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+  --glow: rgba(84, 233, 255, 0.22);
+  --glow-2: rgba(165, 102, 255, 0.18);
 }
 
 * {
@@ -27,6 +29,8 @@ body {
 
 .page-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .topbar {
@@ -42,17 +46,19 @@ body {
 .topbar-row {
   max-width: 1220px;
   margin: 0 auto;
-  padding-left: 30px;
+  padding-left: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .nav {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  justify-content: center;
 }
 
 .nav a {
@@ -89,9 +95,15 @@ body {
 
 main,
 .home-main {
+  flex: 1;
   max-width: 1120px;
   margin: 24px auto;
   padding: 0 16px 40px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 16px;
+  text-align: center;
 }
 
 .centered-page {
@@ -104,7 +116,7 @@ main,
   background: linear-gradient(145deg, rgba(8, 8, 8, 0.94), rgba(35, 35, 35, 0.9));
   border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 24px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 36px var(--glow-2);
   padding: 26px;
   margin-bottom: 18px;
 }
@@ -146,6 +158,7 @@ main,
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 14px;
+  width: min(980px, 100%);
 }
 
 .card {
@@ -155,11 +168,13 @@ main,
   padding: 15px;
   box-shadow: var(--shadow);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
+  text-align: center;
 }
 
 .card:hover,
 .media-tile:hover {
-  transform: translateY(-3px);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: var(--shadow), 0 0 28px var(--glow);
 }
 
 .card h3 {
@@ -194,7 +209,7 @@ main,
   height: 136px;
   object-fit: cover;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  filter: grayscale(100%);
+  filter: saturate(1.2) contrast(1.08) brightness(1.02);
 }
 
 .media-tile span {
@@ -248,4 +263,14 @@ select {
 .quick-links a {
   color: #efefef;
   font-weight: 600;
+}
+
+@media (max-width: 780px) {
+  .topbar-row {
+    justify-content: center;
+  }
+
+  .settings-link {
+    margin-top: 2px;
+  }
 }
