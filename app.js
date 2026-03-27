@@ -1,7 +1,7 @@
 (function () {
   const DEFAULT_TITLE = 'McCrack';
   const DEFAULT_FAVICON = 'https://example.com';
-  const defaultWallpaper = 'gradient';
+  const defaultWallpaper = 'linear-gradient(170deg, #050505 0%, #1a1a1a 35%, #7d7d7d 70%, #dadada 100%)';
 
   function ensureFavicon() {
     let icon = document.querySelector('link[rel="icon"]');
@@ -16,16 +16,18 @@
   function applySettings() {
     const savedTitle = localStorage.getItem('mc_tab_name') || DEFAULT_TITLE;
     const savedFavicon = localStorage.getItem('mc_favicon_url') || DEFAULT_FAVICON;
-    const wallType = localStorage.getItem('mc_wallpaper_type') || defaultWallpaper;
-    const wallData = localStorage.getItem('mc_wallpaper_value') || '';
+    const wallType = localStorage.getItem('mc_wallpaper_type') || 'gradient';
+    const wallData = localStorage.getItem('mc_wallpaper_value') || defaultWallpaper;
 
     document.title = savedTitle;
     ensureFavicon().href = savedFavicon;
 
     if (wallType === 'url' && wallData) {
       document.body.style.background = `center / cover no-repeat url('${wallData}')`;
+    } else if (wallType === 'gradient' && wallData) {
+      document.body.style.background = wallData;
     } else {
-      document.body.style.background = 'linear-gradient(170deg, #050505 0%, #1a1a1a 35%, #7d7d7d 70%, #dadada 100%)';
+      document.body.style.background = defaultWallpaper;
     }
   }
 
