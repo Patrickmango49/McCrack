@@ -434,6 +434,24 @@ select {
   display: block;
 }
 
+.media-launcher-shell:fullscreen,
+.media-launcher-shell:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+}
+
+.media-launcher-shell:fullscreen .media-launcher-frame-wrap,
+.media-launcher-shell:-webkit-full-screen .media-launcher-frame-wrap {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none;
+  aspect-ratio: auto;
+  margin: 0;
+  border-radius: 0;
+  border: 0;
+}
+
 .media-launcher-fullscreen {
   margin: 18px auto 0;
   display: block;
@@ -465,8 +483,8 @@ body.launcher-open {
 
 .embed-launcher-wrap {
   position: relative;
-  width: min(100%, 1200px);
-  max-width: 1200px;
+  width: min(100%, 1400px);
+  max-width: 1400px;
   aspect-ratio: 16 / 9;
   margin: 20px auto;
   border-radius: 12px;
@@ -525,4 +543,9 @@ body.launcher-open {
 .embed-loader p {
   margin-top: 15px;
   opacity: 0.85;
+}
+
+main.embed-main {
+  max-width: 1440px;
+  width: 100%;
 }

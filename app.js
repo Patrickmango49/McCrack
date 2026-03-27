@@ -90,8 +90,12 @@
     function closeLauncher() {
       launcher.classList.remove('is-open');
       document.body.classList.remove('launcher-open');
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
       }
       frame.src = 'about:blank';
     }
@@ -128,14 +132,20 @@
 
     if (fullscreenButton) {
       fullscreenButton.addEventListener('click', async () => {
-        if (document.fullscreenElement) {
-          await document.exitFullscreen();
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
           return;
         }
 
         const target = launcher.querySelector('.media-launcher-shell');
         if (target.requestFullscreen) {
           await target.requestFullscreen();
+        } else if (target.webkitRequestFullscreen) {
+          target.webkitRequestFullscreen();
         }
       });
     }
