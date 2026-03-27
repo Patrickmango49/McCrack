@@ -222,13 +222,13 @@ main,
 }
 
 @media (max-width: 1000px) {
-  .media-grid {
+  .home-launch-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 680px) {
-  .media-grid {
+  .home-launch-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -329,7 +329,8 @@ select {
 
 .media-launcher-frame-wrap {
   position: relative;
-  width: 100%;
+  width: min(95vw, 1200px);
+  margin: 0 auto;
   aspect-ratio: 16 / 9;
   border-radius: 12px;
   overflow: hidden;
