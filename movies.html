@@ -29,12 +29,43 @@
     <main class="centered-page">
       <section class="hero hero-centered">
         <h1>Movies</h1>
-        <p>Clean movie cards with image + text. Change the URLs, images, and labels in this file anytime.</p>
+        <p>Edit every movie button in this file by updating each item's <strong>title</strong>, <strong>image</strong>, and <strong>src</strong> URL below.</p>
       </section>
 
-      <section class="media-grid" aria-label="Movie shortcuts" data-media-kind="movie" data-media-rows="50" data-media-per-row="5"></section>
+      <section class="media-grid" aria-label="Movie shortcuts" data-media-kind="movie"></section>
     </main>
   </div>
+
+  <script id="mediaData" type="application/json">
+[
+  {
+    "title": "Movie 1",
+    "image": "https://picsum.photos/seed/movie-1/600/600",
+    "src": "https://example.com/movie-1"
+  },
+  {
+    "title": "Movie 2",
+    "image": "https://picsum.photos/seed/movie-2/600/600",
+    "src": "https://example.com/movie-2"
+  },
+  {
+    "title": "Movie 3",
+    "image": "https://picsum.photos/seed/movie-3/600/600",
+    "src": "https://example.com/movie-3"
+  },
+  {
+    "title": "Movie 4",
+    "image": "https://picsum.photos/seed/movie-4/600/600",
+    "src": "https://example.com/movie-4"
+  },
+  {
+    "title": "Movie 5",
+    "image": "https://picsum.photos/seed/movie-5/600/600",
+    "src": "https://example.com/movie-5"
+  }
+]
+  </script>
+
   <script src="app.js"></script>
 </body>
 </html>
