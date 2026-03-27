@@ -277,6 +277,18 @@ main,
   gap: 14px;
 }
 
+.media-grid[data-media-static] {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.media-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .popular-grid {
   width: min(980px, 100%);
   display: grid;
@@ -622,4 +634,10 @@ body.launcher-open {
 main.embed-main {
   max-width: 1440px;
   width: 100%;
+}
+
+.media-tile-target {
+  outline: 3px solid rgba(136, 255, 159, 0.95);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(136, 255, 159, 0.35), var(--shadow);
 }
