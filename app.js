@@ -29,10 +29,34 @@
     }
   }
 
+  function populateMediaGrid() {
+    const mediaGrid = document.querySelector('.media-grid[data-media-kind]');
+    if (!mediaGrid) return;
+
+    const kind = mediaGrid.dataset.mediaKind === 'movie' ? 'Movie' : 'Game';
+    const rows = Number.parseInt(mediaGrid.dataset.mediaRows || '50', 10);
+    const perRow = Number.parseInt(mediaGrid.dataset.mediaPerRow || '5', 10);
+    const totalTiles = rows * perRow;
+    const cards = [];
+
+    for (let index = 1; index <= totalTiles; index += 1) {
+      cards.push(`
+        <a class="media-tile" href="https://example.com/${kind.toLowerCase()}-${index}" target="_blank" rel="noreferrer">
+          <img src="https://picsum.photos/seed/${kind.toLowerCase()}-${index}/600/600" alt="${kind} ${index}" />
+          <span>${kind} ${index}</span>
+        </a>
+      `);
+    }
+
+    mediaGrid.innerHTML = cards.join('');
+  }
+
   window.mcApp = {
     applySettings,
+    populateMediaGrid,
     defaults: { DEFAULT_TITLE, DEFAULT_FAVICON, defaultWallpaper }
   };
 
   applySettings();
+  populateMediaGrid();
 })();
