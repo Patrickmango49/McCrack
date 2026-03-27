@@ -122,26 +122,56 @@
     }
   }
 
+  function readMediaData(kind) {
+    const dataNode = document.getElementById('mediaData');
+    if (!dataNode) return [];
+
+    try {
+      const parsed = JSON.parse(dataNode.textContent || '[]');
+      if (!Array.isArray(parsed)) return [];
+
+      return parsed
+        .map((item) => ({
+          title: String(item.title || '').trim(),
+          image: String(item.image || '').trim(),
+          src: String(item.src || '').trim()
+        }))
+        .filter((item) => item.title && item.image && item.src);
+    } catch (error) {
+      console.error(`Invalid mediaData JSON on ${kind} page.`, error);
+      return [];
+    }
+  }
+
+  function buildFallbackCards(kind) {
+    return Array.from({ length: 10 }, (_, index) => {
+      const number = index + 1;
+      return {
+        title: `${kind} ${number}`,
+        image: `https://picsum.photos/seed/${kind.toLowerCase()}-${number}/600/600`,
+        src: `https://example.com/${kind.toLowerCase()}-${number}`
+      };
+    });
+  }
+
   function populateMediaGrid() {
     const mediaGrid = document.querySelector('.media-grid[data-media-kind]');
     if (!mediaGrid) return;
 
     const kind = mediaGrid.dataset.mediaKind === 'movie' ? 'Movie' : 'Game';
-    const rows = Number.parseInt(mediaGrid.dataset.mediaRows || '50', 10);
-    const perRow = Number.parseInt(mediaGrid.dataset.mediaPerRow || '5', 10);
-    const totalTiles = rows * perRow;
-    const cards = [];
+    const mediaItems = readMediaData(kind) || [];
+    const cardsToRender = mediaItems.length ? mediaItems : buildFallbackCards(kind);
 
-    for (let index = 1; index <= totalTiles; index += 1) {
-      cards.push(`
-        <button class="media-tile" type="button" data-src="https://example.com/${kind.toLowerCase()}-${index}">
-          <img src="https://picsum.photos/seed/${kind.toLowerCase()}-${index}/600/600" alt="${kind} ${index}" />
-          <span>${kind} ${index}</span>
+    mediaGrid.innerHTML = cardsToRender
+      .map(
+        (item) => `
+        <button class="media-tile" type="button" data-src="${item.src}">
+          <img src="${item.image}" alt="${item.title}" />
+          <span>${item.title}</span>
         </button>
-      `);
-    }
-
-    mediaGrid.innerHTML = cards.join('');
+      `
+      )
+      .join('');
   }
 
   window.mcApp = {
