@@ -56,6 +56,7 @@
     const frame = launcher.querySelector('#mediaFrame');
     const loader = launcher.querySelector('.media-launcher-loader');
     const fullscreenButton = launcher.querySelector('.media-launcher-fullscreen');
+    const frameWrap = launcher.querySelector('.media-launcher-frame-wrap');
 
     function clearLoader() {
       loader.classList.add('is-hidden');
@@ -66,7 +67,18 @@
       window.setTimeout(clearLoader, 4000);
     }
 
+    function fitLauncherToViewport() {
+      const viewportWidth = Math.max(320, window.innerWidth - 32);
+      const viewportHeight = Math.max(220, window.innerHeight - (fullscreenButton ? 170 : 110));
+      const width = Math.min(1200, viewportWidth, viewportHeight * (16 / 9));
+      const height = width * (9 / 16);
+
+      frameWrap.style.width = `${Math.floor(width)}px`;
+      frameWrap.style.height = `${Math.floor(height)}px`;
+    }
+
     function openLauncher(url) {
+      fitLauncherToViewport();
       showLoader();
       frame.src = url;
       launcher.classList.add('is-open');
@@ -105,6 +117,11 @@
       if (event.key === 'Escape' && launcher.classList.contains('is-open')) {
         closeLauncher();
       }
+    });
+
+    window.addEventListener('resize', () => {
+      if (!launcher.classList.contains('is-open')) return;
+      fitLauncherToViewport();
     });
 
     if (fullscreenButton) {
@@ -154,13 +171,32 @@
     });
   }
 
+  function normalizeMediaCards(kind, mediaItems) {
+    const targetCount = 250;
+    const trimmed = mediaItems.slice(0, targetCount);
+    const needed = targetCount - trimmed.length;
+
+    if (needed <= 0) return trimmed;
+
+    const fallbackCards = Array.from({ length: needed }, (_, index) => {
+      const number = trimmed.length + index + 1;
+      return {
+        title: `${kind} ${number}`,
+        image: `https://picsum.photos/seed/${kind.toLowerCase()}-${number}/600/600`,
+        src: `https://example.com/${kind.toLowerCase()}-${number}`
+      };
+    });
+
+    return trimmed.concat(fallbackCards);
+  }
+
   function populateMediaGrid() {
     const mediaGrid = document.querySelector('.media-grid[data-media-kind]');
     if (!mediaGrid) return;
 
     const kind = mediaGrid.dataset.mediaKind === 'movie' ? 'Movie' : 'Game';
     const mediaItems = readMediaData(kind) || [];
-    const cardsToRender = mediaItems.length ? mediaItems : buildFallbackCards(kind);
+    const cardsToRender = normalizeMediaCards(kind, mediaItems.length ? mediaItems : buildFallbackCards(kind));
 
     mediaGrid.innerHTML = cardsToRender
       .map(
