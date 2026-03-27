@@ -29,7 +29,7 @@
     <main>
       <section class="hero">
         <h1>Settings</h1>
-        <p>Customize tab name, favicon, and wallpapers.</p>
+        <p>Customize tab name, favicon, and wallpaper presets.</p>
       </section>
 
       <section class="grid">
@@ -63,17 +63,6 @@
           <button id="savePreset" class="btn">Apply Preset</button>
         </article>
 
-        <article class="card">
-          <h3>Wallpaper by URL</h3>
-          <input id="wallpaperUrl" class="input" placeholder="Paste image URL" />
-          <button id="saveWallpaperUrl" class="btn">Save Wallpaper URL</button>
-        </article>
-
-        <article class="card">
-          <h3>Wallpaper Upload</h3>
-          <input id="wallpaperUpload" class="input" type="file" accept="image/*" />
-          <button id="saveWallpaperUpload" class="btn">Use Uploaded Wallpaper</button>
-        </article>
       </section>
     </main>
   </div>
@@ -120,25 +109,6 @@
       window.mcApp.applySettings();
     });
 
-    document.getElementById('saveWallpaperUrl').addEventListener('click', () => {
-      const url = document.getElementById('wallpaperUrl').value.trim();
-      if (!url) return;
-      localStorage.setItem('mc_wallpaper_type', 'url');
-      localStorage.setItem('mc_wallpaper_value', url);
-      window.mcApp.applySettings();
-    });
-
-    document.getElementById('saveWallpaperUpload').addEventListener('click', () => {
-      const file = document.getElementById('wallpaperUpload').files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        localStorage.setItem('mc_wallpaper_type', 'url');
-        localStorage.setItem('mc_wallpaper_value', String(reader.result));
-        window.mcApp.applySettings();
-      };
-      reader.readAsDataURL(file);
-    });
   </script>
 </body>
 </html>
