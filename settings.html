@@ -18,9 +18,9 @@
           <a href="chat.html">Chat</a>
           <a href="proxies.html">Proxies</a>
           <a href="bypass.html">Bypass</a>
-          <a href="more.html">More</a>
           <a href="browser.html">Browser</a>
           <a href="mccrackos.html">McCrackOS</a>
+          <a href="more.html">More</a>
         </nav>
         <a class="settings-link active" href="settings.html" aria-label="Settings">⚙️</a>
       </div>
@@ -55,10 +55,11 @@
         <article class="card">
           <h3>Wallpaper Preset</h3>
           <select id="presetSelect">
-            <option value="gradient">Default Gradient</option>
-            <option value="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80">Mountains</option>
-            <option value="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1600&q=80">Night Sky</option>
-            <option value="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80">Forest</option>
+            <option value="linear-gradient(170deg, #050505 0%, #1a1a1a 35%, #7d7d7d 70%, #dadada 100%)">Default Gradient</option>
+            <option value="linear-gradient(170deg, #0f172a 0%, #1d4ed8 45%, #38bdf8 100%)">Ocean Blue</option>
+            <option value="linear-gradient(170deg, #1f1147 0%, #6d28d9 45%, #f472b6 100%)">Neon Purple</option>
+            <option value="linear-gradient(170deg, #052e16 0%, #15803d 45%, #a3e635 100%)">Forest Glow</option>
+            <option value="linear-gradient(170deg, #3f1d0f 0%, #ea580c 45%, #facc15 100%)">Sunset Warmth</option>
           </select>
           <button id="savePreset" class="btn">Apply Preset</button>
         </article>
@@ -99,13 +100,8 @@
 
     document.getElementById('savePreset').addEventListener('click', () => {
       const selected = document.getElementById('presetSelect').value;
-      if (selected === 'gradient') {
-        localStorage.setItem('mc_wallpaper_type', 'gradient');
-        localStorage.removeItem('mc_wallpaper_value');
-      } else {
-        localStorage.setItem('mc_wallpaper_type', 'url');
-        localStorage.setItem('mc_wallpaper_value', selected);
-      }
+      localStorage.setItem('mc_wallpaper_type', 'gradient');
+      localStorage.setItem('mc_wallpaper_value', selected);
       window.mcApp.applySettings();
     });
 

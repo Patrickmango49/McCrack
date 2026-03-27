@@ -160,6 +160,33 @@ main,
   letter-spacing: 0.08em;
 }
 
+.mc {
+  font-family: Arial, sans-serif;
+  font-size: clamp(3rem, 7vw, 5.6rem);
+  font-weight: 900;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+  background: linear-gradient(270deg, #000000, #ffffff, #000000);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: gradientRotate 4s ease infinite;
+}
+
+.home-hero-title h1.mc {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+@keyframes gradientRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .home-launch-grid {
   padding-bottom: 28px;
 }
@@ -438,7 +465,7 @@ body.launcher-open {
 
 .embed-launcher-wrap {
   position: relative;
-  width: min(95vw, 1250px);
+  width: min(100%, 1200px);
   max-width: 1200px;
   aspect-ratio: 16 / 9;
   margin: 20px auto;
