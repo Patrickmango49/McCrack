@@ -33,9 +33,10 @@
 
   function setupMediaLauncher() {
     const mediaGrid = document.querySelector('.media-grid[data-media-kind]');
-    if (!mediaGrid) return;
+    const popularGrid = document.querySelector('.popular-grid');
+    if (!mediaGrid && !popularGrid) return;
 
-    const kind = mediaGrid.dataset.mediaKind === 'movie' ? 'movie' : 'game';
+    const kind = mediaGrid && mediaGrid.dataset.mediaKind === 'movie' ? 'movie' : 'game';
     const launcher = document.createElement('div');
     launcher.className = 'media-launcher';
     launcher.innerHTML = `
@@ -100,7 +101,7 @@
       frame.src = 'about:blank';
     }
 
-    mediaGrid.addEventListener('click', (event) => {
+    document.addEventListener('click', (event) => {
       const tile = event.target.closest('.media-tile[data-src]');
       if (!tile) return;
       event.preventDefault();
@@ -222,6 +223,61 @@
       .join('');
   }
 
+  function setupSiteSearch() {
+    const topbarRow = document.querySelector('.topbar-row');
+    if (!topbarRow || topbarRow.querySelector('.nav-search')) return;
+
+    const settingsLink = topbarRow.querySelector('.settings-link');
+    const toolsWrap = document.createElement('div');
+    toolsWrap.className = 'topbar-tools';
+
+    const searchForm = document.createElement('form');
+    searchForm.className = 'nav-search';
+    searchForm.setAttribute('role', 'search');
+    searchForm.innerHTML = '<label class="sr-only" for="siteSearchInput">Search site</label><input id="siteSearchInput" name="q" type="search" placeholder="Search McCrack..." aria-label="Search McCrack" />';
+    toolsWrap.appendChild(searchForm);
+
+    if (settingsLink) {
+      toolsWrap.appendChild(settingsLink);
+    }
+
+    topbarRow.appendChild(toolsWrap);
+
+    const siteIndex = [
+      { href: 'index.html', terms: ['home', 'main', 'dashboard', 'launchpad', 'mccrack'] },
+      { href: 'games.html', terms: ['games', 'game', 'popular', 'roblox', 'gaming'] },
+      { href: 'movies.html', terms: ['movies', 'movie', 'films', 'watch'] },
+      { href: 'proxies.html', terms: ['proxies', 'proxy', 'web proxy'] },
+      { href: 'bypass.html', terms: ['bypass', 'unblock', 'restriction'] },
+      { href: 'browser.html', terms: ['browser', 'search web', 'internet'] },
+      { href: 'chat.html', terms: ['chat', 'messages', 'talk'] },
+      { href: 'mccrackos.html', terms: ['mccrackos', 'os', 'tools'] },
+      { href: 'more.html', terms: ['more', 'extras', 'additional'] },
+      { href: 'settings.html', terms: ['settings', 'theme', 'tab', 'customize'] }
+    ];
+
+    searchForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const input = searchForm.querySelector('input');
+      const query = (input?.value || '').toLowerCase().trim();
+      if (!query) return;
+
+      const isDirectPage = siteIndex.find((entry) => entry.href.replace('.html', '') === query);
+      if (isDirectPage) {
+        window.location.href = isDirectPage.href;
+        return;
+      }
+
+      const match = siteIndex.find((entry) => entry.terms.some((term) => term.includes(query) || query.includes(term)));
+      if (match) {
+        window.location.href = match.href;
+        return;
+      }
+
+      window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(`site:mccrack ${query}`)}`;
+    });
+  }
+
   window.mcApp = {
     applySettings,
     populateMediaGrid,
@@ -229,6 +285,7 @@
   };
 
   applySettings();
+  setupSiteSearch();
   populateMediaGrid();
   setupMediaLauncher();
 })();
