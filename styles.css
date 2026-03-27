@@ -407,3 +407,40 @@ body.launcher-open {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.embed-launcher-wrap {
+  position: relative;
+  width: 95%;
+  max-width: 1200px;
+  aspect-ratio: 16 / 9;
+  margin: 20px auto;
+  border-radius: 12px;
+}
+
+.embed-loader {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  z-index: 5;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+              url('https://i.imgur.com/70OvshH.png') center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+.embed-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #555;
+  border-top: 5px solid #fff;
+  border-radius: 50%;
+  animation: mc-spin 1s linear infinite;
+}
+
+.embed-loader p {
+  margin-top: 15px;
+  opacity: 0.85;
+}
