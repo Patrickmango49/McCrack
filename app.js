@@ -31,8 +31,16 @@
     }
   }
 
+  function slugify(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 64) || 'item';
+  }
+
   function setupMediaLauncher() {
-    const mediaGrid = document.querySelector('.media-grid[data-media-kind]');
+    const mediaGrid = document.querySelector('.media-grid[data-media-kind], .media-grid[data-media-static]');
     const popularGrid = document.querySelector('.popular-grid');
     if (!mediaGrid && !popularGrid) return;
 
@@ -152,7 +160,7 @@
     }
   }
 
-  function readMediaData(kind) {
+  function readMediaData() {
     const dataNode = document.getElementById('mediaData');
     if (!dataNode) return [];
 
@@ -164,63 +172,111 @@
         .map((item) => ({
           title: String(item.title || '').trim(),
           image: String(item.image || '').trim(),
-          src: String(item.src || '').trim()
+          src: String(item.src || '').trim(),
+          terms: Array.isArray(item.terms) ? item.terms.map((term) => String(term || '').trim()).filter(Boolean) : []
         }))
         .filter((item) => item.title && item.image && item.src);
     } catch (error) {
-      console.error(`Invalid mediaData JSON on ${kind} page.`, error);
+      console.error('Invalid mediaData JSON on this page.', error);
       return [];
     }
-  }
-
-  function buildFallbackCards(kind) {
-    return Array.from({ length: 10 }, (_, index) => {
-      const number = index + 1;
-      return {
-        title: `${kind} ${number}`,
-        image: `https://picsum.photos/seed/${kind.toLowerCase()}-${number}/600/600`,
-        src: `https://example.com/${kind.toLowerCase()}-${number}`
-      };
-    });
-  }
-
-  function normalizeMediaCards(kind, mediaItems) {
-    const targetCount = 250;
-    const trimmed = mediaItems.slice(0, targetCount);
-    const needed = targetCount - trimmed.length;
-
-    if (needed <= 0) return trimmed;
-
-    const fallbackCards = Array.from({ length: needed }, (_, index) => {
-      const number = trimmed.length + index + 1;
-      return {
-        title: `${kind} ${number}`,
-        image: `https://picsum.photos/seed/${kind.toLowerCase()}-${number}/600/600`,
-        src: `https://example.com/${kind.toLowerCase()}-${number}`
-      };
-    });
-
-    return trimmed.concat(fallbackCards);
   }
 
   function populateMediaGrid() {
     const mediaGrid = document.querySelector('.media-grid[data-media-kind]');
     if (!mediaGrid) return;
 
-    const kind = mediaGrid.dataset.mediaKind === 'movie' ? 'Movie' : 'Game';
-    const mediaItems = readMediaData(kind) || [];
-    const cardsToRender = normalizeMediaCards(kind, mediaItems.length ? mediaItems : buildFallbackCards(kind));
-
-    mediaGrid.innerHTML = cardsToRender
-      .map(
-        (item) => `
-        <button class="media-tile" type="button" data-src="${item.src}">
+    const mediaItems = readMediaData();
+    mediaGrid.innerHTML = mediaItems
+      .map((item, index) => {
+        const slug = slugify(item.title);
+        const cardId = `${mediaGrid.dataset.mediaKind}-${slug}-${index + 1}`;
+        const termsAttr = item.terms.length ? ` data-search-terms="${item.terms.join('|')}"` : '';
+        return `
+        <button id="${cardId}" class="media-tile" type="button" data-src="${item.src}"${termsAttr}>
           <img src="${item.image}" alt="${item.title}" />
           <span>${item.title}</span>
         </button>
-      `
-      )
+      `;
+      })
       .join('');
+  }
+
+  function setupHashTargeting() {
+    const hash = decodeURIComponent(window.location.hash || '').replace('#', '').trim();
+    if (!hash) return;
+
+    const target = document.getElementById(hash);
+    if (!target) return;
+
+    window.setTimeout(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.classList.add('media-tile-target');
+      window.setTimeout(() => target.classList.remove('media-tile-target'), 2400);
+    }, 120);
+  }
+
+  function textFromTile(tile) {
+    return (
+      tile.querySelector('span')?.textContent?.trim() ||
+      tile.getAttribute('aria-label') ||
+      tile.querySelector('img')?.alt ||
+      tile.textContent?.trim() ||
+      ''
+    );
+  }
+
+  function buildLocalTileEntries(doc, path) {
+    const tiles = doc.querySelectorAll('.media-tile[data-src], .popular-tile[data-src]');
+    return Array.from(tiles)
+      .map((tile, index) => {
+        const title = textFromTile(tile);
+        if (!title) return null;
+        const id = tile.id || `${slugify(title)}-${index + 1}`;
+        const customTerms = String(tile.getAttribute('data-search-terms') || '')
+          .split('|')
+          .map((term) => term.trim())
+          .filter(Boolean);
+        return {
+          href: `${path}#${id}`,
+          terms: [title.toLowerCase(), slugify(title), ...customTerms.map((term) => term.toLowerCase())]
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function buildMediaDataEntries(doc, path, kind) {
+    const dataNode = doc.querySelector('#mediaData');
+    if (!dataNode) return [];
+
+    try {
+      const parsed = JSON.parse(dataNode.textContent || '[]');
+      if (!Array.isArray(parsed)) return [];
+
+      return parsed
+        .map((item, index) => {
+          const title = String(item.title || '').trim();
+          if (!title) return null;
+          const cardId = `${kind}-${slugify(title)}-${index + 1}`;
+          const extraTerms = Array.isArray(item.terms)
+            ? item.terms.map((term) => String(term || '').toLowerCase().trim()).filter(Boolean)
+            : [];
+          return {
+            href: `${path}#${cardId}`,
+            terms: [title.toLowerCase(), slugify(title), ...extraTerms]
+          };
+        })
+        .filter(Boolean);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async function readDocFromPage(path) {
+    const response = await fetch(path, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Failed to load ${path}`);
+    const html = await response.text();
+    return new DOMParser().parseFromString(html, 'text/html');
   }
 
   function setupSiteSearch() {
@@ -256,7 +312,38 @@
       { href: 'settings.html', terms: ['settings', 'theme', 'tab', 'customize'] }
     ];
 
-    searchForm.addEventListener('submit', (event) => {
+    let searchableContentPromise;
+    async function getSearchableContent() {
+      if (searchableContentPromise) return searchableContentPromise;
+
+      searchableContentPromise = (async () => {
+        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+        const dynamicEntries = [];
+
+        dynamicEntries.push(...buildLocalTileEntries(document, currentPath));
+
+        const pathsToScan = ['games.html', 'movies.html'].filter((path) => path !== currentPath);
+
+        for (const path of pathsToScan) {
+          try {
+            const doc = await readDocFromPage(path);
+            dynamicEntries.push(...buildLocalTileEntries(doc, path));
+            if (!dynamicEntries.some((entry) => entry.href.startsWith(`${path}#`))) {
+              const kind = path === 'movies.html' ? 'movie' : 'game';
+              dynamicEntries.push(...buildMediaDataEntries(doc, path, kind));
+            }
+          } catch (error) {
+            console.warn(`Search index skipped ${path}.`, error);
+          }
+        }
+
+        return dynamicEntries;
+      })();
+
+      return searchableContentPromise;
+    }
+
+    searchForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       const input = searchForm.querySelector('input');
       const query = (input?.value || '').toLowerCase().trim();
@@ -268,9 +355,27 @@
         return;
       }
 
-      const match = siteIndex.find((entry) => entry.terms.some((term) => term.includes(query) || query.includes(term)));
-      if (match) {
-        window.location.href = match.href;
+      const pageMatch = siteIndex.find((entry) => entry.terms.some((term) => term.includes(query) || query.includes(term)));
+      if (pageMatch && query.length < 4) {
+        window.location.href = pageMatch.href;
+        return;
+      }
+
+      const dynamicEntries = await getSearchableContent();
+      const exactMediaMatch = dynamicEntries.find((entry) => entry.terms.some((term) => term === query));
+      if (exactMediaMatch) {
+        window.location.href = exactMediaMatch.href;
+        return;
+      }
+
+      const mediaMatch = dynamicEntries.find((entry) => entry.terms.some((term) => term.includes(query) || query.includes(term)));
+      if (mediaMatch) {
+        window.location.href = mediaMatch.href;
+        return;
+      }
+
+      if (pageMatch) {
+        window.location.href = pageMatch.href;
         return;
       }
 
@@ -285,7 +390,8 @@
   };
 
   applySettings();
-  setupSiteSearch();
   populateMediaGrid();
+  setupSiteSearch();
   setupMediaLauncher();
+  setupHashTargeting();
 })();
