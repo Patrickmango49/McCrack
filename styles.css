@@ -144,6 +144,43 @@ main,
   text-align: center;
 }
 
+.content-with-ads {
+  width: min(1480px, 100%);
+  margin: 24px auto;
+  padding: 0 16px 40px;
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) 160px;
+  gap: 20px;
+  align-items: start;
+}
+
+.content-with-ads > main,
+.content-with-ads > .home-main {
+  margin: 0;
+  padding: 0;
+  max-width: 1120px;
+  width: 100%;
+}
+
+.side-ad {
+  position: sticky;
+  top: 84px;
+  width: 160px;
+  min-height: 300px;
+  display: grid;
+  justify-items: center;
+}
+
+@media (max-width: 1300px) {
+  .content-with-ads {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side-ad {
+    display: none;
+  }
+}
+
 .centered-page {
   display: grid;
   justify-items: center;
