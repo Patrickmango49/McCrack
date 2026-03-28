@@ -44,7 +44,7 @@
     const popularGrid = document.querySelector('.popular-grid');
     if (!mediaGrid && !popularGrid) return;
 
-    const kind = mediaGrid && mediaGrid.dataset.mediaKind === 'movie' ? 'movie' : 'game';
+    const kind = mediaGrid && (mediaGrid.dataset.mediaKind === 'movie' || mediaGrid.dataset.mediaStatic === 'movie') ? 'movie' : 'game';
     const launcher = document.createElement('div');
     launcher.className = 'media-launcher';
     launcher.innerHTML = `
