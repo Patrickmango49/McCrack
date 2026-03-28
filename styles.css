@@ -327,6 +327,11 @@ main,
   filter: saturate(1.2) contrast(1.08) brightness(1.02);
 }
 
+.media-grid[data-media-static="movie"] .media-tile img,
+.media-grid[data-media-kind="movie"] .media-tile img {
+  aspect-ratio: 2 / 3;
+}
+
 .media-tile span {
   padding: 12px;
   text-align: center;
