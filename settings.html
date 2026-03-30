@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings - McCrack</title>
-  <link rel="icon" href="https://example.com" />
+  <title>Settings - 𝕄𝕔ℂ𝕣𝕒𝕔𝕜</title>
+  <link rel="icon" href="favicon.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -17,9 +17,9 @@
           <a href="movies.html">Movies</a>
           <a href="chat.html">Chat</a>
           <a href="proxies.html">Proxies</a>
-          <a href="bypass.html">Bypass</a>
+          <a href="apps.html">Apps</a>
           <a href="browser.html">Browser</a>
-          <a href="mccrackos.html">McCrackOS</a>
+          <a href="mccrackos.html">𝕄𝕔ℂ𝕣𝕒𝕔𝕜OS</a>
           <a href="more.html">More</a>
         </nav>
         <a class="settings-link active" href="settings.html" aria-label="Settings">⚙️</a>
@@ -29,7 +29,7 @@
     <main>
       <section class="hero">
         <h1>Settings</h1>
-        <p>Customize tab name, favicon, and wallpaper presets.</p>
+        <p>Customize tab name, favicon, tab cloak, and wallpaper presets.</p>
       </section>
 
       <section class="grid">
@@ -41,15 +41,22 @@
 
         <article class="card">
           <h3>Favicon by URL</h3>
-          <input id="faviconUrl" class="input" placeholder="https://example.com" />
+          <input id="faviconUrl" class="input" placeholder="https://example.com/favicon.ico" />
           <button id="saveFaviconUrl" class="btn">Save Favicon URL</button>
-          <p class="small">Default link is https://example.com.</p>
+          <p class="small">Default link is favicon.png.</p>
         </article>
 
         <article class="card">
           <h3>Favicon Upload</h3>
           <input id="faviconUpload" class="input" type="file" accept="image/*" />
           <button id="saveFaviconUpload" class="btn">Use Uploaded Favicon</button>
+        </article>
+
+        <article class="card">
+          <h3>Tab Cloak</h3>
+          <button id="applyCloak" class="btn">Apply Default Cloak</button>
+          <button id="resetCloak" class="btn">Reset to Site Default</button>
+          <p class="small" id="cloakInfo"></p>
         </article>
 
         <article class="card">
@@ -63,19 +70,24 @@
           </select>
           <button id="savePreset" class="btn">Apply Preset</button>
         </article>
-
       </section>
     </main>
   </div>
 
   <script src="app.js"></script>
   <script>
+    // Edit these two values in code to set your default cloak.
+    const DEFAULT_CLOAK_TITLE = 'Google';
+    const DEFAULT_CLOAK_FAVICON = 'https://www.google.com/favicon.ico';
+
     const defaults = window.mcApp.defaults;
     const tabName = document.getElementById('tabName');
     const faviconUrl = document.getElementById('faviconUrl');
+    const cloakInfo = document.getElementById('cloakInfo');
 
     tabName.value = localStorage.getItem('mc_tab_name') || defaults.DEFAULT_TITLE;
     faviconUrl.value = localStorage.getItem('mc_favicon_url') || defaults.DEFAULT_FAVICON;
+    cloakInfo.textContent = `Current default cloak: ${DEFAULT_CLOAK_TITLE} | ${DEFAULT_CLOAK_FAVICON}`;
 
     document.getElementById('saveTab').addEventListener('click', () => {
       localStorage.setItem('mc_tab_name', tabName.value.trim() || defaults.DEFAULT_TITLE);
@@ -98,13 +110,28 @@
       reader.readAsDataURL(file);
     });
 
+    document.getElementById('applyCloak').addEventListener('click', () => {
+      localStorage.setItem('mc_tab_name', DEFAULT_CLOAK_TITLE);
+      localStorage.setItem('mc_favicon_url', DEFAULT_CLOAK_FAVICON);
+      tabName.value = DEFAULT_CLOAK_TITLE;
+      faviconUrl.value = DEFAULT_CLOAK_FAVICON;
+      window.mcApp.applySettings();
+    });
+
+    document.getElementById('resetCloak').addEventListener('click', () => {
+      localStorage.removeItem('mc_tab_name');
+      localStorage.removeItem('mc_favicon_url');
+      tabName.value = defaults.DEFAULT_TITLE;
+      faviconUrl.value = defaults.DEFAULT_FAVICON;
+      window.mcApp.applySettings();
+    });
+
     document.getElementById('savePreset').addEventListener('click', () => {
       const selected = document.getElementById('presetSelect').value;
       localStorage.setItem('mc_wallpaper_type', 'gradient');
       localStorage.setItem('mc_wallpaper_value', selected);
       window.mcApp.applySettings();
     });
-
   </script>
 </body>
 </html>
