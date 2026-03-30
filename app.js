@@ -211,13 +211,23 @@
 
     const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
     const groupedTiles = new Map();
+    const movieSectionKey = (title) => {
+      const normalizedTitle = String(title || '').trim();
+      if (!normalizedTitle) return '#';
+
+      const words = normalizedTitle.split(/\s+/);
+      const startsWithThe = words[0] && words[0].toLowerCase() === 'the';
+      const keySource = startsWithThe && words[1] ? words[1] : words[0];
+      const firstCharacter = keySource.charAt(0).toUpperCase();
+
+      return /[A-Z]/.test(firstCharacter) ? firstCharacter : '#';
+    };
 
     tiles
       .sort((tileA, tileB) => collator.compare(textFromTile(tileA), textFromTile(tileB)))
       .forEach((tile) => {
         const title = textFromTile(tile);
-        const firstCharacter = title.charAt(0).toUpperCase();
-        const sectionKey = /[A-Z]/.test(firstCharacter) ? firstCharacter : '#';
+        const sectionKey = movieSectionKey(title);
 
         if (!groupedTiles.has(sectionKey)) {
           groupedTiles.set(sectionKey, []);
