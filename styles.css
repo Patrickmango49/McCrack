@@ -357,6 +357,28 @@ main,
   gap: 14px;
 }
 
+.movie-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.movie-section-title {
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+}
+
+.movie-section-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .popular-grid {
   width: min(980px, 100%);
   display: grid;
@@ -444,6 +466,10 @@ main,
 
   .popular-grid {
     grid-template-columns: 1fr;
+  }
+
+  .movie-section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
