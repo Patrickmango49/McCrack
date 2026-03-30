@@ -202,6 +202,60 @@
       .join('');
   }
 
+  function organizeMovieSections() {
+    const mediaGrid = document.querySelector('.media-grid[data-media-static="movie"], .media-grid[data-media-kind="movie"]');
+    if (!mediaGrid) return;
+
+    const tiles = Array.from(mediaGrid.querySelectorAll('.media-tile'));
+    if (!tiles.length) return;
+
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    const groupedTiles = new Map();
+
+    tiles
+      .sort((tileA, tileB) => collator.compare(textFromTile(tileA), textFromTile(tileB)))
+      .forEach((tile) => {
+        const title = textFromTile(tile);
+        const firstCharacter = title.charAt(0).toUpperCase();
+        const sectionKey = /[A-Z]/.test(firstCharacter) ? firstCharacter : '#';
+
+        if (!groupedTiles.has(sectionKey)) {
+          groupedTiles.set(sectionKey, []);
+        }
+
+        groupedTiles.get(sectionKey).push(tile);
+      });
+
+    const sectionOrder = Array.from(groupedTiles.keys()).sort((keyA, keyB) => {
+      if (keyA === '#') return 1;
+      if (keyB === '#') return -1;
+      return collator.compare(keyA, keyB);
+    });
+
+    mediaGrid.innerHTML = '';
+
+    sectionOrder.forEach((sectionKey) => {
+      const section = document.createElement('section');
+      section.className = 'movie-section';
+      section.setAttribute('aria-label', `${sectionKey} movies`);
+
+      const heading = document.createElement('h2');
+      heading.className = 'movie-section-title';
+      heading.textContent = sectionKey;
+
+      const sectionGrid = document.createElement('div');
+      sectionGrid.className = 'movie-section-grid';
+
+      groupedTiles.get(sectionKey).forEach((tile) => {
+        sectionGrid.appendChild(tile);
+      });
+
+      section.appendChild(heading);
+      section.appendChild(sectionGrid);
+      mediaGrid.appendChild(section);
+    });
+  }
+
   function setupHashTargeting() {
     const hash = decodeURIComponent(window.location.hash || '').replace('#', '').trim();
     if (!hash) return;
@@ -386,11 +440,13 @@
   window.mcApp = {
     applySettings,
     populateMediaGrid,
+    organizeMovieSections,
     defaults: { DEFAULT_TITLE, DEFAULT_FAVICON, defaultWallpaper }
   };
 
   applySettings();
   populateMediaGrid();
+  organizeMovieSections();
   setupSiteSearch();
   setupMediaLauncher();
   setupHashTargeting();
