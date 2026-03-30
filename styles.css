@@ -169,6 +169,37 @@ main,
   min-height: 300px;
   display: grid;
   justify-items: center;
+  align-items: start;
+  border-radius: 18px;
+  padding: 2px;
+  background: linear-gradient(130deg, #000 0%, #fff 30%, #111 55%, #fff 78%, #000 100%);
+  background-size: 220% 220%;
+  animation: adFrameFlow 6s linear infinite;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45), 0 0 24px rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.side-ad > iframe,
+.side-ad > ins,
+.side-ad > div {
+  width: 160px;
+  min-height: 300px;
+  border: 0;
+  border-radius: 16px;
+  background: rgba(6, 6, 6, 0.92);
+  overflow: hidden;
+}
+
+@keyframes adFrameFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @media (max-width: 1300px) {
