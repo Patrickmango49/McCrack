@@ -1,6 +1,6 @@
 (function () {
-  const DEFAULT_TITLE = 'McCrack';
-  const DEFAULT_FAVICON = 'https://example.com';
+  const DEFAULT_TITLE = '𝕄𝕔ℂ𝕣𝕒𝕔𝕜';
+  const DEFAULT_FAVICON = 'favicon.png';
   const defaultWallpaper = 'linear-gradient(170deg, #050505 0%, #1a1a1a 35%, #7d7d7d 70%, #dadada 100%)';
 
   function ensureFavicon() {
@@ -290,7 +290,7 @@
     const searchForm = document.createElement('form');
     searchForm.className = 'nav-search';
     searchForm.setAttribute('role', 'search');
-    searchForm.innerHTML = '<label class="sr-only" for="siteSearchInput">Search site</label><input id="siteSearchInput" name="q" type="search" placeholder="Search McCrack..." aria-label="Search McCrack" />';
+    searchForm.innerHTML = '<label class="sr-only" for="siteSearchInput">Search site</label><input id="siteSearchInput" name="q" type="search" placeholder="Search 𝕄𝕔ℂ𝕣𝕒𝕔𝕜..." aria-label="Search 𝕄𝕔ℂ𝕣𝕒𝕔𝕜" />';
     toolsWrap.appendChild(searchForm);
 
     if (settingsLink) {
@@ -304,7 +304,7 @@
       { href: 'games.html', terms: ['games', 'game', 'popular', 'roblox', 'gaming'] },
       { href: 'movies.html', terms: ['movies', 'movie', 'films', 'watch'] },
       { href: 'proxies.html', terms: ['proxies', 'proxy', 'web proxy'] },
-      { href: 'bypass.html', terms: ['bypass', 'unblock', 'restriction'] },
+      { href: 'apps.html', terms: ['apps', 'app', 'bypass', 'unblock', 'restriction'] },
       { href: 'browser.html', terms: ['browser', 'search web', 'internet'] },
       { href: 'chat.html', terms: ['chat', 'messages', 'talk'] },
       { href: 'mccrackos.html', terms: ['mccrackos', 'os', 'tools'] },
