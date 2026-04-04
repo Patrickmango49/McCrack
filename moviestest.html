@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Movie Hub</title>
+<title>Movie Hub Pro</title>
 
 <style>
 body {
@@ -14,34 +14,54 @@ body {
 }
 
 header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 15px 25px;
-  font-size: 24px;
-  font-weight: bold;
 }
 
-#movies {
+header h1 {
+  margin: 0;
+}
+
+#search {
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+}
+
+.section {
+  padding: 20px;
+}
+
+.row {
   display: flex;
   gap: 15px;
-  padding: 20px;
   overflow-x: auto;
 }
 
 .card {
-  min-width: 150px;
-  height: 220px;
+  min-width: 160px;
+  height: 240px;
   background: #222;
-  border-radius: 10px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   cursor: pointer;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.25s, background 0.25s;
+  position: relative;
+  padding: 10px;
 }
 
 .card:hover {
-  transform: scale(1.1);
+  transform: scale(1.12);
   background: #333;
+}
+
+.card span {
+  font-size: 14px;
 }
 
 #playerContainer {
@@ -50,67 +70,133 @@ header {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.95);
   display: none;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  z-index: 999;
 }
 
 #player {
-  width: 80%;
-  height: 70%;
+  width: 85%;
+  height: 75%;
+  border-radius: 10px;
 }
 
-#closeBtn {
+.controls {
   margin-top: 10px;
-  padding: 10px 20px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
   background: white;
   color: black;
-  border: none;
-  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.8;
 }
 </style>
 </head>
 <body>
 
-<header>🎬 Movie Hub</header>
+<header>
+  <h1>🎬 Movie Hub</h1>
+  <input id="search" placeholder="Search (IMDB ID e.g. tt123...)" />
+</header>
 
-<div id="movies"></div>
+<div class="section">
+  <h2>🔥 Latest Movies</h2>
+  <div class="row" id="movies"></div>
+</div>
+
+<div class="section">
+  <h2>📺 Latest TV Shows</h2>
+  <div class="row" id="tv"></div>
+</div>
 
 <div id="playerContainer">
   <iframe id="player" frameborder="0" allowfullscreen></iframe>
-  <button id="closeBtn">Close</button>
+  <div class="controls">
+    <button id="closeBtn">Close</button>
+    <button onclick="toggleAutoplay()">Toggle Autoplay</button>
+  </div>
 </div>
 
 <script>
-const container = document.getElementById("movies");
-const playerContainer = document.getElementById("playerContainer");
+const movieRow = document.getElementById("movies");
+const tvRow = document.getElementById("tv");
 const player = document.getElementById("player");
+const container = document.getElementById("playerContainer");
 
-// LOAD MOVIES FROM API
+let autoplay = 1;
+
+function createCard(title, imdb) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<span>${title}</span>`;
+
+  card.onclick = () => {
+    player.src = `https://vidsrc-embed.ru/embed/movie/${imdb}?autoplay=${autoplay}`;
+    container.style.display = "flex";
+  };
+
+  return card;
+}
+
+// LOAD MOVIES
 fetch("https://vidsrc-embed.ru/movies/latest/page-1.json")
   .then(res => res.json())
   .then(data => {
-    data.result.forEach(movie => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerText = movie.title;
-
-      card.onclick = () => {
-        player.src = "https://vidsrc-embed.ru/embed/movie/" + movie.imdb_id + "?autoplay=1";
-        playerContainer.style.display = "flex";
-      };
-
-      container.appendChild(card);
+    data.result.forEach(m => {
+      movieRow.appendChild(createCard(m.title, m.imdb_id));
     });
   });
 
-// CLOSE PLAYER
+// LOAD TV
+fetch("https://vidsrc-embed.ru/tvshows/latest/page-1.json")
+  .then(res => res.json())
+  .then(data => {
+    data.result.forEach(show => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `<span>${show.title}</span>`;
+
+      card.onclick = () => {
+        player.src = `https://vidsrc-embed.ru/embed/tv/${show.imdb_id}`;
+        container.style.display = "flex";
+      };
+
+      tvRow.appendChild(card);
+    });
+  });
+
+// SEARCH (IMDB ID DIRECT)
+document.getElementById("search").addEventListener("keypress", e => {
+  if (e.key === "Enter") {
+    const id = e.target.value.trim();
+    if (id.startsWith("tt")) {
+      player.src = `https://vidsrc-embed.ru/embed/movie/${id}`;
+      container.style.display = "flex";
+    }
+  }
+});
+
+// CONTROLS
+function toggleAutoplay() {
+  autoplay = autoplay === 1 ? 0 : 1;
+  alert("Autoplay: " + (autoplay ? "ON" : "OFF"));
+}
 
 document.getElementById("closeBtn").onclick = () => {
   player.src = "";
-  playerContainer.style.display = "none";
+  container.style.display = "none";
 };
 </script>
 
