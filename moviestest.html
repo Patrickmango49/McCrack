@@ -106,6 +106,31 @@
     margin: 12px 3px 22px;
   }
 
+  .apiConfig {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .apiConfig label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .apiConfig input,
+  .apiConfig select {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text);
+    padding: 9px 10px;
+    outline: none;
+  }
+
   .section {
     margin: 26px 0;
   }
@@ -242,6 +267,55 @@
     </header>
 
     <p class="hint">No API key needed. Press <strong>Enter</strong> or click <strong>Go</strong> to search.</p>
+    <section class="apiConfig">
+      <label>
+        Content Type
+        <select id="contentType">
+          <option value="movie">Movie</option>
+          <option value="tv">TV Show</option>
+          <option value="episode">Episode</option>
+        </select>
+      </label>
+      <label>
+        Embed Domain
+        <select id="embedDomain">
+          <option value="https://vidsrc-embed.ru">vidsrc-embed.ru</option>
+          <option value="https://vidsrc-embed.su">vidsrc-embed.su</option>
+          <option value="https://vidsrcme.su">vidsrcme.su</option>
+          <option value="https://vsrc.su">vsrc.su</option>
+        </select>
+      </label>
+      <label>
+        Subtitle Language (ISO639)
+        <input id="dsLang" placeholder="en" maxlength="5" />
+      </label>
+      <label>
+        Subtitle URL (.srt/.vtt)
+        <input id="subUrl" placeholder="https://example.com/file.srt" />
+      </label>
+      <label>
+        Season
+        <input id="seasonNumber" type="number" min="1" placeholder="1" />
+      </label>
+      <label>
+        Episode
+        <input id="episodeNumber" type="number" min="1" placeholder="1" />
+      </label>
+      <label>
+        Autoplay
+        <select id="autoplay">
+          <option value="1">On</option>
+          <option value="0">Off</option>
+        </select>
+      </label>
+      <label>
+        Autonext (Episode only)
+        <select id="autonext">
+          <option value="0">Off</option>
+          <option value="1">On</option>
+        </select>
+      </label>
+    </section>
 
     <section class="section">
       <h2>🔥 Popular Now</h2>
@@ -272,6 +346,14 @@
   const searchBtn = document.getElementById("searchBtn");
   const trendingStatus = document.getElementById("trendingStatus");
   const resultsStatus = document.getElementById("resultsStatus");
+  const contentType = document.getElementById("contentType");
+  const embedDomain = document.getElementById("embedDomain");
+  const dsLangInput = document.getElementById("dsLang");
+  const subUrlInput = document.getElementById("subUrl");
+  const seasonNumber = document.getElementById("seasonNumber");
+  const episodeNumber = document.getElementById("episodeNumber");
+  const autoplay = document.getElementById("autoplay");
+  const autonext = document.getElementById("autonext");
 
   const player = document.getElementById("player");
   const container = document.getElementById("playerContainer");
@@ -280,6 +362,38 @@
   function safeText(value, fallback = "Unknown") {
     if (value === null || value === undefined || value === "") return fallback;
     return String(value);
+  }
+
+  function buildEmbedUrl(imdbCode) {
+    const type = contentType.value;
+    const base = embedDomain.value;
+    const dsLang = dsLangInput.value.trim();
+    const subUrl = subUrlInput.value.trim();
+    const season = seasonNumber.value.trim();
+    const episode = episodeNumber.value.trim();
+    const params = new URLSearchParams({ imdb: imdbCode });
+
+    if (dsLang) params.set("ds_lang", dsLang);
+    if (subUrl) params.set("sub_url", subUrl);
+
+    if (type === "movie") {
+      params.set("autoplay", autoplay.value);
+      return `${base}/embed/movie?${params.toString()}`;
+    }
+
+    if (type === "tv") {
+      return `${base}/embed/tv?${params.toString()}`;
+    }
+
+    if (!season || !episode) {
+      alert("Episode mode requires both season and episode numbers.");
+      return "";
+    }
+    params.set("season", season);
+    params.set("episode", episode);
+    params.set("autoplay", autoplay.value);
+    params.set("autonext", autonext.value);
+    return `${base}/embed/tv?${params.toString()}`;
   }
 
   function createCard(movie) {
@@ -304,7 +418,8 @@
         alert("Sorry, this title does not have a playable source yet.");
         return;
       }
-      currentEmbedUrl = `https://vidsrc.to/embed/movie/${movie.imdb_code}`;
+      currentEmbedUrl = buildEmbedUrl(movie.imdb_code);
+      if (!currentEmbedUrl) return;
       player.src = currentEmbedUrl;
       container.style.display = "flex";
     };
