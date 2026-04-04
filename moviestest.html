@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Hub</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #000, #111, #000);
+  color: white;
+}
+
+header {
+  padding: 15px 25px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#movies {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.card {
+  min-width: 150px;
+  height: 220px;
+  background: #222;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.1);
+  background: #333;
+}
+
+#playerContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#player {
+  width: 80%;
+  height: 70%;
+}
+
+#closeBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: white;
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<header>🎬 Movie Hub</header>
+
+<div id="movies"></div>
+
+<div id="playerContainer">
+  <iframe id="player" frameborder="0" allowfullscreen></iframe>
+  <button id="closeBtn">Close</button>
+</div>
+
+<script>
+const container = document.getElementById("movies");
+const playerContainer = document.getElementById("playerContainer");
+const player = document.getElementById("player");
+
+// LOAD MOVIES FROM API
+fetch("https://vidsrc-embed.ru/movies/latest/page-1.json")
+  .then(res => res.json())
+  .then(data => {
+    data.result.forEach(movie => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerText = movie.title;
+
+      card.onclick = () => {
+        player.src = "https://vidsrc-embed.ru/embed/movie/" + movie.imdb_id + "?autoplay=1";
+        playerContainer.style.display = "flex";
+      };
+
+      container.appendChild(card);
+    });
+  });
+
+// CLOSE PLAYER
+
+document.getElementById("closeBtn").onclick = () => {
+  player.src = "";
+  playerContainer.style.display = "none";
+};
+</script>
+
+</body>
+</html>
