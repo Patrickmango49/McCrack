@@ -57,7 +57,7 @@
           </div>
           <iframe id="mediaFrame" src="about:blank" referrerpolicy="no-referrer" allow="autoplay; fullscreen"></iframe>
         </div>
-        ${kind === 'game' ? '<button class="media-launcher-fullscreen" type="button">Fullscreen</button>' : ''}
+        <button class="media-launcher-fullscreen" type="button">Fullscreen</button>
       </div>
     `;
 
@@ -99,6 +99,7 @@
     function closeLauncher() {
       launcher.classList.remove('is-open');
       document.body.classList.remove('launcher-open');
+      launcher.querySelector('.media-launcher-shell').classList.remove('is-pre-fullscreen');
       if (document.fullscreenElement || document.webkitFullscreenElement) {
         if (document.exitFullscreen) {
           document.exitFullscreen().catch(() => {});
@@ -151,13 +152,29 @@
         }
 
         const target = launcher.querySelector('.media-launcher-shell');
-        if (target.requestFullscreen) {
-          await target.requestFullscreen();
-        } else if (target.webkitRequestFullscreen) {
-          target.webkitRequestFullscreen();
+        target.classList.add('is-pre-fullscreen');
+        await new Promise((resolve) => window.requestAnimationFrame(resolve));
+
+        try {
+          if (target.requestFullscreen) {
+            await target.requestFullscreen();
+          } else if (target.webkitRequestFullscreen) {
+            target.webkitRequestFullscreen();
+          }
+        } finally {
+          window.setTimeout(() => {
+            target.classList.remove('is-pre-fullscreen');
+          }, 250);
         }
       });
     }
+
+    const clearPreFullscreen = () => {
+      const target = launcher.querySelector('.media-launcher-shell');
+      target.classList.remove('is-pre-fullscreen');
+    };
+    document.addEventListener('fullscreenchange', clearPreFullscreen);
+    document.addEventListener('webkitfullscreenchange', clearPreFullscreen);
   }
 
   function readMediaData() {

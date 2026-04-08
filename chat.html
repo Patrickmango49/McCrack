@@ -60,14 +60,37 @@
 
     async function openFullscreen() {
       const target = document.querySelector('.embed-launcher-wrap');
-      if (!document.fullscreenElement) {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+        return;
+      }
+
+      target.classList.add('is-pre-fullscreen');
+      await new Promise((resolve) => window.requestAnimationFrame(resolve));
+
+      try {
         if (target.requestFullscreen) {
           await target.requestFullscreen();
+        } else if (target.webkitRequestFullscreen) {
+          target.webkitRequestFullscreen();
         }
-      } else {
-        await document.exitFullscreen();
+      } finally {
+        window.setTimeout(() => {
+          target.classList.remove('is-pre-fullscreen');
+        }, 250);
       }
     }
+
+    function clearPreFullscreen() {
+      document.querySelector('.embed-launcher-wrap')?.classList.remove('is-pre-fullscreen');
+    }
+
+    document.addEventListener('fullscreenchange', clearPreFullscreen);
+    document.addEventListener('webkitfullscreenchange', clearPreFullscreen);
   </script>
 </body>
 </html>
