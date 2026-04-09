@@ -552,7 +552,7 @@ select {
   position: relative;
 }
 
-.media-launcher-shell.is-pre-fullscreen {
+.media-launcher.is-pre-fullscreen {
   position: fixed;
   inset: 0;
   width: 100vw;
@@ -560,6 +560,8 @@ select {
   max-width: none;
   z-index: 1100;
   background: #000;
+  padding: 0;
+  place-items: stretch;
 }
 
 .media-launcher-close {
@@ -629,15 +631,23 @@ select {
   display: block;
 }
 
-.media-launcher-shell:fullscreen,
-.media-launcher-shell:-webkit-full-screen {
+.media-launcher:fullscreen,
+.media-launcher:-webkit-full-screen {
   width: 100vw;
   height: 100vh;
   max-width: none;
+  padding: 0;
+  place-items: stretch;
 }
 
-.media-launcher-shell:fullscreen .media-launcher-frame-wrap,
-.media-launcher-shell:-webkit-full-screen .media-launcher-frame-wrap {
+.media-launcher:fullscreen .media-launcher-shell,
+.media-launcher:-webkit-full-screen .media-launcher-shell {
+  width: 100vw;
+  height: 100vh;
+}
+
+.media-launcher:fullscreen .media-launcher-frame-wrap,
+.media-launcher:-webkit-full-screen .media-launcher-frame-wrap {
   width: 100vw !important;
   height: 100vh !important;
   max-width: none;

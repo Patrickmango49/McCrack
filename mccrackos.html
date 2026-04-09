@@ -59,7 +59,7 @@
     }, 4000);
 
     async function openFullscreen() {
-      const target = document.querySelector('.embed-launcher-wrap');
+      const target = document.documentElement;
       if (document.fullscreenElement || document.webkitFullscreenElement) {
         if (document.exitFullscreen) {
           await document.exitFullscreen();
@@ -69,28 +69,22 @@
         return;
       }
 
-      target.classList.add('is-pre-fullscreen');
-      await new Promise((resolve) => window.requestAnimationFrame(resolve));
-
-      try {
-        if (target.requestFullscreen) {
-          await target.requestFullscreen();
-        } else if (target.webkitRequestFullscreen) {
-          target.webkitRequestFullscreen();
-        }
-      } finally {
-        window.setTimeout(() => {
-          target.classList.remove('is-pre-fullscreen');
-        }, 250);
+      if (target.requestFullscreen) {
+        await target.requestFullscreen();
+      } else if (target.webkitRequestFullscreen) {
+        target.webkitRequestFullscreen();
       }
     }
 
-    function clearPreFullscreen() {
-      document.querySelector('.embed-launcher-wrap')?.classList.remove('is-pre-fullscreen');
-    }
-
-    document.addEventListener('fullscreenchange', clearPreFullscreen);
-    document.addEventListener('webkitfullscreenchange', clearPreFullscreen);
+    document.addEventListener('keydown', async (event) => {
+      if (event.key !== 'Escape') return;
+      if (!(document.fullscreenElement || document.webkitFullscreenElement)) return;
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    });
   </script>
 </body>
 </html>
