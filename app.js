@@ -99,7 +99,7 @@
     function closeLauncher() {
       launcher.classList.remove('is-open');
       document.body.classList.remove('launcher-open');
-      launcher.querySelector('.media-launcher-shell').classList.remove('is-pre-fullscreen');
+      launcher.classList.remove('is-pre-fullscreen');
       if (document.fullscreenElement || document.webkitFullscreenElement) {
         if (document.exitFullscreen) {
           document.exitFullscreen().catch(() => {});
@@ -130,9 +130,16 @@
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && launcher.classList.contains('is-open')) {
-        closeLauncher();
+      if (event.key !== 'Escape' || !launcher.classList.contains('is-open')) return;
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+        return;
       }
+      closeLauncher();
     });
 
     window.addEventListener('resize', () => {
@@ -151,7 +158,7 @@
           return;
         }
 
-        const target = launcher.querySelector('.media-launcher-shell');
+        const target = launcher;
         target.classList.add('is-pre-fullscreen');
         await new Promise((resolve) => window.requestAnimationFrame(resolve));
 
@@ -170,8 +177,7 @@
     }
 
     const clearPreFullscreen = () => {
-      const target = launcher.querySelector('.media-launcher-shell');
-      target.classList.remove('is-pre-fullscreen');
+      launcher.classList.remove('is-pre-fullscreen');
     };
     document.addEventListener('fullscreenchange', clearPreFullscreen);
     document.addEventListener('webkitfullscreenchange', clearPreFullscreen);
