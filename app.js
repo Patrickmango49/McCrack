@@ -197,10 +197,10 @@
     bootOverlay.innerHTML = `
       <div class="boot-video-stage">
         <video class="boot-video" src="boot.mp4" autoplay muted playsinline preload="auto"></video>
-        <button class="boot-skip-btn" type="button">Skip intro</button>
       </div>
       <div class="boot-choice-stage" hidden>
-        <h2>Welcome to 𝕄𝕔ℂ𝕣𝕒𝕔𝕜, please choose your destination:</h2>
+        <h2>Choose your McCrack version</h2>
+        <p class="boot-choice-subtitle">Pick where you want to launch your experience.</p>
         <div class="boot-choice-actions">
           <button class="boot-continue-btn" type="button">Actual official McCrack</button>
           <a class="boot-sites-btn" href="https://sites.google.com/view/mccrack12/" target="_blank" rel="noopener noreferrer">McCrack Google Sites version</a>
@@ -212,25 +212,38 @@
     document.body.classList.add('boot-active');
 
     const video = bootOverlay.querySelector('.boot-video');
-    const skipButton = bootOverlay.querySelector('.boot-skip-btn');
     const continueButton = bootOverlay.querySelector('.boot-continue-btn');
     const videoStage = bootOverlay.querySelector('.boot-video-stage');
     const choiceStage = bootOverlay.querySelector('.boot-choice-stage');
+    let didFinish = false;
 
     function showChoiceStage() {
-      videoStage.hidden = true;
-      choiceStage.hidden = false;
+      bootOverlay.classList.add('boot-switching');
+      window.setTimeout(() => {
+        videoStage.hidden = true;
+        choiceStage.hidden = false;
+        choiceStage.classList.add('is-visible');
+        bootOverlay.classList.remove('boot-switching');
+      }, 320);
     }
 
-    function finishBootFlow() {
+    function cleanupBootOverlay() {
+      if (didFinish) return;
+      didFinish = true;
+      choiceStage.hidden = false;
       window.sessionStorage.setItem('mc_boot_seen', '1');
       document.body.classList.remove('boot-active');
       bootOverlay.remove();
     }
 
+    function finishBootFlow() {
+      bootOverlay.classList.add('is-exiting');
+      bootOverlay.addEventListener('transitionend', cleanupBootOverlay, { once: true });
+      window.setTimeout(cleanupBootOverlay, 560);
+    }
+
     video.addEventListener('ended', showChoiceStage);
     video.addEventListener('error', showChoiceStage);
-    skipButton.addEventListener('click', showChoiceStage);
     continueButton.addEventListener('click', finishBootFlow);
 
     video.play().catch(() => {
