@@ -564,6 +564,21 @@ select {
   place-items: stretch;
 }
 
+.media-launcher.is-pre-fullscreen .media-launcher-shell {
+  width: 100vw;
+  height: 100vh;
+}
+
+.media-launcher.is-pre-fullscreen .media-launcher-frame-wrap {
+  width: 100vw !important;
+  height: calc(100vh - 74px) !important;
+  max-width: none;
+  aspect-ratio: auto;
+  margin: 0;
+  border-radius: 0;
+  border: 0;
+}
+
 .media-launcher-close {
   position: absolute;
   top: 14px;
@@ -679,6 +694,60 @@ select {
 
 body.launcher-open {
   overflow: hidden;
+}
+
+body.boot-active {
+  overflow: hidden;
+}
+
+.boot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: #000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.boot-video-stage,
+.boot-choice-stage {
+  width: min(960px, 100%);
+  text-align: center;
+}
+
+.boot-video {
+  width: 100%;
+  max-height: 82vh;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #000;
+}
+
+.boot-skip-btn,
+.boot-continue-btn,
+.boot-sites-btn {
+  margin-top: 14px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boot-choice-stage h2 {
+  font-size: clamp(1.25rem, 3vw, 2.1rem);
+  margin-bottom: 22px;
+}
+
+.boot-choice-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 @keyframes mc-spin {
