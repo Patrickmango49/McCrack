@@ -6,12 +6,12 @@ Welcome to **McCrack**, the ultimate all-in-one entertainment hub designed for s
 
 ## 🌟 Features
 
-- **Browser-Based Games**: Play a wide selection of popular, student-friendly games without downloads.  
-- **Movie Section**: Enjoy a growing library of movies and videos directly in your browser.  
-- **Built-in Tools**: Quick-access tools for browsing, media, and utilities, all in one place.  
-- **Live Chat**: Connect with friends, hang out, and chat while gaming.  
-- **Modern Design**: A clean black-and-white theme that’s smooth, stylish, and user-friendly.  
-- **Fast & Simple**: Intuitive layout ensures you can find what you need quickly.  
+- **Browser-Based Games**: Play a wide selection of popular, student-friendly games without downloads.
+- **Movie Section**: Enjoy a growing library of movies and videos directly in your browser.
+- **Built-in Tools**: Quick-access tools for browsing, media, and utilities, all in one place.
+- **Live Chat**: Connect with friends, hang out, and chat while gaming.
+- **Modern Design**: A clean black-and-white theme that’s smooth, stylish, and user-friendly.
+- **Fast & Simple**: Intuitive layout ensures you can find what you need quickly.
 
 Whether you want to game, watch, or connect with friends, McCrack makes it easy and fun.
 
@@ -19,8 +19,8 @@ Whether you want to game, watch, or connect with friends, McCrack makes it easy 
 
 ## 🎮 Platforms & Access
 
-- **Official Version**: [McCrack Official](https://mccrack.oops.wtf)  
-- **Google Sites Version**: [McCrack on Google Sites](https://sites.google.com/view/mccrack12)  
+- **Official Version**: [McCrack Official](https://mccrack.oops.wtf)
+- **Google Sites Version**: [McCrack on Google Sites](https://sites.google.com/view/mccrack12)
 
 ---
 
@@ -28,10 +28,13 @@ Whether you want to game, watch, or connect with friends, McCrack makes it easy 
 
 Stay updated, follow, and connect with McCrack on all your favorite platforms:
 
-- **YouTube**: [McCrack YouTube Channel](https://www.youtube.com/@patrickmango49?sub_confirmation=1))  
-- **TikTok**: [My TikTok](https://www.tiktok.com/@whodatpatrickmango)  
-- **Discord Server**: [Join McCrack Discord](https://discord.gg/7kHXucXWfM)  
-- **Linktree**: [McCrack Linktree](https://linktr.ee/parick_mango)  
+- **YouTube**: [McCrack YouTube Channel](https://www.youtube.com/@patrickmango49?sub_confirmation=1)
+- **TikTok**: [My TikTok](https://www.tiktok.com/@whodatpatrickmango)
+- **Instagram**: [McCrack Instagram](https://www.instagram.com)
+- **McCrackOS**: [McCrackOS Page](https://mccrack.oops.wtf/mccrackos.html)
+- **McCrack on Google Sites**: [Google Sites Version](https://sites.google.com/view/mccrack12)
+- **Discord Server**: [Join McCrack Discord](https://discord.gg/7kHXucXWfM)
+- **Linktree**: [McCrack Linktree](https://linktr.ee/parick_mango)
 
 ---
 
@@ -39,20 +42,20 @@ Stay updated, follow, and connect with McCrack on all your favorite platforms:
 
 McCrack is made to combine entertainment, social interaction, and convenience all in one place. Its modern, minimalistic design ensures a smooth experience without clutter, making it perfect for:
 
-- Students looking for a quick break  
-- Gamers who love browser-based fun  
-- Friends wanting to chat and connect online  
+- Students looking for a quick break
+- Gamers who love browser-based fun
+- Friends wanting to chat and connect online
 
-McCrack focuses on **speed, style, and usability**, giving you more time to enjoy games, movies, and your online friends.  
+McCrack focuses on **speed, style, and usability**, giving you more time to enjoy games, movies, and your online friends.
 
 ---
 
 ## ⚡ Getting Started
 
-1. Visit [McCrack](https://mccrack.oops.wtf) or [Google Sites Version](https://sites.google.com/view/mccrack12).  
-2. Explore games, movies, and tools.  
-3. Join the Discord for live chat and updates.  
-4. Follow McCrack on social media for announcements, new features, and more fun content!  
+1. Visit [McCrack](https://mccrack.oops.wtf) or [Google Sites Version](https://sites.google.com/view/mccrack12).
+2. Explore games, movies, and tools.
+3. Join the Discord for live chat and updates.
+4. Follow McCrack on social media for announcements, new features, and more fun content!
 
 ---
 
