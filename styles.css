@@ -294,6 +294,54 @@ main,
   margin-bottom: 20px;
 }
 
+.socials-box {
+  width: min(980px, 100%);
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(15, 15, 15, 0.95), rgba(30, 30, 30, 0.88));
+  box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  padding: 16px 20px;
+  margin-bottom: 4px;
+}
+
+.socials-box h2 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.socials-box ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 8px 14px;
+}
+
+.socials-box a {
+  color: #f2f2f2;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.socials-box a:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.home-about {
+  width: min(980px, 100%);
+}
+
+.home-about h2 {
+  font-size: clamp(1.3rem, 2.6vw, 2rem);
+  margin-bottom: 10px;
+}
+
+.home-feature-grid {
+  margin-bottom: 8px;
+}
+
 .home-hero-title h1 {
   font-size: clamp(3rem, 7vw, 5.6rem);
   text-transform: uppercase;
@@ -370,6 +418,19 @@ main,
   font-size: 1rem;
   margin-bottom: 9px;
   color: #fff;
+}
+
+.card-list {
+  margin: 0;
+  padding-left: 18px;
+  text-align: left;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+}
+
+.card-list a {
+  color: #f1f1f1;
 }
 
 .media-grid {
