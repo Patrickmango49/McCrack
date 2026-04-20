@@ -434,6 +434,17 @@
     return new DOMParser().parseFromString(html, 'text/html');
   }
 
+
+  function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch((error) => {
+        console.warn('Service worker registration failed.', error);
+      });
+    });
+  }
+
   function setupSiteSearch() {
     const topbarRow = document.querySelector('.topbar-row');
     if (!topbarRow || topbarRow.querySelector('.nav-search')) return;
@@ -552,4 +563,5 @@
   setupMediaLauncher();
   setupHashTargeting();
   setupBootFlow();
+  registerServiceWorker();
 })();
