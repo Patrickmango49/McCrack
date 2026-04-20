@@ -43,6 +43,18 @@ body {
     linear-gradient(165deg, var(--bg-start) 0%, var(--bg-mid) 45%, var(--bg-end) 100%);
   background-attachment: fixed;
   overflow-y: auto;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(60% 45% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 70%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.03), transparent 40%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .page-shell {
@@ -294,6 +306,17 @@ main,
   margin-bottom: 20px;
 }
 
+.home-footer-blurb {
+  margin-top: 8px;
+  margin-bottom: 18px;
+  width: min(980px, 100%);
+}
+
+.home-footer-blurb h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 8px;
+}
+
 .socials-box {
   width: min(980px, 100%);
   text-align: left;
@@ -406,6 +429,18 @@ main,
   box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after,
+.media-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
 }
 
 .card:hover,
@@ -504,6 +539,10 @@ main,
   position: relative;
 }
 
+.media-tile::before {
+  z-index: 1;
+}
+
 .media-tile:focus-visible {
   outline: 3px solid rgba(255, 255, 255, 0.8);
   outline-offset: 2px;
@@ -544,6 +583,65 @@ main,
 
 .media-tile:hover::after {
   opacity: 1;
+}
+
+.socials-showcase {
+  width: min(980px, 100%);
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(12, 12, 12, 0.96), rgba(28, 28, 28, 0.86));
+  box-shadow: var(--shadow), 0 0 26px rgba(255, 255, 255, 0.08);
+  padding: 22px;
+}
+
+.socials-showcase h2 {
+  margin-bottom: 14px;
+  font-size: 1.3rem;
+}
+
+.socials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.social-card {
+  text-decoration: none;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.35), 0 0 18px rgba(255, 255, 255, 0.1);
+}
+
+.social-card img {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px;
+}
+
+.social-card strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.social-card span {
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 @media (max-width: 1000px) {
