@@ -332,6 +332,14 @@ main,
   display: inline-block;
 }
 
+.home-splash-message {
+  margin: 8px 0 10px;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
 @keyframes shimmer {
   0%, 100% { background-position: 0% 50%; }
   50%       { background-position: 100% 50%; }
