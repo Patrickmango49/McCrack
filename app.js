@@ -22,7 +22,26 @@
     'Academically suspicious. Technically impressive.',
     'Shh... this tab is studying.',
     'Mission: look busy, have fun.',
-    'Stealth mode activated.'
+    'Stealth mode activated.',
+    'Neon nights. Zero limits.',
+    'Drip mode: enabled.',
+    'Your launchpad to chaotic fun.',
+    'Built for speed, memes, and mayhem.',
+    'Dark mode? We were born in it.',
+    'Your tab just got a glow-up.',
+    'Cooler than the school Chromebook policy.',
+    'Fast clicks. Big vibes.',
+    'Certified premium procrastination.',
+    'One click away from peak boredom cure.',
+    'Too smooth to be homework.',
+    'Future-tech energy, browser edition.',
+    'Powered by pixels and bad decisions.',
+    'Looks like work. Plays like freedom.',
+    'Welcome to your digital playground.',
+    'Legendary tab status achieved.',
+    'Aesthetics: maxed. Productivity: optional.',
+    'Tap in. Zone out.',
+    'Stay sneaky. Stay iconic.'
   ];
 
   function ensureFavicon() {
@@ -57,8 +76,21 @@
     const splashNode = document.getElementById('homeSplashMessage');
     if (!splashNode || !HOME_SPLASH_MESSAGES.length) return;
 
-    const randomIndex = Math.floor(Math.random() * HOME_SPLASH_MESSAGES.length);
-    splashNode.textContent = HOME_SPLASH_MESSAGES[randomIndex];
+    const messages = HOME_SPLASH_MESSAGES.slice().sort(() => Math.random() - 0.5);
+    let messageIndex = 0;
+    splashNode.textContent = messages[messageIndex];
+
+    if (messages.length < 2) return;
+
+    window.setInterval(() => {
+      messageIndex = (messageIndex + 1) % messages.length;
+      splashNode.classList.add('is-switching');
+
+      window.setTimeout(() => {
+        splashNode.textContent = messages[messageIndex];
+        splashNode.classList.remove('is-switching');
+      }, 170);
+    }, 4400);
   }
 
   function slugify(value) {
