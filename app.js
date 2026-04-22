@@ -76,21 +76,8 @@
     const splashNode = document.getElementById('homeSplashMessage');
     if (!splashNode || !HOME_SPLASH_MESSAGES.length) return;
 
-    const messages = HOME_SPLASH_MESSAGES.slice().sort(() => Math.random() - 0.5);
-    let messageIndex = 0;
-    splashNode.textContent = messages[messageIndex];
-
-    if (messages.length < 2) return;
-
-    window.setInterval(() => {
-      messageIndex = (messageIndex + 1) % messages.length;
-      splashNode.classList.add('is-switching');
-
-      window.setTimeout(() => {
-        splashNode.textContent = messages[messageIndex];
-        splashNode.classList.remove('is-switching');
-      }, 170);
-    }, 4400);
+    const randomIndex = Math.floor(Math.random() * HOME_SPLASH_MESSAGES.length);
+    splashNode.textContent = HOME_SPLASH_MESSAGES[randomIndex];
   }
 
   function slugify(value) {
