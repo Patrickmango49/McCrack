@@ -2,6 +2,28 @@
   const DEFAULT_TITLE = '𝕄𝕔ℂ𝕣𝕒𝕔𝕜';
   const DEFAULT_FAVICON = 'favicon.png';
   const defaultWallpaper = 'linear-gradient(170deg, #050505 0%, #1a1a1a 35%, #7d7d7d 70%, #dadada 100%)';
+  const HOME_SPLASH_MESSAGES = [
+    'Now with 99% less school surveillance.',
+    'Alt-Tab faster.',
+    'Is that a teacher behind you?',
+    'This site is definitely not a gaming site.',
+    'Teacher voice "I see you."',
+    '"Just one more game" - You, 3 hours ago.',
+    'Warning: Side effects include forgetting homework.',
+    'Powered by boredom and questionable WiFi.',
+    'Loading fun... unlike your homework.',
+    'Not blocked, just better.',
+    'Sneak 100.',
+    'Get back to work! (Just kidding, play more).',
+    'Your favorite distraction.',
+    'Unblocking the fun.',
+    "Don't look directly at the bugs!",
+    'Homework? I hardly know her.',
+    'Academically suspicious. Technically impressive.',
+    'Shh... this tab is studying.',
+    'Mission: look busy, have fun.',
+    'Stealth mode activated.'
+  ];
 
   function ensureFavicon() {
     let icon = document.querySelector('link[rel="icon"]');
@@ -29,6 +51,14 @@
     } else {
       document.body.style.background = defaultWallpaper;
     }
+  }
+
+  function setupHomeSplashMessage() {
+    const splashNode = document.getElementById('homeSplashMessage');
+    if (!splashNode || !HOME_SPLASH_MESSAGES.length) return;
+
+    const randomIndex = Math.floor(Math.random() * HOME_SPLASH_MESSAGES.length);
+    splashNode.textContent = HOME_SPLASH_MESSAGES[randomIndex];
   }
 
   function slugify(value) {
@@ -563,5 +593,6 @@
   setupMediaLauncher();
   setupHashTargeting();
   setupBootFlow();
+  setupHomeSplashMessage();
   registerServiceWorker();
 })();
