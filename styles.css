@@ -315,6 +315,10 @@ main,
 /* ─── Home hero ──────────────────────────────────────────────── */
 .home-hero-title {
   padding: 48px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 .mc {
@@ -333,11 +337,69 @@ main,
 }
 
 .home-splash-message {
-  margin: 8px 0 10px;
-  color: var(--text);
-  font-size: 1rem;
+  margin: 0;
+  color: #f9fbff;
+  font-size: clamp(0.98rem, 1.75vw, 1.05rem);
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.012em;
+  line-height: 1.4;
+  min-height: 1.4em;
+  transition: opacity 0.15s var(--ease), transform 0.15s var(--ease);
+}
+
+.home-splash-message.is-switching {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.home-tagline {
+  max-width: 760px;
+}
+
+.home-splash-box {
+  width: min(560px, 92%);
+  margin-top: 8px;
+  padding: 14px 16px 15px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(159, 202, 255, 0.34);
+  background:
+    linear-gradient(150deg, rgba(65, 127, 255, 0.22) 0%, rgba(9, 14, 27, 0.88) 56%, rgba(130, 39, 255, 0.3) 100%);
+  box-shadow:
+    0 12px 30px rgba(26, 57, 109, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -1px 0 rgba(92, 147, 255, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+
+.home-splash-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.17) 45%, transparent 70%);
+  transform: translateX(-115%);
+  animation: splashSweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.home-splash-box-label {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.67rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  color: #d9e9ff;
+  background: rgba(8, 13, 24, 0.66);
+  border: 1px solid rgba(165, 205, 255, 0.34);
+}
+
+@keyframes splashSweep {
+  0%, 35% { transform: translateX(-120%); }
+  55%, 100% { transform: translateX(120%); }
 }
 
 @keyframes shimmer {
