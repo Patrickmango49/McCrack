@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeoTube</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #000000, #ffffff);
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 20px;
+    font-size: 40px;
+    letter-spacing: 2px;
+    color: black;
+    mix-blend-mode: difference;
+}
+
+.search-box {
+    margin: 20px auto;
+}
+
+input {
+    width: 60%;
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+button {
+    padding: 12px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    background: black;
+    color: white;
+    margin-left: 10px;
+}
+
+#results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.video {
+    background: rgba(0,0,0,0.6);
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.video:hover {
+    transform: scale(1.05);
+}
+
+.video img {
+    width: 100%;
+}
+
+.video-title {
+    padding: 10px;
+    font-size: 14px;
+}
+
+#player {
+    margin: 20px auto;
+}
+</style>
+</head>
+
+<body>
+
+<h1>NEOTUBE</h1>
+
+<div class="search-box">
+    <input type="text" id="search" placeholder="Search videos...">
+    <button onclick="searchVideos()">Search</button>
+</div>
+
+<div id="player"></div>
+<div id="results"></div>
+
+<script>
+const API_KEY = "YOUR_API_KEY_HERE"; // 🔴 PUT YOUR YOUTUBE API KEY HERE
+
+function searchVideos() {
+    const query = document.getElementById("search").value;
+
+    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${query}&key=${API_KEY}`)
+    .then(res => res.json())
+    .then(data => {
+        const results = document.getElementById("results");
+        results.innerHTML = "";
+
+        data.items.forEach(item => {
+            const videoId = item.id.videoId;
+            const title = item.snippet.title;
+            const thumbnail = item.snippet.thumbnails.medium.url;
+
+            const div = document.createElement("div");
+            div.className = "video";
+
+            div.innerHTML = `
+                <img src="${thumbnail}">
+                <div class="video-title">${title}</div>
+            `;
+
+            div.onclick = () => playVideo(videoId);
+
+            results.appendChild(div);
+        });
+    });
+}
+
+function playVideo(id) {
+    document.getElementById("player").innerHTML = `
+        <iframe width="80%" height="400"
+        src="https://www.youtube.com/embed/${id}"
+        frameborder="0"
+        allowfullscreen></iframe>
+    `;
+}
+</script>
+
+</body>
+</html>
