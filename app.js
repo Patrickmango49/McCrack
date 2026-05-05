@@ -239,6 +239,137 @@
   }
 
 
+
+  function setupLiveUsersCounter() {
+    if (document.querySelector('.live-users-counter')) return;
+
+    const ACTIVE_KEY_PREFIX = 'mc_active_tab_';
+    const HEARTBEAT_MS = 15000;
+    const ACTIVE_WINDOW_MS = 35000;
+    const tabId = `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    const myKey = `${ACTIVE_KEY_PREFIX}${tabId}`;
+
+    const badge = document.createElement('div');
+    badge.className = 'live-users-counter';
+    badge.setAttribute('role', 'status');
+    badge.setAttribute('aria-live', 'polite');
+    document.body.appendChild(badge);
+
+    function heartbeat() {
+      localStorage.setItem(myKey, String(Date.now()));
+    }
+
+    function cleanupExpired() {
+      const now = Date.now();
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith(ACTIVE_KEY_PREFIX)) continue;
+        const value = Number(localStorage.getItem(key) || '0');
+        if (!value || now - value > ACTIVE_WINDOW_MS) {
+          localStorage.removeItem(key);
+          i -= 1;
+        }
+      }
+    }
+
+    function renderCount() {
+      cleanupExpired();
+      const now = Date.now();
+      let activeUsers = 0;
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith(ACTIVE_KEY_PREFIX)) continue;
+        const value = Number(localStorage.getItem(key) || '0');
+        if (value && now - value <= ACTIVE_WINDOW_MS) activeUsers += 1;
+      }
+      badge.textContent = `Online now: ${activeUsers}`;
+    }
+
+    heartbeat();
+    renderCount();
+    const hb = window.setInterval(() => {
+      heartbeat();
+      renderCount();
+    }, HEARTBEAT_MS);
+
+    window.addEventListener('storage', renderCount);
+    window.addEventListener('beforeunload', () => {
+      window.clearInterval(hb);
+      localStorage.removeItem(myKey);
+    });
+  }
+
+  function setupPopularGamesByLikes() {
+    const popularGrid = document.querySelector('.popular-grid');
+    if (!popularGrid) return;
+
+    const allGameTiles = Array.from(document.querySelectorAll('.media-grid .media-tile[data-src], .popular-grid .media-tile[data-src]'));
+    if (!allGameTiles.length) return;
+
+    const GAME_LIKES_KEY = 'mc_game_likes_v1';
+
+    function getLikesMap() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(GAME_LIKES_KEY) || '{}');
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveLikesMap(map) {
+      localStorage.setItem(GAME_LIKES_KEY, JSON.stringify(map));
+    }
+
+    function gameIdFromTile(tile) {
+      const title = textFromTile(tile);
+      return slugify(title || tile.id || tile.dataset.src);
+    }
+
+    function buildPopularTile(tile, likesMap) {
+      const title = textFromTile(tile);
+      const image = tile.querySelector('img')?.src || '';
+      const src = tile.dataset.src || '';
+      const gameId = gameIdFromTile(tile);
+      const likes = Number(likesMap[gameId] || 0);
+
+      const card = document.createElement('button');
+      card.className = 'popular-tile media-tile';
+      card.type = 'button';
+      card.dataset.src = src;
+      card.dataset.gameId = gameId;
+      card.innerHTML = `<img src="${image}" alt="${title}" /><span>${title}</span><small class="popular-like-count">👍 ${likes}</small>`;
+      return card;
+    }
+
+    function renderPopular() {
+      const likesMap = getLikesMap();
+      const sorted = [...allGameTiles].sort((a, b) => {
+        const likesA = Number(likesMap[gameIdFromTile(a)] || 0);
+        const likesB = Number(likesMap[gameIdFromTile(b)] || 0);
+        if (likesB !== likesA) return likesB - likesA;
+        return textFromTile(a).localeCompare(textFromTile(b));
+      });
+
+      const top = sorted.slice(0, 4);
+      popularGrid.innerHTML = '';
+      top.forEach((tile) => popularGrid.appendChild(buildPopularTile(tile, likesMap)));
+    }
+
+    document.addEventListener('click', (event) => {
+      const tile = event.target.closest('.media-grid .media-tile[data-src], .popular-grid .media-tile[data-src]');
+      if (!tile) return;
+
+      const likesMap = getLikesMap();
+      const gameId = tile.dataset.gameId || gameIdFromTile(tile);
+      likesMap[gameId] = Number(likesMap[gameId] || 0) + 1;
+      saveLikesMap(likesMap);
+      renderPopular();
+    });
+
+    renderPopular();
+  }
+
   function setupVisitorCounter() {
     if (document.querySelector('.visitor-counter')) return;
 
@@ -633,9 +764,11 @@
   organizeMovieSections();
   setupSiteSearch();
   setupMediaLauncher();
+  setupPopularGamesByLikes();
   setupHashTargeting();
   setupBootFlow();
   setupHomeSplashMessage();
+  setupLiveUsersCounter();
   registerServiceWorker();
   setupVisitorCounter();
 })();

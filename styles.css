@@ -1444,3 +1444,32 @@ main,
   display: block;
   border-radius: 6px;
 }
+
+
+.live-users-counter {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 130;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f5f5f5;
+  background: rgba(8, 8, 8, 0.82);
+  border: 1px solid rgba(255,255,255,0.24);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+}
+
+body:has(.home-main) .home-main {
+  min-height: calc(100vh - 140px);
+  justify-content: center;
+}
+
+.popular-like-count {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--text-2);
+}
