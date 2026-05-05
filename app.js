@@ -276,7 +276,7 @@
         <p class="boot-choice-subtitle">Pick where you want to launch your experience.</p>
         <div class="boot-choice-actions">
           <button class="boot-continue-btn" type="button">Actual official McCrack</button>
-          <a class="boot-sites-btn" href="https://sites.google.com/view/mccrack12/" target="_blank" rel="noopener noreferrer">McCrack Google Sites version</a>
+          <a class="boot-sites-btn" href="https://sites.google.com/view/mccrack1234/" target="_blank" rel="noopener noreferrer">McCrack Google Sites version</a>
         </div>
       </div>
     `;
@@ -542,7 +542,6 @@
       { href: 'index.html', terms: ['home', 'main', 'dashboard', 'launchpad', 'mccrack'] },
       { href: 'games.html', terms: ['games', 'game', 'popular', 'roblox', 'gaming'] },
       { href: 'movies.html', terms: ['movies', 'movie', 'films', 'watch'] },
-      { href: 'proxies.html', terms: ['proxies', 'proxy', 'web proxy'] },
       { href: 'apps.html', terms: ['apps', 'app', 'bypass', 'unblock', 'restriction'] },
       { href: 'browser.html', terms: ['browser', 'search web', 'internet'] },
       { href: 'chat.html', terms: ['chat', 'messages', 'talk'] },
