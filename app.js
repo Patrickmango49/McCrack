@@ -238,6 +238,30 @@
     document.addEventListener('webkitfullscreenchange', clearPreFullscreen);
   }
 
+
+  function setupVisitorCounter() {
+    if (document.querySelector('.visitor-counter')) return;
+
+    const counter = document.createElement('section');
+    counter.className = 'visitor-counter';
+    counter.setAttribute('aria-label', 'Visitor counter');
+    counter.innerHTML = `
+      <p class="visitor-counter-label">Visitor Count:</p>
+      <div class="visitor-counter-widget" align="center">
+        <a href="https://www.counter12.com">
+          <img src="https://www.counter12.com/img-8Zdb8CWzZ97WZ79B-63.gif" border="0" alt="contador de visitas gratis" />
+        </a>
+      </div>
+    `;
+
+    const adScript = document.createElement('script');
+    adScript.src = 'https://www.counter12.com/ad.js?id=8Zdb8CWzZ97WZ79B';
+    adScript.type = 'text/javascript';
+    counter.querySelector('.visitor-counter-widget')?.appendChild(adScript);
+
+    document.body.appendChild(counter);
+  }
+
   function setupBootFlow() {
     if (window.sessionStorage.getItem('mc_boot_seen') === '1') return;
 
@@ -614,4 +638,5 @@
   setupBootFlow();
   setupHomeSplashMessage();
   registerServiceWorker();
+  setupVisitorCounter();
 })();

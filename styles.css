@@ -1412,3 +1412,35 @@ main,
     gap: 12px;
   }
 }
+
+/* ─── Visitor counter ────────────────────────────────────────── */
+.visitor-counter {
+  width: fit-content;
+  margin: 28px auto 24px;
+  padding: 12px 18px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(145deg, rgba(18,18,18,0.94), rgba(40,40,40,0.78));
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.visitor-counter-label {
+  margin-bottom: 8px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-2);
+  text-transform: uppercase;
+}
+
+.visitor-counter-widget {
+  display: flex;
+  justify-content: center;
+}
+
+.visitor-counter-widget img {
+  display: block;
+  border-radius: 6px;
+}
