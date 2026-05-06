@@ -282,7 +282,7 @@
         const value = Number(localStorage.getItem(key) || '0');
         if (value && now - value <= ACTIVE_WINDOW_MS) activeUsers += 1;
       }
-      badge.textContent = `Online now: ${activeUsers}`;
+      badge.textContent = `Current users: ${activeUsers}`;
     }
 
     heartbeat();
@@ -391,6 +391,57 @@
     counter.querySelector('.visitor-counter-widget')?.appendChild(adScript);
 
     document.body.appendChild(counter);
+  }
+
+
+  function setupContentCounts() {
+    const targets = [
+      { selector: '.media-grid[data-media-static="game"], .media-grid[data-media-kind="game"]', label: 'Games listed', placeholder: /^game\s+\d+$/i, key: 'games' },
+      { selector: '.media-grid[data-media-static="movie"], .media-grid[data-media-kind="movie"]', label: 'Movies listed', placeholder: /^movie\s+\d+$/i, key: 'movies' }
+    ];
+
+    targets.forEach((target) => {
+      const grid = document.querySelector(target.selector);
+      if (!grid) return;
+
+      const tiles = Array.from(grid.querySelectorAll('.media-tile'));
+      const total = tiles.filter((tile) => {
+        const title = textFromTile(tile);
+        return title && !target.placeholder.test(title.trim());
+      }).length;
+
+      let stats = document.querySelector(`.content-count[data-kind="${target.key}"]`);
+      if (!stats) {
+        stats = document.createElement('section');
+        stats.className = 'content-count';
+        stats.dataset.kind = target.key;
+        grid.parentElement?.insertBefore(stats, grid);
+      }
+
+      stats.textContent = `${target.label}: ${total}`;
+    });
+  }
+
+  function setupCommentBox() {
+    if (document.getElementById('HCB_comment_box')) return;
+
+    const wrap = document.createElement('section');
+    wrap.className = 'comment-box-wrap';
+    wrap.innerHTML = '<div id="HCB_comment_box"><a href="http://www.htmlcommentbox.com">Comment Form</a> is loading comments...</div>';
+
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.type = 'text/css';
+    css.href = 'https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0';
+    document.head.appendChild(css);
+
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.id = 'hcb';
+    script.text = `(function(){var l=(""+window.location).replace(/'/g,"%27"),h="https://www.htmlcommentbox.com",s=document.createElement("script");s.setAttribute("type","text/javascript");s.setAttribute("src",h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24I3r2GT%2Fx7THiMqvTNrVqO."+"&opts=16798&num=10&ts=1767912634724");if(typeof s!=="undefined"){document.getElementsByTagName("head")[0].appendChild(s);}})();`;
+
+    document.body.appendChild(wrap);
+    document.body.appendChild(script);
   }
 
   function setupBootFlow() {
@@ -769,6 +820,8 @@
   setupBootFlow();
   setupHomeSplashMessage();
   setupLiveUsersCounter();
+  setupContentCounts();
   registerServiceWorker();
+  setupCommentBox();
   setupVisitorCounter();
 })();
