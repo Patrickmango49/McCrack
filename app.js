@@ -243,9 +243,8 @@
   function setupLiveUsersCounter() {
     if (document.querySelector('.live-users-counter')) return;
 
-    const PUBNUB_CHANNEL = 'global-online-users';
-    const PUBNUB_PUBLISH_KEY = window.PUBNUB_PUBLISH_KEY || 'YOUR_PUBLISH_KEY';
-    const PUBNUB_SUBSCRIBE_KEY = window.PUBNUB_SUBSCRIBE_KEY || 'YOUR_SUBSCRIBE_KEY';
+    const SUPABASE_URL = 'https://ptzkldvdqekcvkvrhlqc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emtsZHZkcWVrY3ZrdnJobHFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzI5MTEsImV4cCI6MjA5MzY0ODkxMX0.ENSTtqcl2rJoz4E9JPT5CozlKO1mWH4bCUJnB-EYnQo';
     const TAB_STORAGE_KEY = 'mc_presence_tab_uuid';
 
     const badge = document.createElement('div');
@@ -257,8 +256,12 @@
 
     const countElement = badge.querySelector('#live-user-count');
     let currentCount = 0;
+    let channel;
 
-    function updateUserCount(nextCount) {
+    function updateUserCount() {
+      if (!channel) return;
+      const state = channel.presenceState();
+      const nextCount = Object.keys(state || {}).length;
       const safeCount = Number.isFinite(nextCount) ? Math.max(0, Math.floor(nextCount)) : 0;
       const oldCount = currentCount;
       currentCount = safeCount;
@@ -273,75 +276,67 @@
     function getTabUuid() {
       let tabUuid = window.sessionStorage.getItem(TAB_STORAGE_KEY);
       if (!tabUuid) {
-        tabUuid = `user_${Math.random().toString(36).slice(2, 12)}_${Date.now().toString(36)}`;
+        tabUuid = `user_${Math.random().toString(36).slice(2)}_${Date.now().toString(36)}`;
         window.sessionStorage.setItem(TAB_STORAGE_KEY, tabUuid);
       }
       return tabUuid;
     }
 
-    function loadPubNubSdk() {
-      if (window.PubNub) return Promise.resolve(window.PubNub);
+    function loadSupabaseSdk() {
+      if (window.supabase?.createClient) return Promise.resolve(window.supabase);
       return new Promise((resolve, reject) => {
-        const existing = document.querySelector('script[data-pubnub-sdk="true"]');
+        const existing = document.querySelector('script[data-supabase-sdk="true"]');
         if (existing) {
-          existing.addEventListener('load', () => resolve(window.PubNub), { once: true });
-          existing.addEventListener('error', () => reject(new Error('PubNub SDK failed to load.')), { once: true });
+          existing.addEventListener('load', () => resolve(window.supabase), { once: true });
+          existing.addEventListener('error', () => reject(new Error('Supabase SDK failed to load.')), { once: true });
           return;
         }
 
         const script = document.createElement('script');
-        script.src = 'https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.1.min.js';
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js';
         script.async = true;
-        script.dataset.pubnubSdk = 'true';
-        script.addEventListener('load', () => resolve(window.PubNub), { once: true });
-        script.addEventListener('error', () => reject(new Error('PubNub SDK failed to load.')), { once: true });
+        script.dataset.supabaseSdk = 'true';
+        script.addEventListener('load', () => resolve(window.supabase), { once: true });
+        script.addEventListener('error', () => reject(new Error('Supabase SDK failed to load.')), { once: true });
         document.head.appendChild(script);
       });
     }
 
-    loadPubNubSdk().then((PubNub) => {
-      if (!PubNub || PUBNUB_PUBLISH_KEY === 'YOUR_PUBLISH_KEY' || PUBNUB_SUBSCRIBE_KEY === 'YOUR_SUBSCRIBE_KEY') {
-        updateUserCount(0);
+    loadSupabaseSdk().then((supabaseBrowser) => {
+      if (!supabaseBrowser?.createClient) {
+        if (countElement) countElement.textContent = '0';
         return;
       }
 
-      const pubnub = new PubNub({
-        publishKey: PUBNUB_PUBLISH_KEY,
-        subscribeKey: PUBNUB_SUBSCRIBE_KEY,
-        uuid: getTabUuid(),
-        restore: true
-      });
-
-      pubnub.addListener({
-        presence(event) {
-          if (event.channel === PUBNUB_CHANNEL) {
-            updateUserCount(event.occupancy);
-          }
-        },
-        status(statusEvent) {
-          if (statusEvent.category === 'PNConnectedCategory' || statusEvent.category === 'PNReconnectedCategory') {
-            pubnub.hereNow({ channels: [PUBNUB_CHANNEL], includeUUIDs: true }, (status, response) => {
-              if (!status?.error) updateUserCount(response?.totalOccupancy || 0);
-            });
+      const supabase = supabaseBrowser.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      channel = supabase.channel('online-users', {
+        config: {
+          presence: {
+            key: getTabUuid()
           }
         }
       });
 
-      pubnub.subscribe({ channels: [PUBNUB_CHANNEL], withPresence: true });
+      channel
+        .on('presence', { event: 'sync' }, updateUserCount)
+        .on('presence', { event: 'join' }, updateUserCount)
+        .on('presence', { event: 'leave' }, updateUserCount)
+        .subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') {
+            await channel.track({ online_at: new Date().toISOString() });
+            updateUserCount();
+          }
+        });
 
-      pubnub.hereNow({ channels: [PUBNUB_CHANNEL], includeUUIDs: true }, (status, response) => {
-        if (!status?.error) updateUserCount(response?.totalOccupancy || 0);
+      window.addEventListener('beforeunload', () => {
+        channel?.untrack();
       });
-
-      pubnub.setState({
-        channels: [PUBNUB_CHANNEL],
-        state: { page: window.location.pathname }
-      }, () => {});
     }).catch((error) => {
       console.warn('Live users presence is unavailable.', error);
-      updateUserCount(0);
+      if (countElement) countElement.textContent = '0';
     });
   }
+
 
 
   function setupPopularGamesByLikes() {
