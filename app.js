@@ -243,61 +243,106 @@
   function setupLiveUsersCounter() {
     if (document.querySelector('.live-users-counter')) return;
 
-    const ACTIVE_KEY_PREFIX = 'mc_active_tab_';
-    const HEARTBEAT_MS = 15000;
-    const ACTIVE_WINDOW_MS = 35000;
-    const tabId = `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
-    const myKey = `${ACTIVE_KEY_PREFIX}${tabId}`;
+    const PUBNUB_CHANNEL = 'global-online-users';
+    const PUBNUB_PUBLISH_KEY = window.PUBNUB_PUBLISH_KEY || 'YOUR_PUBLISH_KEY';
+    const PUBNUB_SUBSCRIBE_KEY = window.PUBNUB_SUBSCRIBE_KEY || 'YOUR_SUBSCRIBE_KEY';
+    const TAB_STORAGE_KEY = 'mc_presence_tab_uuid';
 
     const badge = document.createElement('div');
     badge.className = 'live-users-counter';
     badge.setAttribute('role', 'status');
     badge.setAttribute('aria-live', 'polite');
+    badge.innerHTML = '<span id="live-user-count">0</span> online';
     document.body.appendChild(badge);
 
-    function heartbeat() {
-      localStorage.setItem(myKey, String(Date.now()));
+    const countElement = badge.querySelector('#live-user-count');
+    let currentCount = 0;
+
+    function updateUserCount(nextCount) {
+      const safeCount = Number.isFinite(nextCount) ? Math.max(0, Math.floor(nextCount)) : 0;
+      const oldCount = currentCount;
+      currentCount = safeCount;
+      if (countElement) countElement.textContent = String(safeCount);
+      if (oldCount !== safeCount) {
+        badge.classList.remove('count-bump');
+        void badge.offsetWidth;
+        badge.classList.add('count-bump');
+      }
     }
 
-    function cleanupExpired() {
-      const now = Date.now();
-      for (let i = 0; i < localStorage.length; i += 1) {
-        const key = localStorage.key(i);
-        if (!key || !key.startsWith(ACTIVE_KEY_PREFIX)) continue;
-        const value = Number(localStorage.getItem(key) || '0');
-        if (!value || now - value > ACTIVE_WINDOW_MS) {
-          localStorage.removeItem(key);
-          i -= 1;
+    function getTabUuid() {
+      let tabUuid = window.sessionStorage.getItem(TAB_STORAGE_KEY);
+      if (!tabUuid) {
+        tabUuid = `user_${Math.random().toString(36).slice(2, 12)}_${Date.now().toString(36)}`;
+        window.sessionStorage.setItem(TAB_STORAGE_KEY, tabUuid);
+      }
+      return tabUuid;
+    }
+
+    function loadPubNubSdk() {
+      if (window.PubNub) return Promise.resolve(window.PubNub);
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-pubnub-sdk="true"]');
+        if (existing) {
+          existing.addEventListener('load', () => resolve(window.PubNub), { once: true });
+          existing.addEventListener('error', () => reject(new Error('PubNub SDK failed to load.')), { once: true });
+          return;
         }
-      }
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.1.min.js';
+        script.async = true;
+        script.dataset.pubnubSdk = 'true';
+        script.addEventListener('load', () => resolve(window.PubNub), { once: true });
+        script.addEventListener('error', () => reject(new Error('PubNub SDK failed to load.')), { once: true });
+        document.head.appendChild(script);
+      });
     }
 
-    function renderCount() {
-      cleanupExpired();
-      const now = Date.now();
-      let activeUsers = 0;
-      for (let i = 0; i < localStorage.length; i += 1) {
-        const key = localStorage.key(i);
-        if (!key || !key.startsWith(ACTIVE_KEY_PREFIX)) continue;
-        const value = Number(localStorage.getItem(key) || '0');
-        if (value && now - value <= ACTIVE_WINDOW_MS) activeUsers += 1;
+    loadPubNubSdk().then((PubNub) => {
+      if (!PubNub || PUBNUB_PUBLISH_KEY === 'YOUR_PUBLISH_KEY' || PUBNUB_SUBSCRIBE_KEY === 'YOUR_SUBSCRIBE_KEY') {
+        updateUserCount(0);
+        return;
       }
-      badge.textContent = `Current users: ${activeUsers}`;
-    }
 
-    heartbeat();
-    renderCount();
-    const hb = window.setInterval(() => {
-      heartbeat();
-      renderCount();
-    }, HEARTBEAT_MS);
+      const pubnub = new PubNub({
+        publishKey: PUBNUB_PUBLISH_KEY,
+        subscribeKey: PUBNUB_SUBSCRIBE_KEY,
+        uuid: getTabUuid(),
+        restore: true
+      });
 
-    window.addEventListener('storage', renderCount);
-    window.addEventListener('beforeunload', () => {
-      window.clearInterval(hb);
-      localStorage.removeItem(myKey);
+      pubnub.addListener({
+        presence(event) {
+          if (event.channel === PUBNUB_CHANNEL) {
+            updateUserCount(event.occupancy);
+          }
+        },
+        status(statusEvent) {
+          if (statusEvent.category === 'PNConnectedCategory' || statusEvent.category === 'PNReconnectedCategory') {
+            pubnub.hereNow({ channels: [PUBNUB_CHANNEL], includeUUIDs: true }, (status, response) => {
+              if (!status?.error) updateUserCount(response?.totalOccupancy || 0);
+            });
+          }
+        }
+      });
+
+      pubnub.subscribe({ channels: [PUBNUB_CHANNEL], withPresence: true });
+
+      pubnub.hereNow({ channels: [PUBNUB_CHANNEL], includeUUIDs: true }, (status, response) => {
+        if (!status?.error) updateUserCount(response?.totalOccupancy || 0);
+      });
+
+      pubnub.setState({
+        channels: [PUBNUB_CHANNEL],
+        state: { page: window.location.pathname }
+      }, () => {});
+    }).catch((error) => {
+      console.warn('Live users presence is unavailable.', error);
+      updateUserCount(0);
     });
   }
+
 
   function setupPopularGamesByLikes() {
     const popularGrid = document.querySelector('.popular-grid');

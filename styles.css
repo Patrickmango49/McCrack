@@ -1486,6 +1486,17 @@ main,
   backdrop-filter: blur(8px);
 }
 
+
+.live-users-counter.count-bump {
+  animation: liveCountBump 180ms ease-out;
+}
+
+@keyframes liveCountBump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
 body:has(.home-main) .home-main {
   min-height: calc(100vh - 140px);
   justify-content: center;
