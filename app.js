@@ -261,8 +261,13 @@
     function updateUserCount() {
       if (!channel) return;
       const state = channel.presenceState();
-      const nextCount = Object.keys(state || {}).length;
+      console.log('[live-users] presence state:', state);
+      const nextCount = Object.values(state || {}).reduce((acc, sessions) => {
+        const sessionCount = Array.isArray(sessions) ? sessions.length : 0;
+        return acc + sessionCount;
+      }, 0);
       const safeCount = Number.isFinite(nextCount) ? Math.max(0, Math.floor(nextCount)) : 0;
+      console.log('[live-users] final count:', safeCount);
       const oldCount = currentCount;
       currentCount = safeCount;
       if (countElement) countElement.textContent = String(safeCount);
@@ -273,12 +278,17 @@
       }
     }
 
-    function getTabUuid() {
+    function getUniqueUserId() {
       let tabUuid = window.sessionStorage.getItem(TAB_STORAGE_KEY);
       if (!tabUuid) {
-        tabUuid = `user_${Math.random().toString(36).slice(2)}_${Date.now().toString(36)}`;
+        if (window.crypto?.randomUUID) {
+          tabUuid = window.crypto.randomUUID();
+        } else {
+          tabUuid = `user_${Math.random().toString(36).slice(2)}_${Date.now().toString(36)}`;
+        }
         window.sessionStorage.setItem(TAB_STORAGE_KEY, tabUuid);
       }
+      console.log('[live-users] generated UUID:', tabUuid);
       return tabUuid;
     }
 
@@ -312,7 +322,7 @@
       channel = supabase.channel('online-users', {
         config: {
           presence: {
-            key: getTabUuid()
+            key: getUniqueUserId()
           }
         }
       });
