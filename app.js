@@ -501,7 +501,7 @@
     bootOverlay.className = 'boot-overlay';
     bootOverlay.innerHTML = `
       <div class="boot-video-stage">
-        <video class="boot-video" src="boot.mp4" autoplay muted playsinline preload="auto"></video>
+        <video class="boot-video" src="https://files.catbox.moe/ixrvlm.mp4" autoplay muted playsinline preload="auto"></video>
       </div>
       <div class="boot-choice-stage" hidden>
         <h2>Choose your McCrack version</h2>
