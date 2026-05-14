@@ -2,15 +2,22 @@ name: Deploy to Neocities
 on:
   push:
     branches:
-      - main  # or master, depending on your default branch
+      - main  
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2  
+
+      - name: Clean up hidden system files
+        run: |
+          rm -rf .git
+          rm -f .DS_Store Thumbs.db desktop.ini
+
       - name: Deploy to Neocities
-        uses: bcomnes/deploy-to-neocities@v1
+        uses: bcomnes/deploy-to-neocities@v3
         with:
           api_token: ${{ secrets.NEOCITIES_API_TOKEN }}
-          dist_dir: .  # Change this to 'public' or 'dist' if your site is in a subfolder
-          cleanup: false
+          dist_dir: .
+          cleanup: true
