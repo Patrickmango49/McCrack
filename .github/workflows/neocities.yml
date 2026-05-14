@@ -12,7 +12,7 @@ jobs:
 
       - name: Clean up hidden system files
         run: |
-          rm -rf .git
+          rm -rf .github
           rm -f .DS_Store Thumbs.db desktop.ini
 
       - name: Deploy to Neocities
