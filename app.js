@@ -496,7 +496,7 @@
       const tiles = Array.from(grid.querySelectorAll('.media-tile'));
       const total = tiles.filter((tile) => {
         const title = textFromTile(tile);
-        return title && !target.placeholder.test(title.trim());
+        return title && !PLACEHOLDER_TITLE_PATTERN.test(title.trim()) && !target.placeholder.test(title.trim());
       }).length;
 
       let stats = document.querySelector(`.content-count[data-kind="${target.key}"]`);
@@ -595,6 +595,10 @@
     });
   }
 
+
+  const PLACEHOLDER_TITLE_PATTERN = /^(?:game|movie|app)\s+\d+$/i;
+  const DISTRICT_ALERT_MESSAGE = "For the Waterford Public Schools District, Movies don't work because of the Google Drive blocking system they added, I will try to fix them with a proxy as soon as possible!";
+
   function readMediaData() {
     const dataNode = document.getElementById('mediaData');
     if (!dataNode) return [];
@@ -646,16 +650,20 @@
     if (!tiles.length) return;
 
     const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-    tiles.sort((tileA, tileB) => collator.compare(textFromTile(tileA), textFromTile(tileB)));
+    const realTiles = tiles.filter((tile) => !PLACEHOLDER_TITLE_PATTERN.test(textFromTile(tile).trim()));
+    const placeholderTiles = tiles.filter((tile) => PLACEHOLDER_TITLE_PATTERN.test(textFromTile(tile).trim()));
+
+    realTiles.sort((tileA, tileB) => collator.compare(textFromTile(tileA), textFromTile(tileB)));
 
     mediaGrid.innerHTML = '';
 
     const rowSize = 5;
-    for (let i = 0; i < tiles.length; i += rowSize) {
+    const orderedTiles = [...realTiles, ...placeholderTiles];
+    for (let i = 0; i < orderedTiles.length; i += rowSize) {
       const row = document.createElement('div');
       row.className = 'media-row';
       row.dataset.row = String(Math.floor(i / rowSize) + 1);
-      tiles.slice(i, i + rowSize).forEach((tile) => row.appendChild(tile));
+      orderedTiles.slice(i, i + rowSize).forEach((tile) => row.appendChild(tile));
       mediaGrid.appendChild(row);
     }
   }
@@ -681,7 +689,10 @@
       return /[A-Z]/.test(firstCharacter) ? firstCharacter : '#';
     };
 
-    tiles
+    const realTiles = tiles.filter((tile) => !PLACEHOLDER_TITLE_PATTERN.test(textFromTile(tile).trim()));
+    const placeholderTiles = tiles.filter((tile) => PLACEHOLDER_TITLE_PATTERN.test(textFromTile(tile).trim()));
+
+    realTiles
       .sort((tileA, tileB) => collator.compare(textFromTile(tileA), textFromTile(tileB)))
       .forEach((tile) => {
         const title = textFromTile(tile);
@@ -693,6 +704,10 @@
 
         groupedTiles.get(sectionKey).push(tile);
       });
+
+    if (placeholderTiles.length) {
+      groupedTiles.set('#', [...(groupedTiles.get('#') || []), ...placeholderTiles]);
+    }
 
     const sectionOrder = Array.from(groupedTiles.keys()).sort((keyA, keyB) => {
       if (keyA === '#') return 1;
@@ -722,6 +737,28 @@
       section.appendChild(sectionGrid);
       mediaGrid.appendChild(section);
     });
+  }
+
+
+  function setupDistrictNotice() {
+    const main = document.querySelector('main');
+    if (!main) return;
+
+    const firstHeading = main.querySelector('h1');
+    if (!firstHeading) return;
+
+    let notice = main.querySelector('.district-notice');
+    if (!notice) {
+      notice = document.createElement('p');
+      notice.className = 'district-notice';
+    }
+
+    notice.textContent = DISTRICT_ALERT_MESSAGE;
+
+    const heroSection = firstHeading.closest('section') || firstHeading.parentElement;
+    if (heroSection) {
+      heroSection.insertAdjacentElement('afterend', notice);
+    }
   }
 
   function setupHashTargeting() {
@@ -933,6 +970,7 @@
   setupHashTargeting();
   setupBootFlow();
   setupHomeSplashMessage();
+  setupDistrictNotice();
   setupLiveUsersCounter();
   setupContentCounts();
   registerServiceWorker();
