@@ -106,7 +106,10 @@
           </div>
           <iframe id="mediaFrame" src="about:blank" referrerpolicy="no-referrer" allow="autoplay; fullscreen"></iframe>
         </div>
-        <button class="media-launcher-fullscreen" type="button">Fullscreen</button>
+        <div class="media-launcher-actions">
+          <button class="media-launcher-fullscreen" type="button">Fullscreen</button>
+          ${kind === 'game' ? '<button class="media-launcher-aboutblank" type="button">Open in About:Blank</button>' : ''}
+        </div>
       </div>
     `;
 
@@ -116,6 +119,7 @@
     const frame = launcher.querySelector('#mediaFrame');
     const loader = launcher.querySelector('.media-launcher-loader');
     const fullscreenButton = launcher.querySelector('.media-launcher-fullscreen');
+    const aboutBlankButton = launcher.querySelector('.media-launcher-aboutblank');
     const frameWrap = launcher.querySelector('.media-launcher-frame-wrap');
 
     function clearLoader() {
@@ -195,6 +199,41 @@
       if (!launcher.classList.contains('is-open')) return;
       fitLauncherToViewport();
     });
+
+
+    if (aboutBlankButton) {
+      aboutBlankButton.addEventListener('click', () => {
+        const gameUrl = frame.src;
+        if (!gameUrl || gameUrl === 'about:blank') return;
+
+        const newTab = window.open('about:blank', '_blank');
+        if (!newTab) return;
+
+        newTab.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Game</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe src="${gameUrl}" allow="autoplay; fullscreen" referrerpolicy="no-referrer"></iframe>
+</body>
+</html>`);
+        newTab.document.close();
+      });
+    }
 
     if (fullscreenButton) {
       fullscreenButton.addEventListener('click', async () => {
@@ -598,6 +637,29 @@
       .join('');
   }
 
+
+  function organizeGameTilesAlphabetically() {
+    const mediaGrid = document.querySelector('.media-grid[data-media-static="game"], .media-grid[data-media-kind="game"]');
+    if (!mediaGrid) return;
+
+    const tiles = Array.from(mediaGrid.querySelectorAll('.media-tile'));
+    if (!tiles.length) return;
+
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    tiles.sort((tileA, tileB) => collator.compare(textFromTile(tileA), textFromTile(tileB)));
+
+    mediaGrid.innerHTML = '';
+
+    const rowSize = 5;
+    for (let i = 0; i < tiles.length; i += rowSize) {
+      const row = document.createElement('div');
+      row.className = 'media-row';
+      row.dataset.row = String(Math.floor(i / rowSize) + 1);
+      tiles.slice(i, i + rowSize).forEach((tile) => row.appendChild(tile));
+      mediaGrid.appendChild(row);
+    }
+  }
+
   function organizeMovieSections() {
     const mediaGrid = document.querySelector('.media-grid[data-media-static="movie"], .media-grid[data-media-kind="movie"]');
     if (!mediaGrid) return;
@@ -856,12 +918,14 @@
   window.mcApp = {
     applySettings,
     populateMediaGrid,
+    organizeGameTilesAlphabetically,
     organizeMovieSections,
     defaults: { DEFAULT_TITLE, DEFAULT_FAVICON, defaultWallpaper }
   };
 
   applySettings();
   populateMediaGrid();
+  organizeGameTilesAlphabetically();
   organizeMovieSections();
   setupSiteSearch();
   setupMediaLauncher();

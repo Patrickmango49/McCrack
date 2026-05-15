@@ -885,6 +885,16 @@ main,
   display: block;
 }
 
+
+.media-launcher-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.media-launcher-aboutblank,
 .media-launcher-fullscreen {
   display: block;
   margin: 12px auto 0;
@@ -901,11 +911,13 @@ main,
   backdrop-filter: blur(10px);
 }
 
+.media-launcher-aboutblank:hover,
 .media-launcher-fullscreen:hover {
   background: rgba(255,255,255,0.15);
   transform: translateY(-2px);
 }
 
+.media-launcher-aboutblank:active,
 .media-launcher-fullscreen:active { transform: translateY(0); }
 
 /* pre-fullscreen */
