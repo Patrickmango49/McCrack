@@ -77,6 +77,7 @@ body {
   backdrop-filter: blur(22px) saturate(1.5);
   -webkit-backdrop-filter: blur(22px) saturate(1.5);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
 }
 
 .topbar-row {
@@ -268,6 +269,24 @@ main,
   padding: 30px 34px;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.district-notice {
+  width: 100%;
+  max-width: 960px;
+  margin-top: -10px;
+  margin-bottom: 2px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 72, 72, 0.35);
+  background: linear-gradient(145deg, rgba(92, 0, 0, 0.28), rgba(34, 0, 0, 0.42));
+  color: #ff7b7b;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.38);
 }
 
 .hero::after {
