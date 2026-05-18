@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redirecting…</title>
+  <script>
+    (function () {
+      const routeMap = {
+        '/': '/index.html',
+        '/games': '/games.html',
+        '/movies': '/movies.html',
+        '/chat': '/chat.html',
+        '/apps': '/apps.html',
+        '/browser': '/browser.html',
+        '/mccrackos': '/mccrackos.html',
+        '/more': '/more.html',
+        '/settings': '/settings.html'
+      };
+      const path = window.location.pathname.replace(/\/$/, '') || '/';
+      const htmlPath = routeMap[path];
+      if (htmlPath) {
+        window.location.replace(`${htmlPath}${window.location.search}${window.location.hash}`);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <p>Page not found.</p>
+</body>
+</html>

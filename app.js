@@ -1,3 +1,77 @@
+
+const ROUTE_MAP = {
+  '/': 'index.html',
+  '/games': 'games.html',
+  '/movies': 'movies.html',
+  '/chat': 'chat.html',
+  '/apps': 'apps.html',
+  '/browser': 'browser.html',
+  '/mccrackos': 'mccrackos.html',
+  '/more': 'more.html',
+  '/settings': 'settings.html'
+};
+
+const supportsCleanPathHost = () => {
+  const host = window.location.hostname;
+  return !(host.includes('github.io') || host === 'localhost' || host === '127.0.0.1');
+};
+
+const htmlToCleanPath = (fileName) => {
+  if (fileName === 'index.html') return '/';
+  return `/${fileName.replace(/\.html$/, '')}`;
+};
+
+const cleanToHtmlPath = (cleanPath) => ROUTE_MAP[cleanPath] || null;
+
+const navigateToPath = (path) => {
+  if (!path.startsWith('/')) {
+    window.location.href = path;
+    return;
+  }
+  if (supportsCleanPathHost()) {
+    window.location.href = path;
+    return;
+  }
+  const htmlPath = cleanToHtmlPath(path);
+  window.location.href = htmlPath ? `/${htmlPath}` : path;
+};
+
+const applyCleanRouting = () => {
+  const currentFile = window.location.pathname.split('/').pop();
+  const cleanPath = htmlToCleanPath(currentFile || 'index.html');
+
+  if (supportsCleanPathHost() && /\.html$/i.test(window.location.pathname) && currentFile) {
+    window.location.replace(`${cleanPath}${window.location.search}${window.location.hash}`);
+    return;
+  }
+
+  document.querySelectorAll('a[href]').forEach((anchor) => {
+    const rawHref = anchor.getAttribute('href');
+    if (!rawHref || rawHref.startsWith('http') || rawHref.startsWith('#') || rawHref.startsWith('mailto:') || rawHref.startsWith('tel:')) {
+      return;
+    }
+
+    const match = rawHref.match(/^\/?([a-z0-9-]+)\.html$/i);
+    if (match) {
+      const cleanHref = match[1] === 'index' ? '/' : `/${match[1]}`;
+      anchor.setAttribute('href', cleanHref);
+    }
+
+    anchor.addEventListener('click', (event) => {
+      const href = anchor.getAttribute('href') || '';
+      if (!href.startsWith('/') || href === '/' || supportsCleanPathHost()) {
+        return;
+      }
+      const htmlPath = cleanToHtmlPath(href);
+      if (!htmlPath) return;
+      event.preventDefault();
+      window.location.assign(`/${htmlPath}${window.location.search}${window.location.hash}`);
+    });
+  });
+};
+
+applyCleanRouting();
+
 (function () {
   const DEFAULT_TITLE = '𝕄𝕔ℂ𝕣𝕒𝕔𝕜';
   const DEFAULT_FAVICON = 'favicon.png';
@@ -870,15 +944,15 @@
     topbarRow.appendChild(toolsWrap);
 
     const siteIndex = [
-      { href: 'index.html', terms: ['home', 'main', 'dashboard', 'launchpad', 'mccrack'] },
-      { href: 'games.html', terms: ['games', 'game', 'popular', 'roblox', 'gaming'] },
-      { href: 'movies.html', terms: ['movies', 'movie', 'films', 'watch'] },
-      { href: 'apps.html', terms: ['apps', 'app', 'bypass', 'unblock', 'restriction'] },
-      { href: 'browser.html', terms: ['browser', 'search web', 'internet'] },
-      { href: 'chat.html', terms: ['chat', 'messages', 'talk'] },
-      { href: 'mccrackos.html', terms: ['mccrackos', 'os', 'tools'] },
-      { href: 'more.html', terms: ['more', 'extras', 'additional'] },
-      { href: 'settings.html', terms: ['settings', 'theme', 'tab', 'customize'] }
+      { href: '/', terms: ['home', 'main', 'dashboard', 'launchpad', 'mccrack'] },
+      { href: '/games', terms: ['games', 'game', 'popular', 'roblox', 'gaming'] },
+      { href: '/movies', terms: ['movies', 'movie', 'films', 'watch'] },
+      { href: '/apps', terms: ['apps', 'app', 'bypass', 'unblock', 'restriction'] },
+      { href: '/browser', terms: ['browser', 'search web', 'internet'] },
+      { href: '/chat', terms: ['chat', 'messages', 'talk'] },
+      { href: '/mccrackos', terms: ['mccrackos', 'os', 'tools'] },
+      { href: '/more', terms: ['more', 'extras', 'additional'] },
+      { href: '/settings', terms: ['settings', 'theme', 'tab', 'customize'] }
     ];
 
     let searchableContentPromise;
@@ -920,31 +994,31 @@
 
       const isDirectPage = siteIndex.find((entry) => entry.href.replace('.html', '') === query);
       if (isDirectPage) {
-        window.location.href = isDirectPage.href;
+        navigateToPath(isDirectPage.href);
         return;
       }
 
       const pageMatch = siteIndex.find((entry) => entry.terms.some((term) => term.includes(query) || query.includes(term)));
       if (pageMatch && query.length < 4) {
-        window.location.href = pageMatch.href;
+        navigateToPath(pageMatch.href);
         return;
       }
 
       const dynamicEntries = await getSearchableContent();
       const exactMediaMatch = dynamicEntries.find((entry) => entry.terms.some((term) => term === query));
       if (exactMediaMatch) {
-        window.location.href = exactMediaMatch.href;
+        navigateToPath(exactMediaMatch.href);
         return;
       }
 
       const mediaMatch = dynamicEntries.find((entry) => entry.terms.some((term) => term.includes(query) || query.includes(term)));
       if (mediaMatch) {
-        window.location.href = mediaMatch.href;
+        navigateToPath(mediaMatch.href);
         return;
       }
 
       if (pageMatch) {
-        window.location.href = pageMatch.href;
+        navigateToPath(pageMatch.href);
         return;
       }
 
