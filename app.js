@@ -162,6 +162,27 @@ applyCleanRouting();
       .slice(0, 64) || 'item';
   }
 
+  function setupEmbedRefreshControls() {
+    document.querySelectorAll('.embed-launcher-wrap').forEach((wrap) => {
+      const frame = wrap.querySelector('iframe');
+      if (!frame || wrap.querySelector('.embed-refresh-button')) return;
+
+      const refreshButton = document.createElement('button');
+      refreshButton.className = 'embed-refresh-button';
+      refreshButton.type = 'button';
+      refreshButton.setAttribute('aria-label', 'Refresh embed');
+      refreshButton.title = 'Refresh';
+      refreshButton.textContent = '↻';
+      refreshButton.addEventListener('click', () => {
+        const currentUrl = frame.src;
+        if (!currentUrl) return;
+        frame.src = currentUrl;
+      });
+
+      wrap.appendChild(refreshButton);
+    });
+  }
+
   function setupMediaLauncher() {
     const mediaGrid = document.querySelector('.media-grid[data-media-kind], .media-grid[data-media-static]');
     const popularGrid = document.querySelector('.popular-grid');
@@ -171,7 +192,10 @@ applyCleanRouting();
     const launcher = document.createElement('div');
     launcher.className = 'media-launcher';
     launcher.innerHTML = `
-      <button class="media-launcher-close" type="button" aria-label="Close player">✕</button>
+      <div class="media-launcher-controls" aria-label="Player controls">
+        <button class="media-launcher-refresh" type="button" aria-label="Refresh player" title="Refresh">↻</button>
+        <button class="media-launcher-close" type="button" aria-label="Close player" title="Close">✕</button>
+      </div>
       <div class="media-launcher-shell">
         <div class="media-launcher-frame-wrap">
           <div class="media-launcher-loader" aria-live="polite">
@@ -190,6 +214,7 @@ applyCleanRouting();
     document.body.appendChild(launcher);
 
     const closeButton = launcher.querySelector('.media-launcher-close');
+    const refreshButton = launcher.querySelector('.media-launcher-refresh');
     const frame = launcher.querySelector('#mediaFrame');
     const loader = launcher.querySelector('.media-launcher-loader');
     const fullscreenButton = launcher.querySelector('.media-launcher-fullscreen');
@@ -223,6 +248,14 @@ applyCleanRouting();
       document.body.classList.add('launcher-open');
     }
 
+    function refreshLauncher() {
+      if (!launcher.classList.contains('is-open')) return;
+      const currentUrl = frame.src;
+      if (!currentUrl || currentUrl === 'about:blank') return;
+      showLoader();
+      frame.src = currentUrl;
+    }
+
     function closeLauncher() {
       launcher.classList.remove('is-open');
       document.body.classList.remove('launcher-open');
@@ -249,6 +282,7 @@ applyCleanRouting();
     });
 
     closeButton.addEventListener('click', closeLauncher);
+    refreshButton.addEventListener('click', refreshLauncher);
 
     launcher.addEventListener('click', (event) => {
       if (event.target === launcher) {
@@ -1039,6 +1073,7 @@ applyCleanRouting();
   organizeGameTilesAlphabetically();
   organizeMovieSections();
   setupSiteSearch();
+  setupEmbedRefreshControls();
   setupMediaLauncher();
   setupPopularGamesByLikes();
   setupHashTargeting();
