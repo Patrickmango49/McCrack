@@ -162,6 +162,32 @@ applyCleanRouting();
       .slice(0, 64) || 'item';
   }
 
+
+  function forceReloadFrame(frame) {
+    if (!frame) return;
+
+    const currentUrl = frame.getAttribute('src') || frame.src;
+    if (!currentUrl || currentUrl === 'about:blank') return;
+
+    try {
+      if (frame.contentWindow && frame.contentWindow.location && frame.contentWindow.location.href !== 'about:blank') {
+        frame.contentWindow.location.reload();
+        return;
+      }
+    } catch (error) {
+      // Cross-origin frames can block direct reload access; fallback below.
+    }
+
+    try {
+      const parsed = new URL(currentUrl, window.location.href);
+      parsed.searchParams.set('_mc_refresh', String(Date.now()));
+      frame.src = parsed.toString();
+    } catch (error) {
+      const cacheBust = `_mc_refresh=${Date.now()}`;
+      frame.src = currentUrl.includes('?') ? `${currentUrl}&${cacheBust}` : `${currentUrl}?${cacheBust}`;
+    }
+  }
+
   function setupEmbedRefreshControls() {
     document.querySelectorAll('.embed-launcher-wrap').forEach((wrap) => {
       const frame = wrap.querySelector('iframe');
@@ -174,9 +200,7 @@ applyCleanRouting();
       refreshButton.title = 'Refresh';
       refreshButton.textContent = '↻';
       refreshButton.addEventListener('click', () => {
-        const currentUrl = frame.src;
-        if (!currentUrl) return;
-        frame.src = currentUrl;
+        forceReloadFrame(frame);
       });
 
       wrap.appendChild(refreshButton);
@@ -250,10 +274,9 @@ applyCleanRouting();
 
     function refreshLauncher() {
       if (!launcher.classList.contains('is-open')) return;
-      const currentUrl = frame.src;
-      if (!currentUrl || currentUrl === 'about:blank') return;
+      if (!frame.src || frame.src === 'about:blank') return;
       showLoader();
-      frame.src = currentUrl;
+      forceReloadFrame(frame);
     }
 
     function closeLauncher() {
