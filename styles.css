@@ -1143,10 +1143,42 @@ body.boot-active { overflow: hidden; }
 
 .boot-overlay.is-exiting { opacity: 0; }
 
+.boot-get-started-stage,
 .boot-video-stage,
 .boot-choice-stage {
   width: 100vw;
   height: 100vh;
+}
+
+.boot-get-started-stage {
+  display: grid;
+  place-content: center;
+  gap: 10px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse 120% 70% at 0% 0%, rgba(255,255,255,0.055), transparent 52%),
+    radial-gradient(ellipse 90% 70% at 100% 100%, rgba(255,255,255,0.03), transparent 52%),
+    #080808;
+}
+
+.boot-get-started-btn {
+  padding: 16px 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.32);
+  min-width: min(340px, 88vw);
+  background: rgba(255,255,255,0.11);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+}
+
+.boot-get-started-hint {
+  margin: 0;
+  color: var(--text-2);
+  font-size: clamp(0.8rem, 1.7vw, 0.95rem);
 }
 
 .boot-video {
