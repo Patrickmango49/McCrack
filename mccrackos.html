@@ -33,6 +33,10 @@
     </header>
 
     <main class="embed-main">
+      <div id="getStartedScreen" class="embed-get-started-screen">
+        <button id="getStartedButton" class="embed-get-started-button" type="button">Get Started</button>
+        <p><em>Press Enter twice to skip boot screen</em></p>
+      </div>
       <div class="embed-launcher-wrap">
         <div id="loader" class="embed-loader">
           <div class="embed-spinner"></div>
@@ -41,7 +45,7 @@
 
         <iframe id="gameFrame"
                 class="embed-frame"
-                src="https://patrickmango49.github.io/McCrackOS/"
+                src="about:blank"
                 allowfullscreen>
         </iframe>
       </div>
@@ -53,12 +57,30 @@
   </div>
   <script src="app.js?v=1.1.0"></script>
   <script>
-    setTimeout(() => {
-      const l = document.getElementById('loader');
-      l.style.transition = 'opacity .5s ease';
-      l.style.opacity = '0';
-      setTimeout(() => l.remove(), 500);
-    }, 4000);
+    const BOOT_URL = 'https://patrickmango49.github.io/McCrackOS/';
+    const loader = document.getElementById('loader');
+    const frame = document.getElementById('gameFrame');
+    const getStartedScreen = document.getElementById('getStartedScreen');
+    const getStartedButton = document.getElementById('getStartedButton');
+    let bootStartTimer = null;
+    let enterPressCount = 0;
+    let enterPressResetTimer = null;
+
+    function hideLoaderImmediately() {
+      if (!loader) return;
+      loader.style.transition = 'opacity .25s ease';
+      loader.style.opacity = '0';
+      setTimeout(() => loader.remove(), 250);
+    }
+
+    function startBootSequence() {
+      if (bootStartTimer) return;
+      getStartedScreen?.classList.add('is-hidden');
+      frame.src = BOOT_URL;
+      bootStartTimer = setTimeout(hideLoaderImmediately, 4000);
+    }
+
+    getStartedButton?.addEventListener('click', startBootSequence);
 
     async function openFullscreen() {
       const target = document.documentElement;
@@ -79,6 +101,24 @@
     }
 
     document.addEventListener('keydown', async (event) => {
+      if (event.key === 'Enter') {
+        enterPressCount += 1;
+        clearTimeout(enterPressResetTimer);
+        enterPressResetTimer = setTimeout(() => {
+          enterPressCount = 0;
+        }, 900);
+
+        if (enterPressCount >= 2) {
+          startBootSequence();
+          if (bootStartTimer) {
+            clearTimeout(bootStartTimer);
+            bootStartTimer = null;
+          }
+          hideLoaderImmediately();
+          enterPressCount = 0;
+        }
+      }
+
       if (event.key !== 'Escape') return;
       if (!(document.fullscreenElement || document.webkitFullscreenElement)) return;
       if (document.exitFullscreen) {
