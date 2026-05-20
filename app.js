@@ -697,12 +697,14 @@ applyCleanRouting();
     const videoStage = bootOverlay.querySelector('.boot-video-stage');
     const choiceStage = bootOverlay.querySelector('.boot-choice-stage');
     let didFinish = false;
-    let enterPressCount = 0;
-    let enterResetTimer = null;
+    let bootStage = 'start';
 
     function showChoiceStage() {
+      if (bootStage === 'choice') return;
+      bootStage = 'choice';
       bootOverlay.classList.add('boot-switching');
       window.setTimeout(() => {
+        getStartedStage.hidden = true;
         videoStage.hidden = true;
         choiceStage.hidden = false;
         choiceStage.classList.add('is-visible');
@@ -710,32 +712,36 @@ applyCleanRouting();
       }, 320);
     }
 
-
     function startBootVideo() {
+      if (bootStage !== 'start') return;
+      bootStage = 'video';
       getStartedStage.hidden = true;
+      choiceStage.hidden = true;
       videoStage.hidden = false;
+      choiceStage.classList.remove('is-visible');
+      video.currentTime = 0;
+      video.load();
       video.play().catch(() => {
         showChoiceStage();
       });
     }
 
     function skipBootVideo() {
-      getStartedStage.hidden = true;
-      videoStage.hidden = true;
-      choiceStage.hidden = false;
-      choiceStage.classList.add('is-visible');
+      if (bootStage !== 'video') return;
+      video.pause();
+      showChoiceStage();
     }
 
     function handleBootKeydown(event) {
-      if (event.key !== 'Enter') return;
-      enterPressCount += 1;
-      window.clearTimeout(enterResetTimer);
-      enterResetTimer = window.setTimeout(() => {
-        enterPressCount = 0;
-      }, 900);
+      if (event.key !== 'Enter' || event.repeat) return;
+      event.preventDefault();
 
-      if (enterPressCount >= 2) {
-        enterPressCount = 0;
+      if (bootStage === 'start') {
+        startBootVideo();
+        return;
+      }
+
+      if (bootStage === 'video') {
         skipBootVideo();
       }
     }
@@ -746,7 +752,6 @@ applyCleanRouting();
       window.sessionStorage.setItem('mc_boot_seen', '1');
       document.body.classList.remove('boot-active');
       document.removeEventListener('keydown', handleBootKeydown);
-      window.clearTimeout(enterResetTimer);
       bootOverlay.remove();
     }
 
