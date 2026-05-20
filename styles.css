@@ -1019,6 +1019,34 @@ main.embed-main {
   justify-self: center;
 }
 
+.embed-get-started-screen {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto 16px;
+  padding: 26px 16px 8px;
+  text-align: center;
+}
+
+.embed-get-started-screen.is-hidden {
+  display: none;
+}
+
+.embed-get-started-button {
+  border: 1px solid var(--border-2);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: var(--radius-pill);
+  padding: 10px 22px;
+  font: 600 0.95rem var(--font);
+  cursor: pointer;
+}
+
+.embed-get-started-screen p {
+  margin-top: 10px;
+  color: var(--text-2);
+  font-size: 0.86rem;
+}
+
 .embed-launcher-wrap {
   position: relative;
   width: 100%;
