@@ -670,8 +670,12 @@ applyCleanRouting();
     const bootOverlay = document.createElement('div');
     bootOverlay.className = 'boot-overlay';
     bootOverlay.innerHTML = `
-      <div class="boot-video-stage">
-        <video class="boot-video" src="https://files.catbox.moe/ixrvlm.mp4" autoplay muted playsinline preload="auto"></video>
+      <div class="boot-get-started-stage">
+        <button class="boot-get-started-btn" type="button">Get Started</button>
+        <p class="boot-get-started-hint"><em>Press Enter twice to skip boot screen</em></p>
+      </div>
+      <div class="boot-video-stage" hidden>
+        <video class="boot-video" src="https://files.catbox.moe/ixrvlm.mp4" muted playsinline preload="auto"></video>
       </div>
       <div class="boot-choice-stage" hidden>
         <h2>Choose your McCrack version</h2>
@@ -686,11 +690,15 @@ applyCleanRouting();
     document.body.appendChild(bootOverlay);
     document.body.classList.add('boot-active');
 
+    const getStartedStage = bootOverlay.querySelector('.boot-get-started-stage');
+    const getStartedButton = bootOverlay.querySelector('.boot-get-started-btn');
     const video = bootOverlay.querySelector('.boot-video');
     const continueButton = bootOverlay.querySelector('.boot-continue-btn');
     const videoStage = bootOverlay.querySelector('.boot-video-stage');
     const choiceStage = bootOverlay.querySelector('.boot-choice-stage');
     let didFinish = false;
+    let enterPressCount = 0;
+    let enterResetTimer = null;
 
     function showChoiceStage() {
       bootOverlay.classList.add('boot-switching');
@@ -702,12 +710,43 @@ applyCleanRouting();
       }, 320);
     }
 
+
+    function startBootVideo() {
+      getStartedStage.hidden = true;
+      videoStage.hidden = false;
+      video.play().catch(() => {
+        showChoiceStage();
+      });
+    }
+
+    function skipBootVideo() {
+      getStartedStage.hidden = true;
+      videoStage.hidden = true;
+      choiceStage.hidden = false;
+      choiceStage.classList.add('is-visible');
+    }
+
+    function handleBootKeydown(event) {
+      if (event.key !== 'Enter') return;
+      enterPressCount += 1;
+      window.clearTimeout(enterResetTimer);
+      enterResetTimer = window.setTimeout(() => {
+        enterPressCount = 0;
+      }, 900);
+
+      if (enterPressCount >= 2) {
+        enterPressCount = 0;
+        skipBootVideo();
+      }
+    }
     function cleanupBootOverlay() {
       if (didFinish) return;
       didFinish = true;
       choiceStage.hidden = false;
       window.sessionStorage.setItem('mc_boot_seen', '1');
       document.body.classList.remove('boot-active');
+      document.removeEventListener('keydown', handleBootKeydown);
+      window.clearTimeout(enterResetTimer);
       bootOverlay.remove();
     }
 
@@ -720,10 +759,8 @@ applyCleanRouting();
     video.addEventListener('ended', showChoiceStage);
     video.addEventListener('error', showChoiceStage);
     continueButton.addEventListener('click', finishBootFlow);
-
-    video.play().catch(() => {
-      showChoiceStage();
-    });
+    getStartedButton.addEventListener('click', startBootVideo);
+    document.addEventListener('keydown', handleBootKeydown);
   }
 
 
