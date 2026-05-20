@@ -1142,7 +1142,6 @@ applyCleanRouting();
   setupMediaLauncher();
   setupPopularGamesByLikes();
   setupHashTargeting();
-  setupBootFlow();
   setupHomeSplashMessage();
   setupDistrictNotice();
   setupLiveUsersCounter();
