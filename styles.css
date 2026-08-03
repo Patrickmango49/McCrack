@@ -1845,3 +1845,188 @@ body:has(.home-main) .home-main {
   font-size: 0.78rem;
   color: var(--text-2);
 }
+
+/* ─── Sitewide layout refresh ────────────────────────────────── */
+.page-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.page-shell::before {
+  content: '';
+  position: fixed;
+  inset: 82px 26px 26px;
+  z-index: -1;
+  border: 1px solid rgba(255,255,255,0.055);
+  border-radius: 34px;
+  background: linear-gradient(140deg, rgba(255,255,255,0.035), transparent 32%, rgba(255,255,255,0.022));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+  pointer-events: none;
+}
+
+.topbar-row::before {
+  content: '𝕄𝕔ℂ𝕣𝕒𝕔𝕜';
+  flex: 0 0 auto;
+  margin-right: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  color: #050505;
+  background: linear-gradient(135deg, #fff, #a9a9a9);
+  font-weight: 900;
+  font-size: 0.86rem;
+  letter-spacing: -0.02em;
+  box-shadow: 0 12px 28px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.85);
+}
+
+.nav {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.content-with-ads {
+  grid-template-columns: minmax(160px, 0.65fr) minmax(0, 1120px) minmax(160px, 0.65fr);
+}
+
+.centered-page,
+main,
+.home-main,
+.media-grid,
+.popular-grid,
+.grid,
+.socials-showcase,
+.socials-box {
+  max-width: 1120px;
+}
+
+main,
+.home-main {
+  align-items: stretch;
+}
+
+.hero,
+.home-splash-panel,
+.media-grid,
+.popular-grid,
+.grid,
+.socials-showcase,
+.socials-box,
+.content-count {
+  margin-inline: auto;
+}
+
+.hero:not(.hero-centered) {
+  text-align: left;
+}
+
+.hero:not(.hero-centered) p {
+  margin-inline: 0;
+}
+
+.hero {
+  max-width: 1120px;
+  border-radius: 28px;
+}
+
+.home-hero-title {
+  max-width: 1120px;
+  min-height: 360px;
+  border-radius: 34px;
+}
+
+.home-main .home-splash-panel {
+  order: 3;
+}
+
+.home-launch-grid {
+  order: 2;
+  max-width: 1120px;
+}
+
+.home-launch-grid .media-tile:first-child,
+.home-launch-grid .media-tile:nth-child(2) {
+  grid-column: span 2;
+}
+
+.home-launch-grid .media-tile:first-child img,
+.home-launch-grid .media-tile:nth-child(2) img {
+  aspect-ratio: 2 / 1;
+}
+
+.grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.media-grid,
+.media-row,
+.movie-section-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.popular-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.media-grid[data-media-static] {
+  max-width: 1120px;
+}
+
+.embed-launcher-wrap,
+main.embed-main {
+  max-width: 1520px;
+}
+
+@media (max-width: 1160px) {
+  .media-grid,
+  .media-row,
+  .movie-section-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home-launch-grid .media-tile:first-child,
+  .home-launch-grid .media-tile:nth-child(2) {
+    grid-column: span 1;
+  }
+
+  .home-launch-grid .media-tile:first-child img,
+  .home-launch-grid .media-tile:nth-child(2) img {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+@media (max-width: 960px) {
+  .topbar-row::before {
+    margin: 0 auto 2px;
+  }
+
+  .nav {
+    flex-basis: 100%;
+  }
+
+  .media-grid,
+  .media-row,
+  .movie-section-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .page-shell::before {
+    inset: 76px 10px 12px;
+    border-radius: 24px;
+  }
+
+  .topbar-row::before {
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav {
+    justify-content: flex-start;
+  }
+
+  .media-grid,
+  .media-row,
+  .movie-section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
