@@ -574,6 +574,7 @@ applyCleanRouting();
       const top = sorted.slice(0, 4);
       popularGrid.innerHTML = '';
       top.forEach((tile) => popularGrid.appendChild(buildPopularTile(tile, likesMap)));
+      decorateMediaTiles();
     }
 
     document.addEventListener('click', (event) => {
@@ -1012,6 +1013,148 @@ applyCleanRouting();
   }
 
 
+
+  const FAVORITES_KEY = 'mc_favorites_v1';
+
+  function getTileId(tile) {
+    return tile?.id || slugify(`${textFromTile(tile)}-${tile?.dataset?.src || ''}`);
+  }
+
+  function getTileKind(tile) {
+    const grid = tile.closest('[data-media-kind], [data-media-static]');
+    return grid?.dataset.mediaKind || grid?.dataset.mediaStatic || (location.pathname.includes('movie') ? 'movie' : 'game');
+  }
+
+  function readFavorites() {
+    try { return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]'); } catch { return []; }
+  }
+
+  function saveFavorites(items) { localStorage.setItem(FAVORITES_KEY, JSON.stringify(items)); }
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "\'": '&#39;' }[char]));
+  }
+
+  function showToast(message, type = 'success') {
+    let tray = document.querySelector('.toast-tray');
+    if (!tray) {
+      tray = document.createElement('div');
+      tray.className = 'toast-tray';
+      tray.setAttribute('aria-live', 'polite');
+      document.body.appendChild(tray);
+    }
+    const toast = document.createElement('div');
+    toast.className = `premium-toast premium-toast-${type}`;
+    toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '•'}</span><span>${message}</span>`;
+    tray.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+    window.setTimeout(() => {
+      toast.classList.remove('is-visible');
+      toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+    }, 2600);
+  }
+
+  function decorateMediaTiles() {
+    document.querySelectorAll('.media-tile[data-src]').forEach((tile) => {
+      if (tile.dataset.premiumReady) return;
+      tile.dataset.premiumReady = 'true';
+      const title = textFromTile(tile);
+      const id = getTileId(tile);
+      tile.dataset.favoriteId = id;
+      tile.setAttribute('aria-label', title ? `Play ${title}` : 'Open media');
+      const span = tile.querySelector('span');
+      if (span && !span.classList.contains('media-title')) span.classList.add('media-title');
+      const overlay = document.createElement('span');
+      overlay.className = 'quick-actions';
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.innerHTML = '<span>▶ Play</span><span>♥ Favorite</span><span>ℹ Details</span>';
+      const fav = document.createElement('button');
+      fav.className = 'favorite-toggle';
+      fav.type = 'button';
+      fav.setAttribute('aria-label', `Add ${title || 'item'} to favorites`);
+      fav.innerHTML = '♡';
+      tile.append(overlay, fav);
+    });
+    syncFavoriteButtons();
+  }
+
+  function syncFavoriteButtons() {
+    const ids = new Set(readFavorites().map((item) => item.id));
+    document.querySelectorAll('.favorite-toggle').forEach((button) => {
+      const tile = button.closest('.media-tile');
+      const active = ids.has(getTileId(tile));
+      button.classList.toggle('is-favorite', active);
+      button.innerHTML = active ? '♥' : '♡';
+      button.setAttribute('aria-pressed', String(active));
+    });
+  }
+
+  function setupFavorites() {
+    decorateMediaTiles();
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest('.favorite-toggle');
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const tile = button.closest('.media-tile');
+      const id = getTileId(tile);
+      const favorites = readFavorites();
+      const exists = favorites.some((item) => item.id === id);
+      if (exists) {
+        saveFavorites(favorites.filter((item) => item.id !== id));
+        showToast('Removed from Favorites');
+      } else {
+        favorites.unshift({ id, title: textFromTile(tile), image: tile.querySelector('img')?.src || '', src: tile.dataset.src || '', kind: getTileKind(tile) });
+        saveFavorites(favorites.slice(0, 300));
+        button.classList.add('favorite-pop');
+        window.setTimeout(() => button.classList.remove('favorite-pop'), 420);
+        showToast('Added to Favorites');
+      }
+      syncFavoriteButtons();
+      renderFavoritesSection();
+    }, true);
+    renderFavoritesSection();
+  }
+
+  function renderFavoritesSection() {
+    const main = document.querySelector('main');
+    if (!main) return;
+    let section = document.querySelector('.favorites-section');
+    const items = readFavorites();
+    if (!items.length) { section?.remove(); return; }
+    if (!section) {
+      section = document.createElement('section');
+      section.className = 'favorites-section reveal-on-scroll';
+      section.innerHTML = '<div class="section-heading"><h2>Favorites</h2><p>Your saved games and movies stay here.</p></div><div class="favorites-grid"></div>';
+      const grid = main.querySelector('.media-grid');
+      main.insertBefore(section, grid || main.firstChild?.nextSibling || null);
+    }
+    const grid = section.querySelector('.favorites-grid');
+    grid.innerHTML = items.slice(0, 10).map((item) => `<button class="media-tile favorite-card" type="button" data-src="${escapeHtml(item.src)}" id="fav-${escapeHtml(item.id)}" data-favorite-id="${escapeHtml(item.id)}"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}"><span class="media-title">${escapeHtml(item.title)}</span></button>`).join('');
+    decorateMediaTiles();
+  }
+
+  function setupSkeletonLoading() {
+    document.querySelectorAll('.media-tile img').forEach((img) => {
+      const tile = img.closest('.media-tile');
+      if (!tile || img.complete) return;
+      tile.classList.add('is-loading');
+      img.addEventListener('load', () => tile.classList.remove('is-loading'), { once: true });
+      img.addEventListener('error', () => tile.classList.remove('is-loading'), { once: true });
+    });
+  }
+
+  function setupScrollAnimations() {
+    const items = document.querySelectorAll('.hero, .card, .media-tile, .movie-section, .home-splash-panel');
+    if (!('IntersectionObserver' in window)) { items.forEach((el) => el.classList.add('is-revealed')); return; }
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-revealed');
+      observer.unobserve(entry.target);
+    }), { threshold: 0.08, rootMargin: '40px' });
+    items.forEach((el, index) => { el.classList.add('reveal-on-scroll'); el.style.setProperty('--reveal-delay', `${Math.min(index % 12, 8) * 22}ms`); observer.observe(el); });
+  }
+
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
 
@@ -1031,98 +1174,90 @@ applyCleanRouting();
     toolsWrap.className = 'topbar-tools';
 
     const searchForm = document.createElement('form');
-    searchForm.className = 'nav-search';
+    searchForm.className = 'nav-search premium-search';
     searchForm.setAttribute('role', 'search');
-    searchForm.innerHTML = '<label class="sr-only" for="siteSearchInput">Search site</label><input id="siteSearchInput" name="q" type="search" placeholder="Search 𝕄𝕔ℂ𝕣𝕒𝕔𝕜..." aria-label="Search 𝕄𝕔ℂ𝕣𝕒𝕔𝕜" />';
+    searchForm.innerHTML = `
+      <label class="sr-only" for="siteSearchInput">Search site</label>
+      <input id="siteSearchInput" name="q" type="search" autocomplete="off" placeholder="Search games, movies, apps…" aria-label="Search 𝕄𝕔ℂ𝕣𝕒𝕔𝕜" aria-expanded="false" aria-controls="siteSearchSuggestions" />
+      <kbd>/</kbd>
+      <div id="siteSearchSuggestions" class="search-suggestions" role="listbox"></div>`;
     toolsWrap.appendChild(searchForm);
-
-    if (settingsLink) {
-      toolsWrap.appendChild(settingsLink);
-    }
-
+    if (settingsLink) toolsWrap.appendChild(settingsLink);
     topbarRow.appendChild(toolsWrap);
 
+    const input = searchForm.querySelector('input');
+    const suggestions = searchForm.querySelector('.search-suggestions');
+    let activeIndex = -1;
+    let cachedResults = [];
     const siteIndex = [
-      { href: '/', terms: ['home', 'main', 'dashboard', 'launchpad', 'mccrack'] },
-      { href: '/games', terms: ['games', 'game', 'popular', 'roblox', 'gaming'] },
-      { href: '/movies', terms: ['movies', 'movie', 'films', 'watch'] },
-      { href: '/apps', terms: ['apps', 'app', 'bypass', 'unblock', 'restriction'] },
-      { href: '/browser', terms: ['browser', 'search web', 'internet'] },
-      { href: '/chat', terms: ['chat', 'messages', 'talk'] },
-      { href: '/mccrackos', terms: ['mccrackos', 'os', 'tools'] },
-      { href: '/more', terms: ['more', 'extras', 'additional'] },
-      { href: '/settings', terms: ['settings', 'theme', 'tab', 'customize'] }
+      { title: 'Home', href: '/', kind: 'Page', terms: ['home', 'main', 'dashboard', 'launchpad', 'mccrack'] },
+      { title: 'Games', href: '/games', kind: 'Page', terms: ['games', 'game', 'popular', 'roblox', 'gaming', 'minecraft', 'terraria'] },
+      { title: 'Movies', href: '/movies', kind: 'Page', terms: ['movies', 'movie', 'films', 'watch'] },
+      { title: 'Apps', href: '/apps', kind: 'Page', terms: ['apps', 'app', 'bypass', 'unblock', 'restriction'] },
+      { title: 'Browser', href: '/browser', kind: 'Page', terms: ['browser', 'search web', 'internet'] },
+      { title: 'Chat', href: '/chat', kind: 'Page', terms: ['chat', 'messages', 'talk'] },
+      { title: '𝕄𝕔ℂ𝕣𝕒𝕔𝕜OS', href: '/mccrackos', kind: 'Page', terms: ['mccrackos', 'os', 'tools'] },
+      { title: 'More', href: '/more', kind: 'Page', terms: ['more', 'extras', 'additional'] },
+      { title: 'Settings', href: '/settings', kind: 'Page', terms: ['settings', 'theme', 'tab', 'customize'] }
     ];
 
     let searchableContentPromise;
     async function getSearchableContent() {
       if (searchableContentPromise) return searchableContentPromise;
-
       searchableContentPromise = (async () => {
         const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-        const dynamicEntries = [];
-
-        dynamicEntries.push(...buildLocalTileEntries(document, currentPath));
-
-        const pathsToScan = ['games.html', 'movies.html'].filter((path) => path !== currentPath);
-
-        for (const path of pathsToScan) {
-          try {
-            const doc = await readDocFromPage(path);
-            dynamicEntries.push(...buildLocalTileEntries(doc, path));
-            if (!dynamicEntries.some((entry) => entry.href.startsWith(`${path}#`))) {
-              const kind = path === 'movies.html' ? 'movie' : 'game';
-              dynamicEntries.push(...buildMediaDataEntries(doc, path, kind));
-            }
-          } catch (error) {
-            console.warn(`Search index skipped ${path}.`, error);
-          }
+        const entries = [];
+        entries.push(...buildLocalTileEntries(document, currentPath));
+        for (const path of ['games.html', 'movies.html'].filter((path) => path !== currentPath)) {
+          try { entries.push(...buildLocalTileEntries(await readDocFromPage(path), path)); } catch (error) { console.warn(`Search index skipped ${path}.`, error); }
         }
-
-        return dynamicEntries;
+        return entries.map((entry) => ({ ...entry, title: entry.terms[0] || entry.href, kind: entry.href.includes('movie') ? 'Movie' : 'Game' }));
       })();
-
       return searchableContentPromise;
     }
 
-    searchForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const input = searchForm.querySelector('input');
-      const query = (input?.value || '').toLowerCase().trim();
-      if (!query) return;
-
-      const isDirectPage = siteIndex.find((entry) => entry.href.replace('.html', '') === query);
-      if (isDirectPage) {
-        navigateToPath(isDirectPage.href);
-        return;
+    const fuzzyScore = (query, value) => {
+      query = query.toLowerCase(); value = value.toLowerCase();
+      if (!query) return 0;
+      if (value === query) return 1000;
+      if (value.includes(query)) return 700 - value.indexOf(query);
+      let qi = 0, score = 0;
+      for (let vi = 0; vi < value.length && qi < query.length; vi++) {
+        if (value[vi] === query[qi]) { score += 22 - Math.min(vi, 12); qi++; }
       }
-
-      const pageMatch = siteIndex.find((entry) => entry.terms.some((term) => term.includes(query) || query.includes(term)));
-      if (pageMatch && query.length < 4) {
-        navigateToPath(pageMatch.href);
-        return;
+      return qi === query.length ? score : 0;
+    };
+    const highlight = (title, query) => {
+      let qi = 0;
+      return [...title].map((char) => char.toLowerCase() === query[qi]?.toLowerCase() ? (qi++, `<mark>${char}</mark>`) : char).join('');
+    };
+    const openResult = (result) => { if (result) { showToast('Search Complete'); navigateToPath(result.href); } };
+    const render = (query, results) => {
+      input.setAttribute('aria-expanded', String(Boolean(query)));
+      suggestions.classList.toggle('is-open', Boolean(query));
+      if (!query) { suggestions.innerHTML = ''; return; }
+      if (!results.length) {
+        suggestions.innerHTML = '<div class="search-empty"><strong>No results found.</strong><span>Try searching for:</span><em>Minecraft</em><em>Roblox</em><em>Terraria</em></div>'; return;
       }
-
-      const dynamicEntries = await getSearchableContent();
-      const exactMediaMatch = dynamicEntries.find((entry) => entry.terms.some((term) => term === query));
-      if (exactMediaMatch) {
-        navigateToPath(exactMediaMatch.href);
-        return;
-      }
-
-      const mediaMatch = dynamicEntries.find((entry) => entry.terms.some((term) => term.includes(query) || query.includes(term)));
-      if (mediaMatch) {
-        navigateToPath(mediaMatch.href);
-        return;
-      }
-
-      if (pageMatch) {
-        navigateToPath(pageMatch.href);
-        return;
-      }
-
-      window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(`site:mccrack ${query}`)}`;
+      suggestions.innerHTML = results.slice(0, 8).map((r, i) => `<button type="button" role="option" class="search-suggestion ${i === activeIndex ? 'is-active' : ''}" data-index="${i}"><span>${highlight(r.title, query)}</span><small>${r.kind}</small></button>`).join('');
+    };
+    const update = async () => {
+      const query = input.value.trim(); activeIndex = -1;
+      const entries = [...siteIndex, ...(await getSearchableContent())];
+      cachedResults = entries.map((entry) => ({ ...entry, score: Math.max(...entry.terms.map((term) => fuzzyScore(query, term))) })).filter((entry) => entry.score > 0).sort((a,b) => b.score - a.score);
+      render(query, cachedResults);
+    };
+    input.addEventListener('input', update);
+    suggestions.addEventListener('click', (event) => openResult(cachedResults[Number(event.target.closest('.search-suggestion')?.dataset.index)]));
+    searchForm.addEventListener('submit', (event) => { event.preventDefault(); openResult(cachedResults[Math.max(activeIndex, 0)]); });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === '/' && document.activeElement !== input && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) { event.preventDefault(); input.focus(); update(); }
+      if (event.key === 'Escape') { suggestions.classList.remove('is-open'); input.setAttribute('aria-expanded', 'false'); }
+      if (document.activeElement !== input || !suggestions.classList.contains('is-open')) return;
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); activeIndex = (activeIndex + (event.key === 'ArrowDown' ? 1 : -1) + Math.min(cachedResults.length, 8)) % Math.min(cachedResults.length, 8); render(input.value.trim(), cachedResults); }
+      if (event.key === 'Enter' && activeIndex >= 0) { event.preventDefault(); openResult(cachedResults[activeIndex]); }
     });
+    getSearchableContent().then(() => input.value && update());
   }
 
   window.mcApp = {
@@ -1138,6 +1273,9 @@ applyCleanRouting();
   organizeGameTilesAlphabetically();
   organizeMovieSections();
   setupSiteSearch();
+  setupFavorites();
+  setupSkeletonLoading();
+  setupScrollAnimations();
   setupEmbedRefreshControls();
   setupMediaLauncher();
   setupPopularGamesByLikes();
