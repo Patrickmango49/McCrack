@@ -75,7 +75,7 @@ applyCleanRouting();
 (function () {
   const DEFAULT_TITLE = '𝕄𝕔ℂ𝕣𝕒𝕔𝕜';
   const DEFAULT_FAVICON = 'favicon.png';
-  const defaultWallpaper = 'linear-gradient(170deg, #050505 0%, #1a1a1a 35%, #7d7d7d 70%, #dadada 100%)';
+  const defaultWallpaper = 'radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.34), transparent 34rem), radial-gradient(circle at 88% 12%, rgba(6, 182, 212, 0.24), transparent 30rem), radial-gradient(circle at 55% 92%, rgba(249, 115, 22, 0.14), transparent 34rem), linear-gradient(135deg, #070a12 0%, #101828 46%, #0f172a 100%)';
   const HOME_SPLASH_MESSAGES = [
     'Now with 99% less school surveillance.',
     'Alt-Tab faster.',
