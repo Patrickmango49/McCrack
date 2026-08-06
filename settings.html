@@ -25,7 +25,6 @@
           <a href="/chat">Chat</a>
           <a href="/apps">Apps</a>
           <a href="/browser">Browser</a>
-          <a href="/mccrackos">𝕄𝕔ℂ𝕣𝕒𝕔𝕜OS</a>
           <a href="/more">More</a>
         </nav>
         <a class="settings-link active" href="/settings" aria-label="Settings">⚙️</a>
@@ -38,43 +37,61 @@
         <p>Customize tab name, favicon, tab cloak, and wallpaper presets.</p>
       </section>
 
-      <section class="grid">
-        <article class="card">
-          <h3>Tab Name</h3>
+      <section class="settings-panel" aria-label="Settings controls">
+        <article class="card settings-card">
+          <h2>Appearance</h2>
+          <label>Theme selector
+            <select id="themeSelect" class="input">
+              <option value="matte-noir">Matte Noir</option>
+              <option value="obsidian-gold">Obsidian Gold</option>
+              <option value="monochrome-glass">Monochrome Glass</option>
+            </select>
+          </label>
+          <label>Wallpaper selector
+            <select id="presetSelect" class="input">
+              <option value="linear-gradient(170deg, #030303 0%, #11100d 45%, #2b2110 100%)">Matte Noir</option>
+              <option value="radial-gradient(circle at 50% -12%, rgba(212, 175, 55, 0.16), transparent 34rem), radial-gradient(circle at 8% 14%, rgba(255, 255, 255, 0.045), transparent 28rem), linear-gradient(145deg, #030303 0%, #0c0c0a 48%, #15130e 100%)">Obsidian Gold</option>
+              <option value="linear-gradient(170deg, #050505 0%, #151515 45%, #f5f5f5 140%)">Monochrome Glass</option>
+            </select>
+          </label>
+          <label>Custom wallpaper image URL
+            <input id="wallpaperUrl" class="input" placeholder="https://example.com/wallpaper.jpg" />
+          </label>
+          <label>Upload custom wallpaper image
+            <input id="wallpaperUpload" class="input" type="file" accept="image/*" />
+          </label>
+          <div class="settings-actions">
+            <button id="saveTheme" class="btn">Save Theme</button>
+            <button id="savePreset" class="btn">Apply Wallpaper</button>
+            <button id="saveWallpaperUrl" class="btn">Use URL</button>
+            <button id="saveWallpaperUpload" class="btn">Use Upload</button>
+            <button id="resetWallpaper" class="btn btn-secondary">Reset Wallpaper</button>
+          </div>
+        </article>
+
+        <article class="card settings-card">
+          <h2>Experience</h2>
+          <label><input id="animationsToggle" type="checkbox" /> Animations on</label>
+          <label><input id="blurToggle" type="checkbox" /> Blur effects on</label>
+          <label><input id="reducedMotionToggle" type="checkbox" /> Reduced motion mode</label>
+          <label><input id="compactCardToggle" type="checkbox" /> Compact card mode</label>
+          <label><input id="largeCardToggle" type="checkbox" /> Large card mode</label>
+          <button id="resetAllSettings" class="btn btn-danger">Reset All Settings</button>
+        </article>
+
+        <article class="card settings-card">
+          <h2>Tab Cloak</h2>
           <input id="tabName" class="input" placeholder="Tab name" />
-          <button id="saveTab" class="btn">Save Tab Name</button>
-        </article>
-
-        <article class="card">
-          <h3>Favicon by URL</h3>
           <input id="faviconUrl" class="input" placeholder="https://example.com/favicon.ico" />
-          <button id="saveFaviconUrl" class="btn">Save Favicon URL</button>
-          <p class="small">Default link is favicon.png.</p>
-        </article>
-
-        <article class="card">
-          <h3>Favicon Upload</h3>
           <input id="faviconUpload" class="input" type="file" accept="image/*" />
-          <button id="saveFaviconUpload" class="btn">Use Uploaded Favicon</button>
-        </article>
-
-        <article class="card">
-          <h3>Tab Cloak</h3>
-          <button id="applyCloak" class="btn">Apply Default Cloak</button>
-          <button id="resetCloak" class="btn">Reset to Site Default</button>
+          <div class="settings-actions">
+            <button id="saveTab" class="btn">Save Tab Name</button>
+            <button id="saveFaviconUrl" class="btn">Save Favicon URL</button>
+            <button id="saveFaviconUpload" class="btn">Use Uploaded Favicon</button>
+            <button id="applyCloak" class="btn">Apply Default Cloak</button>
+            <button id="resetCloak" class="btn btn-secondary">Reset to Site Default</button>
+          </div>
           <p class="small" id="cloakInfo"></p>
-        </article>
-
-        <article class="card">
-          <h3>Wallpaper Preset</h3>
-          <select id="presetSelect">
-            <option value="radial-gradient(circle at 50% -12%, rgba(212, 175, 55, 0.16), transparent 34rem), radial-gradient(circle at 8% 14%, rgba(255, 255, 255, 0.045), transparent 28rem), radial-gradient(circle at 92% 78%, rgba(157, 116, 28, 0.11), transparent 32rem), linear-gradient(145deg, #030303 0%, #0c0c0a 48%, #15130e 100%)">Obsidian Gold</option>
-            <option value="linear-gradient(170deg, #030303 0%, #11100d 45%, #2b2110 100%)">Matte Noir</option>
-            <option value="linear-gradient(170deg, #080705 0%, #3b2b0f 48%, #d4af37 100%)">Executive Gold</option>
-            <option value="linear-gradient(170deg, #050505 0%, #151515 45%, #f5f5f5 140%)">Monochrome Glass</option>
-            <option value="linear-gradient(170deg, #0d0904 0%, #5f4312 48%, #f3d77b 100%)">Champagne Warmth</option>
-          </select>
-          <button id="savePreset" class="btn">Apply Preset</button>
         </article>
       </section>
     </main>
@@ -90,10 +107,78 @@
     const tabName = document.getElementById('tabName');
     const faviconUrl = document.getElementById('faviconUrl');
     const cloakInfo = document.getElementById('cloakInfo');
+    const themeSelect = document.getElementById('themeSelect');
+    const wallpaperUrl = document.getElementById('wallpaperUrl');
 
     tabName.value = localStorage.getItem('mc_tab_name') || defaults.DEFAULT_TITLE;
     faviconUrl.value = localStorage.getItem('mc_favicon_url') || defaults.DEFAULT_FAVICON;
+    themeSelect.value = localStorage.getItem('mc_theme') || 'matte-noir';
+    wallpaperUrl.value = localStorage.getItem('mc_wallpaper_type') === 'url' ? (localStorage.getItem('mc_wallpaper_value') || '') : '';
+    document.getElementById('animationsToggle').checked = localStorage.getItem('mc_animations') !== 'off';
+    document.getElementById('blurToggle').checked = localStorage.getItem('mc_blur') !== 'off';
+    document.getElementById('reducedMotionToggle').checked = localStorage.getItem('mc_reduced_motion') === 'on';
+    document.getElementById('compactCardToggle').checked = localStorage.getItem('mc_card_mode') === 'compact';
+    document.getElementById('largeCardToggle').checked = localStorage.getItem('mc_card_mode') === 'large';
     cloakInfo.textContent = `Current default cloak: ${DEFAULT_CLOAK_TITLE} | ${DEFAULT_CLOAK_FAVICON}`;
+
+
+
+    document.getElementById('saveTheme').addEventListener('click', () => {
+      localStorage.setItem('mc_theme', themeSelect.value);
+      window.mcApp.applySettings();
+    });
+
+    document.getElementById('saveWallpaperUrl').addEventListener('click', () => {
+      const value = wallpaperUrl.value.trim();
+      if (!value) return;
+      localStorage.setItem('mc_wallpaper_type', 'url');
+      localStorage.setItem('mc_wallpaper_value', value);
+      window.mcApp.applySettings();
+    });
+
+    document.getElementById('saveWallpaperUpload').addEventListener('click', () => {
+      const file = document.getElementById('wallpaperUpload').files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem('mc_wallpaper_type', 'url');
+        localStorage.setItem('mc_wallpaper_value', String(reader.result));
+        window.mcApp.applySettings();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('resetWallpaper').addEventListener('click', () => {
+      localStorage.removeItem('mc_wallpaper_type');
+      localStorage.removeItem('mc_wallpaper_value');
+      wallpaperUrl.value = '';
+      window.mcApp.applySettings();
+    });
+
+    const bindToggle = (id, key, onValue, offValue) => {
+      document.getElementById(id).addEventListener('change', (event) => {
+        localStorage.setItem(key, event.target.checked ? onValue : offValue);
+        window.mcApp.applySettings();
+      });
+    };
+    bindToggle('animationsToggle', 'mc_animations', 'on', 'off');
+    bindToggle('blurToggle', 'mc_blur', 'on', 'off');
+    bindToggle('reducedMotionToggle', 'mc_reduced_motion', 'on', 'off');
+    document.getElementById('compactCardToggle').addEventListener('change', (event) => {
+      localStorage.setItem('mc_card_mode', event.target.checked ? 'compact' : 'normal');
+      document.getElementById('largeCardToggle').checked = false;
+      window.mcApp.applySettings();
+    });
+    document.getElementById('largeCardToggle').addEventListener('change', (event) => {
+      localStorage.setItem('mc_card_mode', event.target.checked ? 'large' : 'normal');
+      document.getElementById('compactCardToggle').checked = false;
+      window.mcApp.applySettings();
+    });
+
+    document.getElementById('resetAllSettings').addEventListener('click', () => {
+      ['mc_theme','mc_wallpaper_type','mc_wallpaper_value','mc_animations','mc_blur','mc_reduced_motion','mc_card_mode','mc_tab_name','mc_favicon_url'].forEach((key) => localStorage.removeItem(key));
+      window.location.reload();
+    });
 
     document.getElementById('saveTab').addEventListener('click', () => {
       localStorage.setItem('mc_tab_name', tabName.value.trim() || defaults.DEFAULT_TITLE);

@@ -25,7 +25,6 @@
           <a href="/chat" class="active">Chat</a>
           <a href="/apps" class="">Apps</a>
           <a href="/browser">Browser</a>
-          <a href="/mccrackos">𝕄𝕔ℂ𝕣𝕒𝕔𝕜OS</a>
           <a href="/more" class="">More</a>
         </nav>
         <a class="settings-link" href="/settings" aria-label="Settings">⚙️</a>
@@ -61,7 +60,7 @@
     }, 4000);
 
     async function openFullscreen() {
-      const target = document.documentElement;
+      const target = document.getElementById('gameFrame');
       if (document.fullscreenElement || document.webkitFullscreenElement) {
         if (document.exitFullscreen) {
           await document.exitFullscreen();
