@@ -133,12 +133,20 @@ applyCleanRouting();
     const savedFavicon = localStorage.getItem('mc_favicon_url') || DEFAULT_FAVICON;
     const wallType = localStorage.getItem('mc_wallpaper_type') || 'gradient';
     const wallData = localStorage.getItem('mc_wallpaper_value') || defaultWallpaper;
+    const theme = localStorage.getItem('mc_theme') || 'matte-noir';
 
     document.title = savedTitle;
     ensureFavicon().href = savedFavicon;
 
+    document.documentElement.dataset.theme = theme;
+    document.body.classList.toggle('animations-off', localStorage.getItem('mc_animations') === 'off');
+    document.body.classList.toggle('blur-off', localStorage.getItem('mc_blur') === 'off');
+    document.body.classList.toggle('reduced-motion-mode', localStorage.getItem('mc_reduced_motion') === 'on');
+    document.body.classList.toggle('compact-cards', localStorage.getItem('mc_card_mode') === 'compact');
+    document.body.classList.toggle('large-cards', localStorage.getItem('mc_card_mode') === 'large');
+
     if (wallType === 'url' && wallData) {
-      document.body.style.background = `center / cover no-repeat url('${wallData}')`;
+      document.body.style.background = `linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,.62)), center / cover fixed no-repeat url('${wallData.replace(/'/g, '%27')}')`;
     } else if (wallType === 'gradient' && wallData) {
       document.body.style.background = wallData;
     } else {
@@ -223,8 +231,9 @@ applyCleanRouting();
             <button class="media-launcher-refresh" type="button" aria-label="Refresh player" title="Refresh">↻ <span>Refresh</span></button>
             <button class="media-launcher-favorite" type="button" aria-label="Favorite current item" title="Favorite">♡ <span>Favorite</span></button>
             <button class="media-launcher-details" type="button" aria-label="Show details for current item" title="Details">ℹ <span>Details</span></button>
+            ${kind !== 'movie' ? '<button class="media-launcher-aboutblank" type="button">↗ <span>Open in about:blank</span></button>' : ''}
+            <button class="media-launcher-fullscreen" type="button" aria-label="Toggle fullscreen" title="Fullscreen">⛶ <span>Fullscreen</span></button>
           </div>
-          <button class="media-launcher-fullscreen" type="button" aria-label="Toggle fullscreen" title="Fullscreen">⛶ <span>Fullscreen</span></button>
           <button class="media-launcher-close" type="button" aria-label="Close player" title="Close">✕</button>
         </div>
         <div class="media-launcher-frame-wrap">
@@ -234,9 +243,7 @@ applyCleanRouting();
           </div>
           <iframe id="mediaFrame" src="about:blank" referrerpolicy="no-referrer" allow="autoplay; fullscreen"></iframe>
         </div>
-        <div class="media-launcher-actions">
-          ${kind !== 'movie' ? '<button class="media-launcher-aboutblank" type="button">Open in About:Blank</button>' : ''}
-        </div>
+
       </div>
     `;
 
@@ -401,13 +408,13 @@ applyCleanRouting();
           return;
         }
 
-        if (launcher.classList.contains('is-pre-fullscreen')) {
-          launcher.classList.remove('is-pre-fullscreen');
+        if (frameWrap.classList.contains('is-pre-fullscreen')) {
+          frameWrap.classList.remove('is-pre-fullscreen');
           return;
         }
 
-        const target = launcher;
-        target.classList.add('is-pre-fullscreen');
+        const target = frame;
+        frameWrap.classList.add('is-pre-fullscreen');
         await new Promise((resolve) => window.requestAnimationFrame(resolve));
         await new Promise((resolve) => window.requestAnimationFrame(resolve));
 
@@ -418,7 +425,7 @@ applyCleanRouting();
             target.webkitRequestFullscreen();
           }
         } catch (error) {
-          console.warn('Native fullscreen request was blocked. Keeping page-filling fullscreen mode.', error);
+          console.warn('Native fullscreen request was blocked. Keeping embed-only fullscreen mode.', error);
         }
       });
     }
@@ -426,6 +433,7 @@ applyCleanRouting();
     const clearPreFullscreen = () => {
       if (!document.fullscreenElement && !document.webkitFullscreenElement) {
         launcher.classList.remove('is-pre-fullscreen');
+        frameWrap?.classList.remove('is-pre-fullscreen');
       }
     };
     document.addEventListener('fullscreenchange', clearPreFullscreen);
@@ -827,7 +835,7 @@ applyCleanRouting();
       ['A Bug’s Life','Pixar adventure about a misfit ant who recruits warrior bugs to save his colony.'],['A Charlie Brown Christmas','Classic Peanuts special about the true meaning of Christmas.'],['A Goofy Movie','Goofy and Max take a father-son road trip full of laughs and bonding.'],['Alien: Romulus','Horror sequel set between the original Alien films, following young colonists facing xenomorphs.'],['Alvin and the Chipmunks / The Squeakquel / Chipwrecked','Live-action/CGI comedies about the singing chipmunks and their chaotic adventures.'],['An Extremely Goofy Movie','Goofy goes to college with Max in this direct-to-video sequel.'],['Ant-Man and the Wasp: Quantumania','Marvel adventure that takes Scott Lang and the family into the Quantum Realm.'],['Avengers: Infinity War / Avengers: Endgame','The epic two-part culmination of the Infinity Saga as the Avengers face Thanos.'],['The Amazing Spider-Man / The Amazing Spider-Man 2','Andrew Garfield’s take on Peter Parker facing new villains and personal struggles.'],['Barbie','Greta Gerberg’s colorful comedy about Barbie leaving Barbieland for the real world.'],['Batman / Batman Returns','Tim Burton’s gothic Batman films starring Michael Keaton.'],['Beavis and Butt-Head Do America / Do the Universe','The duo’s chaotic animated adventures across America and beyond.'],['Black Panther / Black Panther: Wakanda Forever','Marvel’s groundbreaking films centered on Wakanda and the legacy of T’Challa.'],['Black Phone 2','Horror sequel continuing the story of the mysterious black phone.'],['Blue Beetle','DC’s teen superhero origin story about Jaime Reyes and the alien scarab.'],['Borderlands','Live-action adaptation of the chaotic looter-shooter video game.'],['The Bad Guys 2','Animated sequel about the reformed animal criminals pulled back into action.'],['The Batman','Matt Reeves’ dark, detective-focused take on Batman starring Robert Pattinson.'],['Cars / Cars 2 / Cars 3','Pixar’s racing adventures following Lightning McQueen and his friends.'],['Deadpool / Deadpool 2 / Deadpool & Wolverine','R-rated Marvel comedies starring the fourth-wall-breaking merc with a mouth.'],['Despicable Me 4','Latest chapter in Gru’s family adventures with the Minions.'],['Detective Pikachu','Live-action Pokémon mystery starring a talking Pikachu.'],['Diary of a Wimpy Kid / Rodrick Rules / Dog Days','Live-action adaptations of the popular middle-school book series.'],['The Dark Knight','Christopher Nolan’s acclaimed Batman film featuring Heath Ledger’s Joker.'],['The Day the Earth Blew Up','Animated Looney Tunes feature-length adventure.'],['Finding Nemo / Finding Dory','Pixar underwater adventures about a clownfish and his forgetful friend.'],['Five Nights at Freddy’s 2','Horror sequel based on the popular video game series.'],['Ford v Ferrari','Drama about the rivalry between Ford and Ferrari at the 24 Hours of Le Mans.'],['The Flash','DC multiverse adventure starring Ezra Miller as the Scarlet Speedster.'],['Gladiator / Gladiator II','Epic historical dramas about Roman gladiators seeking revenge and glory.'],['GOAT','Sports or underdog story (context-dependent title).'],['Guardians of the Galaxy Vol. 3','Marvel’s emotional conclusion to the Guardians’ story.'],['Home Alone / Home Alone 2: Lost in New York','Classic holiday comedies about a boy defending his house (and later New York) from burglars.'],['Hoppers','Upcoming or lesser-known animated adventure.'],['Inside Out / Inside Out 2','Pixar films exploring emotions inside a young girl’s mind.'],['Interstellar','Christopher Nolan’s epic about space travel, time, and saving humanity.'],['Iron Man / Iron Man 2 / Iron Man 3','The films that launched the Marvel Cinematic Universe with Tony Stark.'],['It / It Chapter Two','Horror adaptations of Stephen King’s clown that preys on children (and later adults).'],['The Incredibles','Pixar superhero family adventure about retired heroes forced back into action.'],['KPop Demon Hunters','Animated or live-action story blending K-pop and supernatural demon fighting.'],['Luca','Pixar coming-of-age story set on the Italian Riviera about sea monsters on land.'],['The Lego Batman Movie / The Lego Movie / The Lego Movie 2 / The Lego Ninjago Movie','LEGO-branded animated comedies full of humor, action, and creativity.'],['The Little Rascals','Classic comedy about a group of neighborhood kids and their adventures.'],['The Lorax','Animated adaptation of Dr. Seuss’s environmental tale.'],['Major Payne','Comedy about a tough Marine drill instructor training a group of kids.'],['Migration','Illumination animated comedy about a family of ducks on a big journey.'],['Moana / Moana 2','Disney’s Polynesian adventure about a young wayfinder and the demigod Maui.'],['Mortal Kombat','Live-action adaptation of the fighting game franchise.'],['Mufasa: The Lion King','Prequel exploring the origin story of Mufasa.'],['Oppenheimer','Christopher Nolan’s biographical drama about the father of the atomic bomb.'],['Pixels','Comedy about 1980s arcade characters invading Earth.'],['Ralph Breaks the Internet','Sequel to Wreck-It Ralph where the characters enter the internet.'],['The Regular Show: The Movie','Feature-length adventure based on the Cartoon Network series.'],['Smile / Smile 2','Psychological horror films about a contagious curse that spreads through smiles.'],['Sonic the Hedgehog / Sonic the Hedgehog 2','Live-action/CGI adventures of the blue blur and his friends.'],['Space Jam / Space Jam: A New Legacy','Basketball comedies mixing live-action with Looney Tunes (and later other Warner characters).'],['Spider-Man / Spider-Man 2 / Spider-Man 3','Sam Raimi’s original trilogy starring Tobey Maguire.'],['Spider-Man: Homecoming / Far From Home / No Way Home','MCU Spider-Man trilogy starring Tom Holland.'],['Spider-Man: Into the Spider-Verse / Across the Spider-Verse','Acclaimed animated Spider-Man films that redefined the character and multiverse storytelling.'],['Superman','Classic or modern take on the Man of Steel.'],['Teen Titans: Trouble in Tokyo','Animated Teen Titans adventure in Japan.'],['Teenage Mutant Ninja Turtles: Mutant Mayhem','Fresh animated take on the turtle heroes with a young, energetic vibe.'],['Terrifier / Terrifier 2 / Terrifier 3','Extremely gory horror films starring the clown Art the Clown.'],['Thor: Ragnarok','Marvel’s colorful, comedic Thor adventure directed by Taika Waititi.'],['Transformers One','Animated origin story of the Transformers on Cybertron.'],['Turbo','DreamWorks animated film about a snail who dreams of racing in the Indy 500.'],['Twisters','Action-adventure about storm chasers facing extreme tornadoes.'],['The Underdoggs','Sports comedy starring Snoop Dogg about a washed-up football player coaching a kids’ team.'],['Venom / Venom: Let There Be Carnage','Sony’s anti-hero films about Eddie Brock and the symbiotic alien Venom.'],['The Wild Robot','Animated adaptation of the book about a robot stranded on an island who learns to survive with animals.'],['White Men Can’t Jump (1992) / (2023)','Sports comedy about street basketball hustlers (original and remake).'],['Wicked: For Good','Second part of the Wicked film adaptation telling the story of the witches of Oz.'],['Willy Wonka & the Chocolate Factory','Classic 1971 musical fantasy starring Gene Wilder as the eccentric candy maker.'],['Wreck-It Ralph','Disney animated film about a video game villain who wants to be a hero.'],['Zootopia','Disney animated buddy-cop comedy set in a city of anthropomorphic animals.']
     ],
     app: [
-      ['Discord','Voice, video, and text chat platform built for communities, friends, and gaming.'],['Freefy','Music streaming or free music-related app (likely focused on free listening).'],['Instagram','Photo and video sharing social network with Stories, Reels, and messaging.'],['NVIDIA GeForce Now','Cloud gaming service that lets you stream PC games to almost any device.'],['Senshi','Niche or specialized app (often related to anime, gaming, or community features depending on exact product).'],['SoundCloud','Music streaming and discovery platform especially popular with independent artists and electronic music.'],['Stake.us','Social casino and gaming platform (sweepstakes-style).'],['StreamX','Streaming-focused app for video or live content.'],['TikTok','Short-form video social network driven by the For You page algorithm.'],['Vidbox (All Streaming Providers For Free)','App that aggregates or provides access to multiple streaming services.']
+      ['McCrackOS','A full McCrackOS desktop-style experience launched from the Apps library with the standard player controls.'],['Discord','Voice, video, and text chat platform built for communities, friends, and gaming.'],['Freefy','Music streaming or free music-related app (likely focused on free listening).'],['Instagram','Photo and video sharing social network with Stories, Reels, and messaging.'],['NVIDIA GeForce Now','Cloud gaming service that lets you stream PC games to almost any device.'],['Senshi','Niche or specialized app (often related to anime, gaming, or community features depending on exact product).'],['SoundCloud','Music streaming and discovery platform especially popular with independent artists and electronic music.'],['Stake.us','Social casino and gaming platform (sweepstakes-style).'],['StreamX','Streaming-focused app for video or live content.'],['TikTok','Short-form video social network driven by the For You page algorithm.'],['Vidbox (All Streaming Providers For Free)','App that aggregates or provides access to multiple streaming services.']
     ]
   };
 
@@ -1249,29 +1257,12 @@ applyCleanRouting();
       }
       syncFavoriteButtons();
       syncLauncherFavoriteState();
-      renderFavoritesSection();
       document.dispatchEvent(new CustomEvent('mc:favorites-changed'));
     }, true);
-    renderFavoritesSection();
   }
 
   function renderFavoritesSection() {
-    const main = document.querySelector('main');
-    if (!main) return;
-    let section = document.querySelector('.favorites-section');
-    const kind = getPageKind();
-    const items = readFavorites(kind).filter((item) => !PLACEHOLDER_TITLE_PATTERN.test(String(item.title || '').trim()));
-    if (!items.length) { section?.remove(); return; }
-    if (!section) {
-      section = document.createElement('section');
-      section.className = 'favorites-section reveal-on-scroll';
-      section.innerHTML = `<div class="section-heading"><h2>Favorites</h2><p>Your saved ${kind}s stay here.</p></div><div class="favorites-grid"></div>`;
-      const grid = main.querySelector('.media-grid');
-      main.insertBefore(section, grid || main.firstChild?.nextSibling || null);
-    }
-    const grid = section.querySelector('.favorites-grid');
-    grid.innerHTML = items.slice(0, 10).map((item) => `<button class="media-tile favorite-card" type="button" data-src="${escapeHtml(item.src)}" id="fav-${escapeHtml(item.id)}" data-favorite-id="${escapeHtml(item.id)}"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}"><span class="media-title">${escapeHtml(item.title)}</span></button>`).join('');
-    decorateMediaTiles();
+    document.querySelector('.favorites-section')?.remove();
   }
 
 
@@ -1340,10 +1331,10 @@ applyCleanRouting();
         <div class="details-copy">
           <p class="details-kicker">${kindLabel} Details</p>
           <h2 id="detailsTitle">${escapeHtml(info.title || title)}</h2>
-          <p class="details-description">${escapeHtml(info.description || 'No extra description is available yet.')}</p>
+          <p class="details-description">${escapeHtml(tile.dataset.description || info.description || 'No extra description is available yet.')}</p>
           <dl class="details-meta">
             <div><dt>${primaryLabel}</dt><dd>${escapeHtml(info.title || title)}</dd></div>
-            <div><dt>${descriptionLabel}</dt><dd>${escapeHtml(info.description || 'No extra description is available yet.')}</dd></div>
+            <div><dt>${descriptionLabel}</dt><dd>${escapeHtml(tile.dataset.description || info.description || 'No extra description is available yet.')}</dd></div>
             ${usefulMeta.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}
           </dl>
         </div>`;
@@ -1428,7 +1419,6 @@ applyCleanRouting();
       { title: 'Apps', href: '/apps', kind: 'Page', terms: ['apps', 'app', 'bypass', 'unblock', 'restriction'] },
       { title: 'Browser', href: '/browser', kind: 'Page', terms: ['browser', 'search web', 'internet'] },
       { title: 'Chat', href: '/chat', kind: 'Page', terms: ['chat', 'messages', 'talk'] },
-      { title: '𝕄𝕔ℂ𝕣𝕒𝕔𝕜OS', href: '/mccrackos', kind: 'Page', terms: ['mccrackos', 'os', 'tools'] },
       { title: 'More', href: '/more', kind: 'Page', terms: ['more', 'extras', 'additional'] },
       { title: 'Settings', href: '/settings', kind: 'Page', terms: ['settings', 'theme', 'tab', 'customize'] }
     ];
@@ -1519,7 +1509,7 @@ applyCleanRouting();
   setupLiveUsersCounter();
   setupDistrictNotice();
   setupContentCounts();
-  setupVisitorCounter();
   setupCommentBox();
+  setupVisitorCounter();
   registerServiceWorker();
 })();
