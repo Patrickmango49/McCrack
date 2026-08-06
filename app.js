@@ -327,7 +327,8 @@ applyCleanRouting();
     });
     launcherDetailsButton?.addEventListener('click', (event) => {
       event.preventDefault();
-      currentTile?.querySelector('.quick-actions [data-quick-action="details"]')?.click();
+      if (!currentTile) return;
+      document.dispatchEvent(new CustomEvent('mc:open-details', { detail: { tile: currentTile } }));
     });
 
     launcher.addEventListener('click', (event) => {
@@ -1275,6 +1276,7 @@ applyCleanRouting();
     const content = modal.querySelector('.details-content');
     const close = () => { modal.classList.remove('is-open'); document.body.classList.remove('details-open'); };
     const open = (tile) => {
+      if (!tile) return;
       const kind = getTileKind(tile);
       const title = textFromTile(tile);
       const info = findContentInfo(kind, title);
@@ -1301,6 +1303,9 @@ applyCleanRouting();
       modal.classList.add('is-open');
       document.body.classList.add('details-open');
     };
+    document.addEventListener('mc:open-details', (event) => {
+      open(event.detail?.tile);
+    });
     document.addEventListener('click', (event) => {
       const action = event.target.closest('.quick-actions [data-quick-action="details"]');
       if (!action) return;
@@ -1463,6 +1468,7 @@ applyCleanRouting();
   setupPopularGamesByLikes();
   setupHashTargeting();
   setupHomeSplashMessage();
+  setupLiveUsersCounter();
   setupDistrictNotice();
   setupContentCounts();
   registerServiceWorker();
