@@ -73,7 +73,7 @@ const applyCleanRouting = () => {
 applyCleanRouting();
 
 (function () {
-  const DEFAULT_TITLE = '𝕄𝕔ℂ𝕣𝕒𝕔𝕜';
+  const DEFAULT_TITLE = 'McCrack';
   const DEFAULT_FAVICON = 'favicon.png';
   const defaultWallpaper = 'linear-gradient(170deg, #030303 0%, #11100d 45%, #2b2110 100%)';
   const HOME_SPLASH_MESSAGES = [
@@ -212,7 +212,8 @@ applyCleanRouting();
     const popularGrid = document.querySelector('.popular-grid');
     if (!mediaGrid && !popularGrid) return;
 
-    const kind = mediaGrid && (mediaGrid.dataset.mediaKind === 'movie' || mediaGrid.dataset.mediaStatic === 'movie') ? 'movie' : 'game';
+    const gridKind = mediaGrid?.dataset.mediaKind || mediaGrid?.dataset.mediaStatic;
+    const kind = gridKind === 'movie' ? 'movie' : gridKind === 'app' ? 'app' : 'game';
     const launcher = document.createElement('div');
     launcher.className = 'media-launcher';
     launcher.innerHTML = `
@@ -229,12 +230,12 @@ applyCleanRouting();
         <div class="media-launcher-frame-wrap">
           <div class="media-launcher-loader" aria-live="polite">
             <div class="media-launcher-spinner" aria-hidden="true"></div>
-            <p>${kind === 'movie' ? 'Loading movie…' : 'Loading game…'}</p>
+            <p>${kind === 'movie' ? 'Loading movie…' : kind === 'app' ? 'Loading app…' : 'Loading game…'}</p>
           </div>
           <iframe id="mediaFrame" src="about:blank" referrerpolicy="no-referrer" allow="autoplay; fullscreen"></iframe>
         </div>
         <div class="media-launcher-actions">
-          ${kind === 'game' ? '<button class="media-launcher-aboutblank" type="button">Open in About:Blank</button>' : ''}
+          ${kind !== 'movie' ? '<button class="media-launcher-aboutblank" type="button">Open in About:Blank</button>' : ''}
         </div>
       </div>
     `;
@@ -1164,7 +1165,12 @@ applyCleanRouting();
     });
   }
 
+  function supportsLibraryFeatures() {
+    return Boolean(document.querySelector('.media-grid[data-media-kind], .media-grid[data-media-static]'));
+  }
+
   function setupFavorites() {
+    if (!supportsLibraryFeatures()) return;
     decorateMediaTiles();
     document.addEventListener('click', (event) => {
       const quickFavorite = event.target.closest('.quick-actions [data-quick-action="favorite"]');
@@ -1223,6 +1229,7 @@ applyCleanRouting();
 
 
   function setupLibraryFilters() {
+    if (!supportsLibraryFeatures()) return;
     const grid = document.querySelector('.media-grid[data-media-kind], .media-grid[data-media-static]');
     const hero = document.querySelector('main .hero');
     if (!grid || !hero || document.querySelector('.library-toolbar')) return;
@@ -1259,6 +1266,7 @@ applyCleanRouting();
   }
 
   function setupDetailsModal() {
+    if (!supportsLibraryFeatures()) return;
     if (document.querySelector('.details-modal')) return;
     const modal = document.createElement('div');
     modal.className = 'details-modal';
@@ -1274,22 +1282,20 @@ applyCleanRouting();
       const kindLabel = kind === 'movie' ? 'Movie' : kind === 'app' ? 'App' : 'Game';
       const primaryLabel = kind === 'app' ? 'Name' : 'Title';
       const descriptionLabel = kind === 'movie' ? 'Synopsis' : 'Description';
-      const metaLabel = kind === 'app' ? 'Category' : kind === 'movie' ? 'Genre' : 'Genre';
-      const platform = kind === 'game' ? '<div><dt>Platform</dt><dd>Browser</dd></div>' : '';
+      const usefulMeta = [
+        ['Launch Type', kind === 'movie' ? 'Embedded movie player' : kind === 'app' ? 'Embedded app launcher' : 'Browser game'],
+        ['Source', tile.dataset.src ? 'Available' : 'Unavailable']
+      ];
       content.innerHTML = `
         <img class="details-art" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" />
         <div class="details-copy">
           <p class="details-kicker">${kindLabel} Details</p>
           <h2 id="detailsTitle">${escapeHtml(info.title || title)}</h2>
-          <p class="details-description">${escapeHtml(info.description || '')}</p>
+          <p class="details-description">${escapeHtml(info.description || 'No extra description is available yet.')}</p>
           <dl class="details-meta">
             <div><dt>${primaryLabel}</dt><dd>${escapeHtml(info.title || title)}</dd></div>
-            <div><dt>${descriptionLabel}</dt><dd>${escapeHtml(info.description || '')}</dd></div>
-            <div><dt>${metaLabel}</dt><dd></dd></div>
-            ${kind === 'game' ? '<div><dt>Player Mode</dt><dd></dd></div>' : ''}
-            ${kind === 'app' ? '<div><dt>Purpose</dt><dd></dd></div><div><dt>Official Website</dt><dd></dd></div>' : ''}
-            ${platform}
-            <div><dt>Tags</dt><dd>${(info.tags || []).map(escapeHtml).join(', ')}</dd></div>
+            <div><dt>${descriptionLabel}</dt><dd>${escapeHtml(info.description || 'No extra description is available yet.')}</dd></div>
+            ${usefulMeta.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}
           </dl>
         </div>`;
       modal.classList.add('is-open');
@@ -1458,9 +1464,6 @@ applyCleanRouting();
   setupHashTargeting();
   setupHomeSplashMessage();
   setupDistrictNotice();
-  setupLiveUsersCounter();
   setupContentCounts();
   registerServiceWorker();
-  setupCommentBox();
-  setupVisitorCounter();
 })();
