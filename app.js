@@ -216,11 +216,16 @@ applyCleanRouting();
     const launcher = document.createElement('div');
     launcher.className = 'media-launcher';
     launcher.innerHTML = `
-      <div class="media-launcher-controls" aria-label="Player controls">
-        <button class="media-launcher-refresh" type="button" aria-label="Refresh player" title="Refresh">↻</button>
-        <button class="media-launcher-close" type="button" aria-label="Close player" title="Close">✕</button>
-      </div>
       <div class="media-launcher-shell">
+        <div class="media-launcher-controls" aria-label="Player controls">
+          <div class="media-launcher-control-group">
+            <button class="media-launcher-refresh" type="button" aria-label="Refresh player" title="Refresh">↻ <span>Refresh</span></button>
+            <button class="media-launcher-favorite" type="button" aria-label="Favorite current item" title="Favorite">♡ <span>Favorite</span></button>
+            <button class="media-launcher-details" type="button" aria-label="Show details for current item" title="Details">ℹ <span>Details</span></button>
+          </div>
+          <button class="media-launcher-fullscreen" type="button" aria-label="Toggle fullscreen" title="Fullscreen">⛶ <span>Fullscreen</span></button>
+          <button class="media-launcher-close" type="button" aria-label="Close player" title="Close">✕</button>
+        </div>
         <div class="media-launcher-frame-wrap">
           <div class="media-launcher-loader" aria-live="polite">
             <div class="media-launcher-spinner" aria-hidden="true"></div>
@@ -229,7 +234,6 @@ applyCleanRouting();
           <iframe id="mediaFrame" src="about:blank" referrerpolicy="no-referrer" allow="autoplay; fullscreen"></iframe>
         </div>
         <div class="media-launcher-actions">
-          <button class="media-launcher-fullscreen" type="button">Fullscreen</button>
           ${kind === 'game' ? '<button class="media-launcher-aboutblank" type="button">Open in About:Blank</button>' : ''}
         </div>
       </div>
@@ -242,8 +246,11 @@ applyCleanRouting();
     const frame = launcher.querySelector('#mediaFrame');
     const loader = launcher.querySelector('.media-launcher-loader');
     const fullscreenButton = launcher.querySelector('.media-launcher-fullscreen');
+    const launcherFavoriteButton = launcher.querySelector('.media-launcher-favorite');
+    const launcherDetailsButton = launcher.querySelector('.media-launcher-details');
     const aboutBlankButton = launcher.querySelector('.media-launcher-aboutblank');
     const frameWrap = launcher.querySelector('.media-launcher-frame-wrap');
+    let currentTile = null;
 
     function clearLoader() {
       loader.classList.add('is-hidden');
@@ -255,16 +262,22 @@ applyCleanRouting();
     }
 
     function fitLauncherToViewport() {
-      const viewportWidth = Math.max(320, window.innerWidth - 32);
-      const viewportHeight = Math.max(220, window.innerHeight - (fullscreenButton ? 170 : 110));
-      const width = Math.min(1200, viewportWidth, viewportHeight * (16 / 9));
+      const viewportWidth = Math.max(320, window.innerWidth - 24);
+      const viewportHeight = Math.max(260, window.innerHeight - 116);
+      const width = Math.min(1480, viewportWidth, viewportHeight * (16 / 9));
       const height = width * (9 / 16);
 
       frameWrap.style.width = `${Math.floor(width)}px`;
       frameWrap.style.height = `${Math.floor(height)}px`;
     }
 
-    function openLauncher(url) {
+    function openLauncher(url, tile = null) {
+      currentTile = tile;
+      if (tile) {
+        launcher.dataset.currentFavoriteId = getTileId(tile);
+        launcher.dataset.currentKind = getTileKind(tile);
+      }
+      syncLauncherFavoriteState();
       fitLauncherToViewport();
       showLoader();
       frame.src = url;
@@ -297,7 +310,7 @@ applyCleanRouting();
       const tile = event.target.closest('.media-tile[data-src]');
       if (!tile) return;
       event.preventDefault();
-      openLauncher(tile.dataset.src);
+      openLauncher(tile.dataset.src, tile);
     });
 
     frame.addEventListener('load', () => {
@@ -306,6 +319,15 @@ applyCleanRouting();
 
     closeButton.addEventListener('click', closeLauncher);
     refreshButton.addEventListener('click', refreshLauncher);
+    launcherFavoriteButton?.addEventListener('click', (event) => {
+      event.preventDefault();
+      currentTile?.querySelector('.favorite-toggle')?.click();
+      syncLauncherFavoriteState();
+    });
+    launcherDetailsButton?.addEventListener('click', (event) => {
+      event.preventDefault();
+      currentTile?.querySelector('.quick-actions [data-quick-action="details"]')?.click();
+    });
 
     launcher.addEventListener('click', (event) => {
       if (event.target === launcher) {
@@ -1120,6 +1142,17 @@ applyCleanRouting();
     syncFavoriteButtons();
   }
 
+  function syncLauncherFavoriteState() {
+    const launcher = document.querySelector('.media-launcher');
+    const button = launcher?.querySelector('.media-launcher-favorite');
+    if (!button) return;
+    const currentId = launcher?.dataset.currentFavoriteId;
+    const currentKind = launcher?.dataset.currentKind || getPageKind();
+    const active = currentId ? new Set(readFavorites(currentKind).map((item) => item.id)).has(currentId) : false;
+    button.classList.toggle('is-favorite', active);
+    button.innerHTML = `${active ? '♥' : '♡'} <span>${active ? 'Favorited' : 'Favorite'}</span>`;
+  }
+
   function syncFavoriteButtons() {
     const ids = new Set(readFavorites(getPageKind()).map((item) => item.id));
     document.querySelectorAll('.favorite-toggle').forEach((button) => {
@@ -1134,6 +1167,13 @@ applyCleanRouting();
   function setupFavorites() {
     decorateMediaTiles();
     document.addEventListener('click', (event) => {
+      const quickFavorite = event.target.closest('.quick-actions [data-quick-action="favorite"]');
+      if (quickFavorite) {
+        event.preventDefault();
+        event.stopPropagation();
+        quickFavorite.closest('.media-tile')?.querySelector('.favorite-toggle')?.click();
+        return;
+      }
       const button = event.target.closest('.favorite-toggle');
       if (!button) return;
       event.preventDefault();
@@ -1154,6 +1194,7 @@ applyCleanRouting();
         showToast('Added to Favorites');
       }
       syncFavoriteButtons();
+      syncLauncherFavoriteState();
       renderFavoritesSection();
       document.dispatchEvent(new CustomEvent('mc:favorites-changed'));
     }, true);
