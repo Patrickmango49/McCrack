@@ -75,7 +75,7 @@ applyCleanRouting();
 (function () {
   const DEFAULT_TITLE = '𝕄𝕔ℂ𝕣𝕒𝕔𝕜';
   const DEFAULT_FAVICON = 'favicon.png';
-  const defaultWallpaper = 'radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.34), transparent 34rem), radial-gradient(circle at 88% 12%, rgba(6, 182, 212, 0.24), transparent 30rem), radial-gradient(circle at 55% 92%, rgba(249, 115, 22, 0.14), transparent 34rem), linear-gradient(135deg, #070a12 0%, #101828 46%, #0f172a 100%)';
+  const defaultWallpaper = 'linear-gradient(170deg, #030303 0%, #11100d 45%, #2b2110 100%)';
   const HOME_SPLASH_MESSAGES = [
     'Now with 99% less school surveillance.',
     'Alt-Tab faster.',
@@ -618,7 +618,8 @@ applyCleanRouting();
   function setupContentCounts() {
     const targets = [
       { selector: '.media-grid[data-media-static="game"], .media-grid[data-media-kind="game"]', label: 'Games listed', placeholder: /^game\s+\d+$/i, key: 'games' },
-      { selector: '.media-grid[data-media-static="movie"], .media-grid[data-media-kind="movie"]', label: 'Movies listed', placeholder: /^movie\s+\d+$/i, key: 'movies' }
+      { selector: '.media-grid[data-media-static="movie"], .media-grid[data-media-kind="movie"]', label: 'Movies listed', placeholder: /^movie\s+\d+$/i, key: 'movies' },
+      { selector: '.media-grid[data-media-static="app"], .media-grid[data-media-kind="app"]', label: 'Apps listed', placeholder: /^app\s+\d+$/i, key: 'apps' }
     ];
 
     targets.forEach((target) => {
@@ -769,6 +770,34 @@ applyCleanRouting();
     document.addEventListener('keydown', handleBootKeydown);
   }
 
+
+
+  const CONTENT_DATABASE = {
+    game: [
+      ['3D Tetris','Classic block-stacking puzzle with a 3D twist. Rotate and drop tetrominoes in a deeper playfield for higher scores and faster action.'],['Dash','Fast-paced endless runner where you jump, slide, and dash through obstacles at increasing speeds.'],['8 Ball Pool','Realistic online multiplayer pool. Challenge friends or random players in 8-ball matches with smooth physics.'],['10 Minutes Till Dawn','Intense survival roguelike. Survive waves of monsters for 10 minutes while upgrading your character between runs.'],['A Dance of Fire and Ice','Rhythm game where two characters (fire and ice) move along a track in perfect sync with the music. Precision timing is everything.'],['A Small World Cup','Charming low-poly soccer game with simple controls and chaotic multiplayer matches.'],['Among Us','Social deduction classic. Complete tasks as a crewmate or sabotage and eliminate as an impostor.'],['Bad Parenting 1','Dark comedy adventure about terrible parenting decisions and their consequences.'],["Baldi's Basics",'Horror education parody. Collect notebooks while avoiding the slap-happy teacher Baldi in a nightmarish school.'],['Basket Random','Physics-based basketball with ridiculous ragdoll players and completely random outcomes.'],['Basketball Stars','Smooth mobile-style basketball with one-on-one matches, special moves, and career mode.'],['Bendy and the Ink Machine','Horror adventure set in an abandoned cartoon studio filled with ink monsters and dark secrets.'],['BitLife','Text-based life simulator. Live out an entire life making choices that shape your fate from birth to death.'],['Block Post','Voxel-style multiplayer shooter with building elements and intense combat.'],['Bowmasters','Side-view archery battle game with physics-based projectiles and a roster of quirky characters.'],['Brawl Stars','Fast 3v3 multiplayer brawler with unique characters, modes, and short intense matches.'],['Buckshot Roulette','Tense psychological horror game of Russian roulette with a shotgun, items, and mind games.'],['BuildNow.GG','Browser-based building and combat game with creative freedom and multiplayer action.'],['Champion Island Games','Google’s Olympic-themed adventure with sports minigames and exploration across a colorful island.'],['Cheese Chompers 3D','Chaotic 3D multiplayer where players race and fight to collect the most cheese.'],['Cluster Rush','High-speed truck platformer. Jump from truck to truck while avoiding obstacles in an endless run.'],['Cookie Clicker','The ultimate idle clicker. Bake cookies, buy upgrades, and watch numbers go infinitely high.'],['Core Ball','Precision timing game. Shoot the ball into the rotating core at the perfect moment.'],['Crazy Cattle 3D','Absurd physics-based cattle chaos in 3D.'],['Crossy Road','Endless hopper. Cross roads, rivers, and railways while collecting coins and unlocking characters.'],['Cuphead','Run-and-gun boss rush with 1930s cartoon aesthetics and extremely challenging fights.'],['DeadShot.io','Browser multiplayer shooter focused on quick matches and sharp aim.'],['Dirt Bike Mad Skills','Physics-based dirt bike stunt and racing game with big air and crashes.'],['Doodle Baseball','Simple, charming baseball game with doodle-style graphics.'],['Drift Boss','One-button endless drifting game. Time your drifts perfectly around corners.'],['Drift Hunters','Open-world drifting simulator with tunable cars and points for stylish slides.'],['Drive Mad','Physics-based driving challenges. Get your vehicle to the finish through crazy obstacle courses.'],['EaglerCraft 1.5.2 / 1.8.8 / 1.12.2 / 1.20.1 / EaglercraftZ 1.20.4','Browser versions of Minecraft. Play classic or modern Minecraft right in your browser.'],['Escape Road 2','High-speed chase game. Outrun the police through traffic and obstacles.'],['Extreme Cart Ride (Fake Roblox)','Fast cart racing experience inspired by popular Roblox experiences.'],['Fireboy and Watergirl','Co-op puzzle platformer. Guide the fire and water characters through temple levels together.'],['Five Nights at Epstein’s','Fan-made horror night-shift survival game with a dark theme.'],['Five Nights at Freddy’s','Iconic horror game. Survive the night shift while animatronics try to get you.'],['Flappy Bird','The simple, frustrating classic. Tap to keep the bird flying between pipes.'],['Football Legends','Arcade soccer with special moves, famous players, and over-the-top action.'],['Friday Night Funkin’','Rhythm battle game. Out-rap opponents with arrow key timing to the beat.'],['Funny Shooter 2','Humorous first-person shooter with silly enemies and over-the-top weapons.'],['GDash Waves','Geometry Dash-style wave levels with tight timing and precision flying.'],['Geometry Dash (Scratch) / Geometry Dash Lite','Rhythm-based platformer. Jump and fly through obstacle courses synced to music.'],['Getaway Shootout','Chaotic multiplayer party game. Race to the exit while shooting and shoving opponents.'],['Granny (Knock-Off Version)','Horror escape game. Sneak out of the house while avoiding Granny.'],['Grow a Garden (Fake Roblox)','Farming and gardening simulator in the style of popular Roblox experiences.'],['Hill Climb Racing / Hill Climb Racing (Scratch)','Physics-based hill climbing. Upgrade your vehicle and conquer wild terrain.'],['Hobo','Side-scrolling adventure about a hobo surviving the streets with dark humor.'],['Hollow Knight','Acclaimed metroidvania. Explore a vast underground kingdom filled with insects and secrets.'],['Hollow Knight: Silksong','Sequel to Hollow Knight starring Hornet in a new silk-filled kingdom.'],['Italian Brainrot Clicker 2','Absurd meme clicker filled with Italian brainrot characters and upgrades.'],['Karlson','Fast-paced FPS platformer by Dani. Speedrun levels with insane movement tech.'],['Level Devil','Tricky platformer full of fake-outs, traps, and devilish level design.'],['Madalin Stunt Cars 2','Open-world stunt driving with high-speed cars and multiplayer.'],['Massive Multiplayer Platformer v1.3','Large-scale multiplayer platforming chaos.'],['Monkey Mart','Idle supermarket management. Expand your store and hire monkey workers.'],['Moto X3M / Moto X3M: Spooky Land','Motocross stunt racing with flips, crashes, and creative tracks (plus a Halloween version).'],['Mr. Racer','Racing game focused on speed and competition.'],['MX OffRoad Mountain Bike','Off-road mountain bike racing and stunts.'],['Myinstants','Soundboard app/game for playing popular meme and viral sound effects.'],['N-Gon','Fast-paced 2D physics combat with modular weapons and destruction.'],['NZP','Zombie survival shooter experience.'],['Obby: Aimbot Arena Shooter (Fake Roblox)','Obby-style arena shooter with aim-focused combat.'],['OvO','Precision parkour platformer with smooth movement and hard levels.'],['Paper.io 2','Claim territory by drawing lines. Don’t get cut off by other players.'],['Pokemon Emerald','Classic Game Boy Advance Pokémon adventure in the Hoenn region.'],['Polytrack','Minimalist low-poly racing with clean tracks and smooth handling.'],['R.E.P.O.','Horror co-op extraction game. Loot items while avoiding monsters.'],['Raft','Survival craft on a raft. Expand your floating base while gathering resources from the ocean.'],['Ragdoll Hit','Physics ragdoll combat and hitting challenges.'],['Raldi’s Crack House','Chaotic parody of Baldi’s Basics with a much darker, wilder setting.'],['Red Ball 4','Adventure platformer starring a red ball rolling through creative levels.'],['Retro Bowl','Pixel-art American football management and gameplay hybrid.'],['Roblox','Massive platform of user-created games and experiences.'],['Rocket League','Soccer with rocket-powered cars. Aerials, boosts, and competitive matches.'],['Rooftop Run','Endless runner across city rooftops with jumps and obstacles.'],['Run 3','Tunnel running platformer in space with gravity shifts and multiple characters.'],['Sketchbook 0.4','Simple drawing and sketching tool.'],['Slither.io','Grow your snake by eating pellets and other players while avoiding collisions.'],['Slope / Slope Duels','High-speed ball rolling down a neon slope. Avoid falling off the edges (plus multiplayer duels).'],['Smash Karts','Kart racing with weapons and power-ups in chaotic multiplayer races.'],['Snow Rider 3D','3D snowboarding downhill run with obstacles and speed.'],['Snowball.io','Roll a snowball and knock other players off the arena.'],['Solar Smash','Planet destruction sandbox. Smash planets with weapons and natural disasters.'],['Space Huggers','Fast pixel-art action with unique movement and combat.'],['Steal a Brainrot Duel (Fake Roblox)','Competitive duel experience inspired by popular Roblox brainrot games.'],['Stick War','Strategy game commanding stick-figure armies in medieval battles.'],['Stickman Hook','Swing from point to point with a grappling hook in satisfying physics levels.'],['Stunt Dirt Bike','Dirt bike stunts and freestyle tricks.'],['Subway Surfers','Iconic endless runner. Dash through subway tracks while dodging trains.'],['Super Liquid Soccer','Physics-based liquid soccer with wild, bouncy matches.'],['Super Mario 64','The revolutionary 3D Mario platformer. Explore Peach’s castle and collect stars.'],['Super Mario Bros.','The classic side-scrolling Mario adventure that started it all.'],['Super Smash Flash','Flash-based Super Smash Bros. style fighter with a huge roster.'],['Survival Race','Racing survival hybrid with elimination-style gameplay.'],['Tag','Multiplayer tag game. Chase or be chased in various maps.'],['Terraria / Terraria (Scratch)','2D sandbox adventure. Dig, build, fight bosses, and explore a vast world.'],['The Grim Donut (PinkBike)','Bike freeride/stunt experience with a unique theme.'],['They Are Coming','Tower defense or survival against endless waves of enemies.'],['Time Shooter 3 S.W.A.T.','Bullet-time FPS. Slow time while aiming and clear rooms of enemies.'],['Tiny Fishing','Idle fishing game. Catch fish, upgrade your gear, and expand your aquarium.'],['Tomb of the Mask','Fast maze runner. Dash through tombs collecting points while avoiding traps.'],['Trees Hate You','Surreal or comedic game where the trees are the enemy.'],['Tunnel Road','High-speed tunnel driving/racing experience.'],['UltraKill','Ultra-violent fast-paced FPS with stylish movement and ranking system.'],['Veck.io','Browser multiplayer game (typically arena or io-style combat).']
+    ],
+    movie: [
+      ['A Bug’s Life','Pixar adventure about a misfit ant who recruits warrior bugs to save his colony.'],['A Charlie Brown Christmas','Classic Peanuts special about the true meaning of Christmas.'],['A Goofy Movie','Goofy and Max take a father-son road trip full of laughs and bonding.'],['Alien: Romulus','Horror sequel set between the original Alien films, following young colonists facing xenomorphs.'],['Alvin and the Chipmunks / The Squeakquel / Chipwrecked','Live-action/CGI comedies about the singing chipmunks and their chaotic adventures.'],['An Extremely Goofy Movie','Goofy goes to college with Max in this direct-to-video sequel.'],['Ant-Man and the Wasp: Quantumania','Marvel adventure that takes Scott Lang and the family into the Quantum Realm.'],['Avengers: Infinity War / Avengers: Endgame','The epic two-part culmination of the Infinity Saga as the Avengers face Thanos.'],['The Amazing Spider-Man / The Amazing Spider-Man 2','Andrew Garfield’s take on Peter Parker facing new villains and personal struggles.'],['Barbie','Greta Gerberg’s colorful comedy about Barbie leaving Barbieland for the real world.'],['Batman / Batman Returns','Tim Burton’s gothic Batman films starring Michael Keaton.'],['Beavis and Butt-Head Do America / Do the Universe','The duo’s chaotic animated adventures across America and beyond.'],['Black Panther / Black Panther: Wakanda Forever','Marvel’s groundbreaking films centered on Wakanda and the legacy of T’Challa.'],['Black Phone 2','Horror sequel continuing the story of the mysterious black phone.'],['Blue Beetle','DC’s teen superhero origin story about Jaime Reyes and the alien scarab.'],['Borderlands','Live-action adaptation of the chaotic looter-shooter video game.'],['The Bad Guys 2','Animated sequel about the reformed animal criminals pulled back into action.'],['The Batman','Matt Reeves’ dark, detective-focused take on Batman starring Robert Pattinson.'],['Cars / Cars 2 / Cars 3','Pixar’s racing adventures following Lightning McQueen and his friends.'],['Deadpool / Deadpool 2 / Deadpool & Wolverine','R-rated Marvel comedies starring the fourth-wall-breaking merc with a mouth.'],['Despicable Me 4','Latest chapter in Gru’s family adventures with the Minions.'],['Detective Pikachu','Live-action Pokémon mystery starring a talking Pikachu.'],['Diary of a Wimpy Kid / Rodrick Rules / Dog Days','Live-action adaptations of the popular middle-school book series.'],['The Dark Knight','Christopher Nolan’s acclaimed Batman film featuring Heath Ledger’s Joker.'],['The Day the Earth Blew Up','Animated Looney Tunes feature-length adventure.'],['Finding Nemo / Finding Dory','Pixar underwater adventures about a clownfish and his forgetful friend.'],['Five Nights at Freddy’s 2','Horror sequel based on the popular video game series.'],['Ford v Ferrari','Drama about the rivalry between Ford and Ferrari at the 24 Hours of Le Mans.'],['The Flash','DC multiverse adventure starring Ezra Miller as the Scarlet Speedster.'],['Gladiator / Gladiator II','Epic historical dramas about Roman gladiators seeking revenge and glory.'],['GOAT','Sports or underdog story (context-dependent title).'],['Guardians of the Galaxy Vol. 3','Marvel’s emotional conclusion to the Guardians’ story.'],['Home Alone / Home Alone 2: Lost in New York','Classic holiday comedies about a boy defending his house (and later New York) from burglars.'],['Hoppers','Upcoming or lesser-known animated adventure.'],['Inside Out / Inside Out 2','Pixar films exploring emotions inside a young girl’s mind.'],['Interstellar','Christopher Nolan’s epic about space travel, time, and saving humanity.'],['Iron Man / Iron Man 2 / Iron Man 3','The films that launched the Marvel Cinematic Universe with Tony Stark.'],['It / It Chapter Two','Horror adaptations of Stephen King’s clown that preys on children (and later adults).'],['The Incredibles','Pixar superhero family adventure about retired heroes forced back into action.'],['KPop Demon Hunters','Animated or live-action story blending K-pop and supernatural demon fighting.'],['Luca','Pixar coming-of-age story set on the Italian Riviera about sea monsters on land.'],['The Lego Batman Movie / The Lego Movie / The Lego Movie 2 / The Lego Ninjago Movie','LEGO-branded animated comedies full of humor, action, and creativity.'],['The Little Rascals','Classic comedy about a group of neighborhood kids and their adventures.'],['The Lorax','Animated adaptation of Dr. Seuss’s environmental tale.'],['Major Payne','Comedy about a tough Marine drill instructor training a group of kids.'],['Migration','Illumination animated comedy about a family of ducks on a big journey.'],['Moana / Moana 2','Disney’s Polynesian adventure about a young wayfinder and the demigod Maui.'],['Mortal Kombat','Live-action adaptation of the fighting game franchise.'],['Mufasa: The Lion King','Prequel exploring the origin story of Mufasa.'],['Oppenheimer','Christopher Nolan’s biographical drama about the father of the atomic bomb.'],['Pixels','Comedy about 1980s arcade characters invading Earth.'],['Ralph Breaks the Internet','Sequel to Wreck-It Ralph where the characters enter the internet.'],['The Regular Show: The Movie','Feature-length adventure based on the Cartoon Network series.'],['Smile / Smile 2','Psychological horror films about a contagious curse that spreads through smiles.'],['Sonic the Hedgehog / Sonic the Hedgehog 2','Live-action/CGI adventures of the blue blur and his friends.'],['Space Jam / Space Jam: A New Legacy','Basketball comedies mixing live-action with Looney Tunes (and later other Warner characters).'],['Spider-Man / Spider-Man 2 / Spider-Man 3','Sam Raimi’s original trilogy starring Tobey Maguire.'],['Spider-Man: Homecoming / Far From Home / No Way Home','MCU Spider-Man trilogy starring Tom Holland.'],['Spider-Man: Into the Spider-Verse / Across the Spider-Verse','Acclaimed animated Spider-Man films that redefined the character and multiverse storytelling.'],['Superman','Classic or modern take on the Man of Steel.'],['Teen Titans: Trouble in Tokyo','Animated Teen Titans adventure in Japan.'],['Teenage Mutant Ninja Turtles: Mutant Mayhem','Fresh animated take on the turtle heroes with a young, energetic vibe.'],['Terrifier / Terrifier 2 / Terrifier 3','Extremely gory horror films starring the clown Art the Clown.'],['Thor: Ragnarok','Marvel’s colorful, comedic Thor adventure directed by Taika Waititi.'],['Transformers One','Animated origin story of the Transformers on Cybertron.'],['Turbo','DreamWorks animated film about a snail who dreams of racing in the Indy 500.'],['Twisters','Action-adventure about storm chasers facing extreme tornadoes.'],['The Underdoggs','Sports comedy starring Snoop Dogg about a washed-up football player coaching a kids’ team.'],['Venom / Venom: Let There Be Carnage','Sony’s anti-hero films about Eddie Brock and the symbiotic alien Venom.'],['The Wild Robot','Animated adaptation of the book about a robot stranded on an island who learns to survive with animals.'],['White Men Can’t Jump (1992) / (2023)','Sports comedy about street basketball hustlers (original and remake).'],['Wicked: For Good','Second part of the Wicked film adaptation telling the story of the witches of Oz.'],['Willy Wonka & the Chocolate Factory','Classic 1971 musical fantasy starring Gene Wilder as the eccentric candy maker.'],['Wreck-It Ralph','Disney animated film about a video game villain who wants to be a hero.'],['Zootopia','Disney animated buddy-cop comedy set in a city of anthropomorphic animals.']
+    ],
+    app: [
+      ['Discord','Voice, video, and text chat platform built for communities, friends, and gaming.'],['Freefy','Music streaming or free music-related app (likely focused on free listening).'],['Instagram','Photo and video sharing social network with Stories, Reels, and messaging.'],['NVIDIA GeForce Now','Cloud gaming service that lets you stream PC games to almost any device.'],['Senshi','Niche or specialized app (often related to anime, gaming, or community features depending on exact product).'],['SoundCloud','Music streaming and discovery platform especially popular with independent artists and electronic music.'],['Stake.us','Social casino and gaming platform (sweepstakes-style).'],['StreamX','Streaming-focused app for video or live content.'],['TikTok','Short-form video social network driven by the For You page algorithm.'],['Vidbox (All Streaming Providers For Free)','App that aggregates or provides access to multiple streaming services.']
+    ]
+  };
+
+  const CONTENT_LOOKUP = Object.fromEntries(Object.entries(CONTENT_DATABASE).map(([kind, rows]) => [kind, rows.map(([title, description]) => ({ title, description, tags: title.split(/\s*\/\s*|\s+/).filter(Boolean) }))]));
+
+  function normalizeTitle(value) {
+    return String(value || '').toLowerCase().replace(/[’']/g, '').replace(/&/g, 'and').replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function findContentInfo(kind, title) {
+    const normalized = normalizeTitle(title);
+    const items = CONTENT_LOOKUP[kind] || [];
+    return items.find((item) => normalizeTitle(item.title) === normalized)
+      || items.find((item) => normalizeTitle(item.title).split(' ').includes(normalized) || normalized.split(' ').includes(normalizeTitle(item.title)))
+      || items.find((item) => normalizeTitle(item.title).includes(normalized) || normalized.includes(normalizeTitle(item.title)))
+      || { title, description: '', tags: [] };
+  }
 
   const PLACEHOLDER_TITLE_PATTERN = /^(?:game|movie|app)\s+\d+$/i;
   const DISTRICT_ALERT_MESSAGE = "For the Waterford Public Schools District, Movies don't work because of the Google Drive blocking system they added, I will try to fix them with a proxy as soon as possible!";
@@ -1014,7 +1043,7 @@ applyCleanRouting();
 
 
 
-  const FAVORITES_KEY = 'mc_favorites_v1';
+  const FAVORITES_KEY = 'mc_favorites_v2';
 
   function getTileId(tile) {
     return tile?.id || slugify(`${textFromTile(tile)}-${tile?.dataset?.src || ''}`);
@@ -1022,14 +1051,27 @@ applyCleanRouting();
 
   function getTileKind(tile) {
     const grid = tile.closest('[data-media-kind], [data-media-static]');
-    return grid?.dataset.mediaKind || grid?.dataset.mediaStatic || (location.pathname.includes('movie') ? 'movie' : 'game');
+    if (location.pathname.includes('apps')) return 'app';
+    return grid?.dataset.mediaKind || (grid?.dataset.mediaStatic === 'app' ? 'app' : (grid?.dataset.mediaStatic === 'movie' ? 'movie' : (location.pathname.includes('movie') ? 'movie' : 'game')));
   }
 
-  function readFavorites() {
-    try { return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]'); } catch { return []; }
+  function favoritesKey(kind = getPageKind()) { return `${FAVORITES_KEY}_${kind}`; }
+
+  function getPageKind() {
+    const grid = document.querySelector('.media-grid[data-media-kind], .media-grid[data-media-static]');
+    if (grid?.dataset.mediaKind) return grid.dataset.mediaKind;
+    if (location.pathname.includes('apps')) return 'app';
+    if (grid?.dataset.mediaStatic === 'app') return 'app';
+    if (grid?.dataset.mediaStatic === 'movie') return 'movie';
+    if (location.pathname.includes('movies')) return 'movie';
+    return 'game';
   }
 
-  function saveFavorites(items) { localStorage.setItem(FAVORITES_KEY, JSON.stringify(items)); }
+  function readFavorites(kind = getPageKind()) {
+    try { return JSON.parse(localStorage.getItem(favoritesKey(kind)) || '[]'); } catch { return []; }
+  }
+
+  function saveFavorites(items, kind = getPageKind()) { localStorage.setItem(favoritesKey(kind), JSON.stringify(items)); }
 
   function escapeHtml(value) {
     return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "\'": '&#39;' }[char]));
@@ -1067,7 +1109,7 @@ applyCleanRouting();
       const overlay = document.createElement('span');
       overlay.className = 'quick-actions';
       overlay.setAttribute('aria-hidden', 'true');
-      overlay.innerHTML = '<span>▶ Play</span><span>♥ Favorite</span><span>ℹ Details</span>';
+      overlay.innerHTML = '<span data-quick-action="play">▶ Play</span><span data-quick-action="favorite">♥ Favorite</span><span data-quick-action="details">ℹ Details</span>';
       const fav = document.createElement('button');
       fav.className = 'favorite-toggle';
       fav.type = 'button';
@@ -1079,7 +1121,7 @@ applyCleanRouting();
   }
 
   function syncFavoriteButtons() {
-    const ids = new Set(readFavorites().map((item) => item.id));
+    const ids = new Set(readFavorites(getPageKind()).map((item) => item.id));
     document.querySelectorAll('.favorite-toggle').forEach((button) => {
       const tile = button.closest('.media-tile');
       const active = ids.has(getTileId(tile));
@@ -1098,20 +1140,22 @@ applyCleanRouting();
       event.stopPropagation();
       const tile = button.closest('.media-tile');
       const id = getTileId(tile);
-      const favorites = readFavorites();
+      const kind = getTileKind(tile);
+      const favorites = readFavorites(kind);
       const exists = favorites.some((item) => item.id === id);
       if (exists) {
-        saveFavorites(favorites.filter((item) => item.id !== id));
+        saveFavorites(favorites.filter((item) => item.id !== id), kind);
         showToast('Removed from Favorites');
       } else {
-        favorites.unshift({ id, title: textFromTile(tile), image: tile.querySelector('img')?.src || '', src: tile.dataset.src || '', kind: getTileKind(tile) });
-        saveFavorites(favorites.slice(0, 300));
+        favorites.unshift({ id, title: textFromTile(tile), image: tile.querySelector('img')?.src || '', src: tile.dataset.src || '', kind });
+        saveFavorites(favorites.slice(0, 300), kind);
         button.classList.add('favorite-pop');
         window.setTimeout(() => button.classList.remove('favorite-pop'), 420);
         showToast('Added to Favorites');
       }
       syncFavoriteButtons();
       renderFavoritesSection();
+      document.dispatchEvent(new CustomEvent('mc:favorites-changed'));
     }, true);
     renderFavoritesSection();
   }
@@ -1120,18 +1164,107 @@ applyCleanRouting();
     const main = document.querySelector('main');
     if (!main) return;
     let section = document.querySelector('.favorites-section');
-    const items = readFavorites();
+    const kind = getPageKind();
+    const items = readFavorites(kind);
     if (!items.length) { section?.remove(); return; }
     if (!section) {
       section = document.createElement('section');
       section.className = 'favorites-section reveal-on-scroll';
-      section.innerHTML = '<div class="section-heading"><h2>Favorites</h2><p>Your saved games and movies stay here.</p></div><div class="favorites-grid"></div>';
+      section.innerHTML = `<div class="section-heading"><h2>Favorites</h2><p>Your saved ${kind}s stay here.</p></div><div class="favorites-grid"></div>`;
       const grid = main.querySelector('.media-grid');
       main.insertBefore(section, grid || main.firstChild?.nextSibling || null);
     }
     const grid = section.querySelector('.favorites-grid');
     grid.innerHTML = items.slice(0, 10).map((item) => `<button class="media-tile favorite-card" type="button" data-src="${escapeHtml(item.src)}" id="fav-${escapeHtml(item.id)}" data-favorite-id="${escapeHtml(item.id)}"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}"><span class="media-title">${escapeHtml(item.title)}</span></button>`).join('');
     decorateMediaTiles();
+  }
+
+
+
+  function setupLibraryFilters() {
+    const grid = document.querySelector('.media-grid[data-media-kind], .media-grid[data-media-static]');
+    const hero = document.querySelector('main .hero');
+    if (!grid || !hero || document.querySelector('.library-toolbar')) return;
+    const kind = getPageKind();
+    const toolbar = document.createElement('section');
+    toolbar.className = 'library-toolbar';
+    toolbar.innerHTML = `
+      <button class="library-filter is-active" type="button" data-filter="all">All ${kind}s</button>
+      <button class="library-filter" type="button" data-filter="favorites">♥ Favorites</button>
+      <p class="library-filter-count" aria-live="polite"></p>`;
+    hero.insertAdjacentElement('afterend', toolbar);
+    const count = toolbar.querySelector('.library-filter-count');
+    function applyFilter(mode) {
+      toolbar.querySelectorAll('.library-filter').forEach((btn) => btn.classList.toggle('is-active', btn.dataset.filter === mode));
+      const favoriteIds = new Set(readFavorites(kind).map((item) => item.id));
+      let shown = 0;
+      grid.querySelectorAll('.media-tile[data-src]').forEach((tile) => {
+        const visible = mode !== 'favorites' || favoriteIds.has(getTileId(tile));
+        tile.classList.toggle('is-filtered-out', !visible);
+        if (visible) shown += 1;
+      });
+      grid.querySelectorAll('.media-row, .movie-section').forEach((group) => {
+        group.classList.toggle('is-filtered-out', !group.querySelector('.media-tile:not(.is-filtered-out)'));
+      });
+      count.textContent = mode === 'favorites' ? `${shown} favorite ${kind}${shown === 1 ? '' : 's'} shown` : 'Showing the full library';
+    }
+    toolbar.addEventListener('click', (event) => {
+      const button = event.target.closest('.library-filter');
+      if (!button) return;
+      applyFilter(button.dataset.filter);
+    });
+    document.addEventListener('mc:favorites-changed', () => applyFilter(toolbar.querySelector('.library-filter.is-active')?.dataset.filter || 'all'));
+    applyFilter('all');
+  }
+
+  function setupDetailsModal() {
+    if (document.querySelector('.details-modal')) return;
+    const modal = document.createElement('div');
+    modal.className = 'details-modal';
+    modal.innerHTML = `<div class="details-card" role="dialog" aria-modal="true" aria-labelledby="detailsTitle"><button class="details-close" type="button" aria-label="Close details">×</button><div class="details-content"></div></div>`;
+    document.body.appendChild(modal);
+    const content = modal.querySelector('.details-content');
+    const close = () => { modal.classList.remove('is-open'); document.body.classList.remove('details-open'); };
+    const open = (tile) => {
+      const kind = getTileKind(tile);
+      const title = textFromTile(tile);
+      const info = findContentInfo(kind, title);
+      const image = tile.querySelector('img')?.src || '';
+      const kindLabel = kind === 'movie' ? 'Movie' : kind === 'app' ? 'App' : 'Game';
+      const primaryLabel = kind === 'app' ? 'Name' : 'Title';
+      const descriptionLabel = kind === 'movie' ? 'Synopsis' : 'Description';
+      const metaLabel = kind === 'app' ? 'Category' : kind === 'movie' ? 'Genre' : 'Genre';
+      const platform = kind === 'game' ? '<div><dt>Platform</dt><dd>Browser</dd></div>' : '';
+      content.innerHTML = `
+        <img class="details-art" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" />
+        <div class="details-copy">
+          <p class="details-kicker">${kindLabel} Details</p>
+          <h2 id="detailsTitle">${escapeHtml(info.title || title)}</h2>
+          <p class="details-description">${escapeHtml(info.description || '')}</p>
+          <dl class="details-meta">
+            <div><dt>${primaryLabel}</dt><dd>${escapeHtml(info.title || title)}</dd></div>
+            <div><dt>${descriptionLabel}</dt><dd>${escapeHtml(info.description || '')}</dd></div>
+            <div><dt>${metaLabel}</dt><dd></dd></div>
+            ${kind === 'game' ? '<div><dt>Player Mode</dt><dd></dd></div>' : ''}
+            ${kind === 'app' ? '<div><dt>Purpose</dt><dd></dd></div><div><dt>Official Website</dt><dd></dd></div>' : ''}
+            ${platform}
+            <div><dt>Tags</dt><dd>${(info.tags || []).map(escapeHtml).join(', ')}</dd></div>
+          </dl>
+        </div>`;
+      modal.classList.add('is-open');
+      document.body.classList.add('details-open');
+    };
+    document.addEventListener('click', (event) => {
+      const action = event.target.closest('.quick-actions [data-quick-action="details"]');
+      if (!action) return;
+      const quick = action.closest('.quick-actions');
+      const tile = quick.closest('.media-tile[data-src]');
+      if (!tile) return;
+      event.preventDefault(); event.stopPropagation(); open(tile);
+    }, true);
+    modal.querySelector('.details-close').addEventListener('click', close);
+    modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.classList.contains('is-open')) close(); });
   }
 
   function setupSkeletonLoading() {
@@ -1208,10 +1341,10 @@ applyCleanRouting();
         const currentPath = window.location.pathname.split('/').pop() || 'index.html';
         const entries = [];
         entries.push(...buildLocalTileEntries(document, currentPath));
-        for (const path of ['games.html', 'movies.html'].filter((path) => path !== currentPath)) {
+        for (const path of ['games.html', 'movies.html', 'apps.html'].filter((path) => path !== currentPath)) {
           try { entries.push(...buildLocalTileEntries(await readDocFromPage(path), path)); } catch (error) { console.warn(`Search index skipped ${path}.`, error); }
         }
-        return entries.map((entry) => ({ ...entry, title: entry.terms[0] || entry.href, kind: entry.href.includes('movie') ? 'Movie' : 'Game' }));
+        return entries.map((entry) => ({ ...entry, title: entry.terms[0] || entry.href, kind: entry.href.includes('movie') ? 'Movie' : (entry.href.includes('app') ? 'App' : 'Game') }));
       })();
       return searchableContentPromise;
     }
@@ -1274,6 +1407,8 @@ applyCleanRouting();
   organizeMovieSections();
   setupSiteSearch();
   setupFavorites();
+  setupLibraryFilters();
+  setupDetailsModal();
   setupSkeletonLoading();
   setupScrollAnimations();
   setupEmbedRefreshControls();
