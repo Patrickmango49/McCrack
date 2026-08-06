@@ -445,8 +445,18 @@ applyCleanRouting();
     badge.className = 'live-users-counter';
     badge.setAttribute('role', 'status');
     badge.setAttribute('aria-live', 'polite');
-    badge.innerHTML = '<span id="live-user-count">0</span> online';
-    document.body.appendChild(badge);
+    badge.innerHTML = '<span class="live-users-dot" aria-hidden="true"></span><span id="live-user-count">0</span> online';
+
+    const topbarTools = document.querySelector('.topbar-tools');
+    const settingsLink = document.querySelector('.settings-link');
+    const topbarRow = document.querySelector('.topbar-row');
+    if (topbarTools) {
+      topbarTools.insertBefore(badge, settingsLink?.parentElement === topbarTools ? settingsLink : topbarTools.firstChild);
+    } else if (topbarRow) {
+      topbarRow.insertBefore(badge, settingsLink || null);
+    } else {
+      document.body.appendChild(badge);
+    }
 
     const countElement = badge.querySelector('#live-user-count');
     let currentCount = 0;
@@ -547,7 +557,8 @@ applyCleanRouting();
     const popularGrid = document.querySelector('.popular-grid');
     if (!popularGrid) return;
 
-    const allGameTiles = Array.from(document.querySelectorAll('.media-grid .media-tile[data-src], .popular-grid .media-tile[data-src]'));
+    const allGameTiles = Array.from(document.querySelectorAll('.media-grid .media-tile[data-src], .popular-grid .media-tile[data-src]'))
+      .filter((tile) => !isPlaceholderTile(tile));
     if (!allGameTiles.length) return;
 
     const GAME_LIKES_KEY = 'mc_game_likes_v1';
@@ -615,8 +626,20 @@ applyCleanRouting();
     renderPopular();
   }
 
+  const RESTORED_SOCIAL_PAGES = new Set(['', 'index.html', 'games.html', 'movies.html', 'apps.html', 'more.html']);
+
+  function isRestoredSocialPage() {
+    const fileName = window.location.pathname.split('/').pop() || 'index.html';
+    const cleanPath = window.location.pathname.replace(/\/+$/, '');
+    return RESTORED_SOCIAL_PAGES.has(fileName) || ['/', '/games', '/movies', '/apps', '/more'].includes(cleanPath || '/');
+  }
+
+  function socialMountPoint() {
+    return document.querySelector('main') || document.querySelector('.page-shell') || document.body;
+  }
+
   function setupVisitorCounter() {
-    if (document.querySelector('.visitor-counter')) return;
+    if (!isRestoredSocialPage() || document.querySelector('.visitor-counter')) return;
 
     const counter = document.createElement('section');
     counter.className = 'visitor-counter';
@@ -635,7 +658,7 @@ applyCleanRouting();
     adScript.type = 'text/javascript';
     counter.querySelector('.visitor-counter-widget')?.appendChild(adScript);
 
-    document.body.appendChild(counter);
+    socialMountPoint().appendChild(counter);
   }
 
 
@@ -669,7 +692,7 @@ applyCleanRouting();
   }
 
   function setupCommentBox() {
-    if (document.getElementById('HCB_comment_box')) return;
+    if (!isRestoredSocialPage() || document.getElementById('HCB_comment_box')) return;
 
     const wrap = document.createElement('section');
     wrap.className = 'comment-box-wrap';
@@ -686,7 +709,7 @@ applyCleanRouting();
     script.id = 'hcb';
     script.text = `(function(){var l=(""+window.location).replace(/'/g,"%27"),h="https://www.htmlcommentbox.com",s=document.createElement("script");s.setAttribute("type","text/javascript");s.setAttribute("src",h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24I3r2GT%2Fx7THiMqvTNrVqO."+"&opts=16798&num=10&ts=1767912634724");if(typeof s!=="undefined"){document.getElementsByTagName("head")[0].appendChild(s);}})();`;
 
-    document.body.appendChild(wrap);
+    socialMountPoint().appendChild(wrap);
     document.body.appendChild(script);
   }
 
@@ -824,6 +847,7 @@ applyCleanRouting();
   }
 
   const PLACEHOLDER_TITLE_PATTERN = /^(?:game|movie|app)\s+\d+$/i;
+  const PLACEHOLDER_PREFIX_PATTERN = /^(game|movie|app)\s+\d+\s+(.+)$/i;
   const DISTRICT_ALERT_MESSAGE = "For the Waterford Public Schools District, Movies don't work because of the Google Drive blocking system they added, I will try to fix them with a proxy as soon as possible!";
 
   function readMediaData() {
@@ -848,6 +872,29 @@ applyCleanRouting();
     }
   }
 
+  function displayTitleFromRawTitle(title) {
+    return String(title || '').trim().replace(PLACEHOLDER_PREFIX_PATTERN, '$2').trim();
+  }
+
+  function isPlaceholderTile(tile) {
+    return PLACEHOLDER_TITLE_PATTERN.test(textFromTile(tile).trim());
+  }
+
+  function cleanupPlaceholderLibraryItems() {
+    document.querySelectorAll('.media-grid[data-media-kind], .media-grid[data-media-static]').forEach((grid) => {
+      grid.querySelectorAll('.media-tile').forEach((tile) => {
+        const title = textFromTile(tile).trim();
+        const span = tile.querySelector('span');
+        const realTitle = displayTitleFromRawTitle(title);
+        if (realTitle && realTitle !== title && span) {
+          span.textContent = realTitle;
+          tile.querySelector('img')?.setAttribute('alt', realTitle);
+        }
+        tile.classList.toggle('is-placeholder-item', isPlaceholderTile(tile));
+      });
+    });
+  }
+
   function populateMediaGrid() {
     const mediaGrid = document.querySelector('.media-grid[data-media-kind]');
     if (!mediaGrid) return;
@@ -860,8 +907,8 @@ applyCleanRouting();
         const termsAttr = item.terms.length ? ` data-search-terms="${item.terms.join('|')}"` : '';
         return `
         <button id="${cardId}" class="media-tile" type="button" data-src="${item.src}"${termsAttr}>
-          <img src="${item.image}" alt="${item.title}" />
-          <span>${item.title}</span>
+          <img src="${item.image}" alt="${displayTitleFromRawTitle(item.title)}" />
+          <span>${displayTitleFromRawTitle(item.title)}</span>
         </button>
       `;
       })
@@ -1016,8 +1063,8 @@ applyCleanRouting();
     const tiles = doc.querySelectorAll('.media-tile[data-src], .popular-tile[data-src]');
     return Array.from(tiles)
       .map((tile, index) => {
-        const title = textFromTile(tile);
-        if (!title) return null;
+        const title = displayTitleFromRawTitle(textFromTile(tile));
+        if (!title || PLACEHOLDER_TITLE_PATTERN.test(title)) return null;
         const id = tile.id || `${slugify(title)}-${index + 1}`;
         const customTerms = String(tile.getAttribute('data-search-terms') || '')
           .split('|')
@@ -1041,8 +1088,8 @@ applyCleanRouting();
 
       return parsed
         .map((item, index) => {
-          const title = String(item.title || '').trim();
-          if (!title) return null;
+          const title = displayTitleFromRawTitle(item.title);
+          if (!title || PLACEHOLDER_TITLE_PATTERN.test(title)) return null;
           const cardId = `${kind}-${slugify(title)}-${index + 1}`;
           const extraTerms = Array.isArray(item.terms)
             ? item.terms.map((term) => String(term || '').toLowerCase().trim()).filter(Boolean)
@@ -1213,7 +1260,7 @@ applyCleanRouting();
     if (!main) return;
     let section = document.querySelector('.favorites-section');
     const kind = getPageKind();
-    const items = readFavorites(kind);
+    const items = readFavorites(kind).filter((item) => !PLACEHOLDER_TITLE_PATTERN.test(String(item.title || '').trim()));
     if (!items.length) { section?.remove(); return; }
     if (!section) {
       section = document.createElement('section');
@@ -1248,7 +1295,7 @@ applyCleanRouting();
       const favoriteIds = new Set(readFavorites(kind).map((item) => item.id));
       let shown = 0;
       grid.querySelectorAll('.media-tile[data-src]').forEach((tile) => {
-        const visible = mode !== 'favorites' || favoriteIds.has(getTileId(tile));
+        const visible = !isPlaceholderTile(tile) && (mode !== 'favorites' || favoriteIds.has(getTileId(tile)));
         tile.classList.toggle('is-filtered-out', !visible);
         if (visible) shown += 1;
       });
@@ -1455,6 +1502,7 @@ applyCleanRouting();
 
   applySettings();
   populateMediaGrid();
+  cleanupPlaceholderLibraryItems();
   organizeGameTilesAlphabetically();
   organizeMovieSections();
   setupSiteSearch();
@@ -1471,5 +1519,7 @@ applyCleanRouting();
   setupLiveUsersCounter();
   setupDistrictNotice();
   setupContentCounts();
+  setupVisitorCounter();
+  setupCommentBox();
   registerServiceWorker();
 })();

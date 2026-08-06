@@ -2819,3 +2819,46 @@ main.embed-main {
   border-color: rgba(212,175,55,0.32) !important;
   box-shadow: 0 14px 30px rgba(0,0,0,0.34), 0 0 22px rgba(212,175,55,0.10) !important;
 }
+
+/* Restored counters and library cleanup */
+.live-users-counter {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  white-space: nowrap;
+  border-color: rgba(212,175,55,.32);
+  background: linear-gradient(145deg, rgba(10,10,10,.92), rgba(44,33,12,.72));
+  color: #f7e7ad;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 20px rgba(0,0,0,.28);
+}
+
+.live-users-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #f5df93;
+  box-shadow: 0 0 10px rgba(245,223,147,.8);
+}
+
+.media-tile.is-placeholder-item,
+.media-row.is-filtered-out,
+.movie-section.is-filtered-out {
+  display: none !important;
+}
+
+.comment-box-wrap,
+.visitor-counter {
+  border-color: rgba(212,175,55,.2);
+  background: linear-gradient(145deg, rgba(8,8,8,.92), rgba(34,26,10,.74));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), var(--shadow-sm);
+}
+
+@media (max-width: 560px) {
+  .live-users-counter {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+}
