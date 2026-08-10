@@ -75,7 +75,7 @@ applyCleanRouting();
 (function () {
   const DEFAULT_TITLE = 'McCrack';
   const DEFAULT_FAVICON = 'favicon.png';
-  const defaultWallpaper = 'radial-gradient(circle at 50% -12%, rgba(255,255,255,0.10), transparent 34rem), linear-gradient(170deg, #030303 0%, #0b0b0b 52%, #151515 100%)';
+  const defaultWallpaper = 'radial-gradient(circle at 50% -12%, rgba(255,255,255,0.08), transparent 32rem), linear-gradient(170deg, #000 0%, #050505 52%, #0b0b0b 100%)';
   const HOME_SPLASH_MESSAGES = [
     'Now with 99% less school surveillance.',
     'Alt-Tab faster.',
@@ -133,7 +133,7 @@ applyCleanRouting();
     const savedFavicon = localStorage.getItem('mc_favicon_url') || DEFAULT_FAVICON;
     const wallType = localStorage.getItem('mc_wallpaper_type') || 'gradient';
     const wallData = localStorage.getItem('mc_wallpaper_value') || defaultWallpaper;
-    const theme = localStorage.getItem('mc_theme') || 'matte-noir';
+    const theme = localStorage.getItem('mc_theme') || 'blackout';
 
     document.title = savedTitle;
     ensureFavicon().href = savedFavicon;
@@ -862,7 +862,7 @@ applyCleanRouting();
 
   const PLACEHOLDER_TITLE_PATTERN = /^(?:game|movie|app)\s+\d+$/i;
   const PLACEHOLDER_PREFIX_PATTERN = /^(game|movie|app)\s+\d+\s+(.+)$/i;
-  const DISTRICT_ALERT_MESSAGE = "For the Waterford Public Schools District, Movies don't work because of the Google Drive blocking system they added, I will try to fix them with a proxy as soon as possible!";
+  const DISTRICT_ALERT_MESSAGE = "Do Ctrl + Shift + R to update the site, you either have to do this every time or you can delete your cookies for the site, which will completely delete your game saves and settings you currently have on the site!";
 
   function readMediaData() {
     const dataNode = document.getElementById('mediaData');
