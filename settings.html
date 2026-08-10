@@ -57,7 +57,7 @@
           </label>
           <label>Wallpaper selector
             <select id="presetSelect" class="input">
-              <option value="radial-gradient(circle at 50% -12%, rgba(255,255,255,0.08), transparent 32rem), linear-gradient(170deg, #000 0%, #050505 52%, #0b0b0b 100%)">Blackout</option>
+              <option value="linear-gradient(160deg, #000 0%, #020202 48%, #070707 100%)">Blackout</option>
               <option value="radial-gradient(circle at 50% -12%, rgba(255,255,255,0.10), transparent 34rem), linear-gradient(170deg, #030303 0%, #0b0b0b 52%, #151515 100%)">Soft Black</option>
               <option value="radial-gradient(circle at 78% 0%, rgba(255,255,255,0.12), transparent 30rem), radial-gradient(circle at 8% 92%, rgba(255,255,255,0.055), transparent 26rem), linear-gradient(145deg, #030303 0%, #0d0d0d 58%, #1d1d1d 100%)">Monochrome Glass</option>
               <option value="radial-gradient(circle at 80% 0%, rgba(72,139,255,.24), transparent 32rem), linear-gradient(145deg, #02040a 0%, #06152d 58%, #010205 100%)">Midnight Blue</option>
@@ -152,6 +152,10 @@
     const accentSelect = document.getElementById('accentSelect');
     const cornerSelect = document.getElementById('cornerSelect');
     const fontScaleSelect = document.getElementById('fontScaleSelect');
+    const presetSelect = document.getElementById('presetSelect');
+    const setStatus = (message) => {
+      cloakInfo.textContent = message || `Current default cloak: ${DEFAULT_CLOAK_TITLE} | ${DEFAULT_CLOAK_FAVICON}`;
+    };
 
     tabName.value = localStorage.getItem('mc_tab_name') || defaults.DEFAULT_TITLE;
     faviconUrl.value = localStorage.getItem('mc_favicon_url') || defaults.DEFAULT_FAVICON;
@@ -159,6 +163,13 @@
     accentSelect.value = localStorage.getItem('mc_accent_strength') || 'subtle';
     cornerSelect.value = localStorage.getItem('mc_corner_style') || 'rounded';
     fontScaleSelect.value = localStorage.getItem('mc_font_scale') || 'normal';
+    const savedWallpaperType = localStorage.getItem('mc_wallpaper_type');
+    const savedWallpaperValue = localStorage.getItem('mc_wallpaper_value') || defaults.defaultWallpaper;
+    if (savedWallpaperType === 'gradient' && [...presetSelect.options].some((option) => option.value === savedWallpaperValue)) {
+      presetSelect.value = savedWallpaperValue;
+    } else {
+      presetSelect.value = defaults.defaultWallpaper;
+    }
     wallpaperUrl.value = localStorage.getItem('mc_wallpaper_type') === 'url' ? (localStorage.getItem('mc_wallpaper_value') || '') : '';
     document.getElementById('animationsToggle').checked = localStorage.getItem('mc_animations') !== 'off';
     document.getElementById('blurToggle').checked = localStorage.getItem('mc_blur') !== 'off';
@@ -168,7 +179,7 @@
     document.getElementById('stealthToggle').checked = localStorage.getItem('mc_stealth_mode') === 'on';
     document.getElementById('focusToggle').checked = localStorage.getItem('mc_focus_mode') === 'on';
     document.getElementById('denseNavToggle').checked = localStorage.getItem('mc_dense_nav') === 'on';
-    cloakInfo.textContent = `Current default cloak: ${DEFAULT_CLOAK_TITLE} | ${DEFAULT_CLOAK_FAVICON}`;
+    setStatus();
 
 
 
@@ -178,6 +189,7 @@
       localStorage.setItem('mc_corner_style', cornerSelect.value);
       localStorage.setItem('mc_font_scale', fontScaleSelect.value);
       window.mcApp.applySettings();
+      setStatus('Theme settings saved.');
     });
 
     document.getElementById('saveWallpaperUrl').addEventListener('click', () => {
@@ -186,6 +198,7 @@
       localStorage.setItem('mc_wallpaper_type', 'url');
       localStorage.setItem('mc_wallpaper_value', value);
       window.mcApp.applySettings();
+      setStatus('Wallpaper URL applied.');
     });
 
     document.getElementById('saveWallpaperUpload').addEventListener('click', () => {
@@ -196,6 +209,7 @@
         localStorage.setItem('mc_wallpaper_type', 'url');
         localStorage.setItem('mc_wallpaper_value', String(reader.result));
         window.mcApp.applySettings();
+        setStatus('Uploaded wallpaper applied.');
       };
       reader.readAsDataURL(file);
     });
@@ -205,6 +219,8 @@
       localStorage.removeItem('mc_wallpaper_value');
       wallpaperUrl.value = '';
       window.mcApp.applySettings();
+      presetSelect.value = defaults.defaultWallpaper;
+      setStatus('Wallpaper reset to black gradient.');
     });
 
     ['themeSelect','presetSelect','accentSelect','cornerSelect','fontScaleSelect'].forEach((id) => {
@@ -227,11 +243,13 @@
       localStorage.setItem('mc_card_mode', event.target.checked ? 'compact' : 'normal');
       document.getElementById('largeCardToggle').checked = false;
       window.mcApp.applySettings();
+      setStatus(event.target.checked ? 'Compact card mode enabled.' : 'Card mode reset.');
     });
     document.getElementById('largeCardToggle').addEventListener('change', (event) => {
       localStorage.setItem('mc_card_mode', event.target.checked ? 'large' : 'normal');
       document.getElementById('compactCardToggle').checked = false;
       window.mcApp.applySettings();
+      setStatus(event.target.checked ? 'Large card mode enabled.' : 'Card mode reset.');
     });
 
     document.getElementById('resetAllSettings').addEventListener('click', () => {
@@ -242,11 +260,13 @@
     document.getElementById('saveTab').addEventListener('click', () => {
       localStorage.setItem('mc_tab_name', tabName.value.trim() || defaults.DEFAULT_TITLE);
       window.mcApp.applySettings();
+      setStatus('Tab name saved.');
     });
 
     document.getElementById('saveFaviconUrl').addEventListener('click', () => {
       localStorage.setItem('mc_favicon_url', faviconUrl.value.trim() || defaults.DEFAULT_FAVICON);
       window.mcApp.applySettings();
+      setStatus('Favicon URL saved.');
     });
 
     document.getElementById('saveFaviconUpload').addEventListener('click', () => {
@@ -256,6 +276,7 @@
       reader.onload = () => {
         localStorage.setItem('mc_favicon_url', String(reader.result));
         window.mcApp.applySettings();
+        setStatus('Uploaded favicon applied.');
       };
       reader.readAsDataURL(file);
     });
@@ -266,6 +287,7 @@
       tabName.value = DEFAULT_CLOAK_TITLE;
       faviconUrl.value = DEFAULT_CLOAK_FAVICON;
       window.mcApp.applySettings();
+      setStatus('Default cloak applied.');
     });
 
     document.getElementById('resetCloak').addEventListener('click', () => {
@@ -274,6 +296,7 @@
       tabName.value = defaults.DEFAULT_TITLE;
       faviconUrl.value = defaults.DEFAULT_FAVICON;
       window.mcApp.applySettings();
+      setStatus('Cloak reset to site default.');
     });
 
     document.getElementById('savePreset').addEventListener('click', () => {
@@ -281,6 +304,7 @@
       localStorage.setItem('mc_wallpaper_type', 'gradient');
       localStorage.setItem('mc_wallpaper_value', selected);
       window.mcApp.applySettings();
+      setStatus('Wallpaper preset applied.');
     });
   </script>
 </body>
