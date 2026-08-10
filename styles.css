@@ -2966,3 +2966,55 @@ body {
   .media-launcher-control-group { flex: 1 1 100% !important; }
   .media-launcher-aboutblank { grid-column: 1 / -1; }
 }
+
+/* Settings/theme fixes: make the default theme truly black, add theme variety, and improve app tiles. */
+html[data-theme="blackout"] {
+  --bg: #000;
+  --bg-2: #030303;
+  --bg-3: #090909;
+  --surface: rgba(255,255,255,.04);
+  --surface-2: rgba(255,255,255,.06);
+  --surface-3: rgba(255,255,255,.09);
+  --border: rgba(255,255,255,.12);
+  --mono-accent: rgba(255,255,255,.2);
+  --mono-accent-strong: rgba(255,255,255,.66);
+}
+html[data-theme="midnight-blue"] { --bg:#02040a; --bg-2:#06152d; --surface:rgba(72,139,255,.09); --surface-2:rgba(72,139,255,.13); --surface-3:rgba(126,170,255,.17); --border:rgba(126,170,255,.25); --mono-accent:rgba(126,170,255,.34); --mono-accent-strong:rgba(170,203,255,.72); }
+html[data-theme="neon-purple"] { --bg:#050109; --bg-2:#17051f; --surface:rgba(185,88,255,.09); --surface-2:rgba(185,88,255,.13); --surface-3:rgba(221,149,255,.18); --border:rgba(221,149,255,.25); --mono-accent:rgba(221,149,255,.34); --mono-accent-strong:rgba(240,204,255,.74); }
+html[data-theme="forest-night"] { --bg:#020604; --bg-2:#071d14; --surface:rgba(68,255,162,.075); --surface-2:rgba(68,255,162,.11); --surface-3:rgba(118,255,188,.16); --border:rgba(118,255,188,.23); --mono-accent:rgba(118,255,188,.3); --mono-accent-strong:rgba(184,255,220,.7); }
+html[data-theme="crimson-shadow"] { --bg:#080101; --bg-2:#240707; --surface:rgba(255,70,70,.085); --surface-2:rgba(255,70,70,.13); --surface-3:rgba(255,122,122,.18); --border:rgba(255,122,122,.25); --mono-accent:rgba(255,122,122,.34); --mono-accent-strong:rgba(255,196,196,.72); }
+html[data-theme="ocean-depths"] { --bg:#00070a; --bg-2:#06222c; --surface:rgba(59,218,255,.08); --surface-2:rgba(59,218,255,.12); --surface-3:rgba(125,235,255,.17); --border:rgba(125,235,255,.24); --mono-accent:rgba(125,235,255,.32); --mono-accent-strong:rgba(195,248,255,.72); }
+html[data-theme="sunset-ember"] { --bg:#090301; --bg-2:#271006; --surface:rgba(255,154,75,.085); --surface-2:rgba(255,154,75,.13); --surface-3:rgba(255,190,121,.18); --border:rgba(255,190,121,.25); --mono-accent:rgba(255,190,121,.34); --mono-accent-strong:rgba(255,224,184,.72); }
+html[data-theme="cyber-green"] { --bg:#010704; --bg-2:#04190d; --surface:rgba(77,255,77,.08); --surface-2:rgba(77,255,77,.12); --surface-3:rgba(153,255,153,.17); --border:rgba(153,255,153,.25); --mono-accent:rgba(153,255,153,.34); --mono-accent-strong:rgba(211,255,211,.72); }
+
+.settings-card label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #dedede !important;
+  cursor: pointer;
+}
+.settings-card .btn { min-height: 42px; }
+.settings-actions .btn { flex: 1 1 150px; }
+
+.district-notice {
+  max-width: 720px !important;
+  padding: 9px 12px !important;
+  border-color: rgba(255,255,255,.18) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(0,0,0,.72)) !important;
+  color: #e8e8e8 !important;
+  font-size: .78rem !important;
+  font-weight: 650 !important;
+}
+
+.media-grid[data-media-static="app"] {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  align-items: stretch;
+}
+.media-grid[data-media-static="app"] .media-row { display: contents; }
+.media-grid[data-media-static="app"] .media-tile { min-height: 100%; }
+.media-grid[data-media-static="app"] .media-tile img { aspect-ratio: 1 / 1; }
+@media (max-width: 680px) {
+  .media-grid[data-media-static="app"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

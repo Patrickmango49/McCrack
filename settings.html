@@ -42,15 +42,31 @@
           <h2>Appearance</h2>
           <label>Theme selector
             <select id="themeSelect" class="input">
+              <option value="blackout">Blackout (Default)</option>
               <option value="matte-noir">Soft Black</option>
               <option value="monochrome-glass">Monochrome Glass</option>
+              <option value="midnight-blue">Midnight Blue</option>
+              <option value="neon-purple">Neon Purple</option>
+              <option value="forest-night">Forest Night</option>
+              <option value="crimson-shadow">Crimson Shadow</option>
+              <option value="ocean-depths">Ocean Depths</option>
+              <option value="sunset-ember">Sunset Ember</option>
+              <option value="cyber-green">Cyber Green</option>
               <option value="paper-lite">Paper Lite</option>
             </select>
           </label>
           <label>Wallpaper selector
             <select id="presetSelect" class="input">
+              <option value="radial-gradient(circle at 50% -12%, rgba(255,255,255,0.08), transparent 32rem), linear-gradient(170deg, #000 0%, #050505 52%, #0b0b0b 100%)">Blackout</option>
               <option value="radial-gradient(circle at 50% -12%, rgba(255,255,255,0.10), transparent 34rem), linear-gradient(170deg, #030303 0%, #0b0b0b 52%, #151515 100%)">Soft Black</option>
               <option value="radial-gradient(circle at 78% 0%, rgba(255,255,255,0.12), transparent 30rem), radial-gradient(circle at 8% 92%, rgba(255,255,255,0.055), transparent 26rem), linear-gradient(145deg, #030303 0%, #0d0d0d 58%, #1d1d1d 100%)">Monochrome Glass</option>
+              <option value="radial-gradient(circle at 80% 0%, rgba(72,139,255,.24), transparent 32rem), linear-gradient(145deg, #02040a 0%, #06152d 58%, #010205 100%)">Midnight Blue</option>
+              <option value="radial-gradient(circle at 20% 0%, rgba(185,88,255,.28), transparent 30rem), linear-gradient(145deg, #050109 0%, #17051f 54%, #030104 100%)">Neon Purple</option>
+              <option value="radial-gradient(circle at 82% 12%, rgba(68,255,162,.18), transparent 30rem), linear-gradient(145deg, #020604 0%, #071d14 55%, #010302 100%)">Forest Night</option>
+              <option value="radial-gradient(circle at 78% 8%, rgba(255,70,70,.25), transparent 30rem), linear-gradient(145deg, #080101 0%, #240707 56%, #030000 100%)">Crimson Shadow</option>
+              <option value="radial-gradient(circle at 22% 0%, rgba(59,218,255,.22), transparent 31rem), linear-gradient(145deg, #00070a 0%, #06222c 58%, #010304 100%)">Ocean Depths</option>
+              <option value="radial-gradient(circle at 75% 0%, rgba(255,154,75,.24), transparent 31rem), linear-gradient(145deg, #090301 0%, #271006 58%, #040100 100%)">Sunset Ember</option>
+              <option value="radial-gradient(circle at 18% 4%, rgba(77,255,77,.2), transparent 30rem), linear-gradient(145deg, #010704 0%, #04190d 58%, #000201 100%)">Cyber Green</option>
               <option value="linear-gradient(165deg, #050505 0%, #111 55%, #2a2a2a 130%)">Paper Lite</option>
             </select>
           </label>
@@ -139,7 +155,7 @@
 
     tabName.value = localStorage.getItem('mc_tab_name') || defaults.DEFAULT_TITLE;
     faviconUrl.value = localStorage.getItem('mc_favicon_url') || defaults.DEFAULT_FAVICON;
-    themeSelect.value = localStorage.getItem('mc_theme') || 'matte-noir';
+    themeSelect.value = localStorage.getItem('mc_theme') || 'blackout';
     accentSelect.value = localStorage.getItem('mc_accent_strength') || 'subtle';
     cornerSelect.value = localStorage.getItem('mc_corner_style') || 'rounded';
     fontScaleSelect.value = localStorage.getItem('mc_font_scale') || 'normal';
@@ -189,6 +205,10 @@
       localStorage.removeItem('mc_wallpaper_value');
       wallpaperUrl.value = '';
       window.mcApp.applySettings();
+    });
+
+    ['themeSelect','presetSelect','accentSelect','cornerSelect','fontScaleSelect'].forEach((id) => {
+      document.getElementById(id).addEventListener('change', () => document.getElementById(id === 'presetSelect' ? 'savePreset' : 'saveTheme').click());
     });
 
     const bindToggle = (id, key, onValue, offValue) => {
