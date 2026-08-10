@@ -75,7 +75,7 @@ applyCleanRouting();
 (function () {
   const DEFAULT_TITLE = 'McCrack';
   const DEFAULT_FAVICON = 'favicon.png';
-  const defaultWallpaper = 'radial-gradient(circle at 50% -12%, rgba(255,255,255,0.08), transparent 32rem), linear-gradient(170deg, #000 0%, #050505 52%, #0b0b0b 100%)';
+  const defaultWallpaper = 'linear-gradient(160deg, #000 0%, #020202 48%, #070707 100%)';
   const HOME_SPLASH_MESSAGES = [
     'Now with 99% less school surveillance.',
     'Alt-Tab faster.',
@@ -158,6 +158,8 @@ applyCleanRouting();
     } else {
       document.body.style.background = defaultWallpaper;
     }
+    document.body.style.backgroundAttachment = 'fixed';
+    document.body.style.backgroundColor = '#000';
   }
 
   function setupHomeSplashMessage() {
@@ -231,7 +233,7 @@ applyCleanRouting();
     const launcher = document.createElement('div');
     launcher.className = 'media-launcher';
     launcher.innerHTML = `
-      <div class="media-launcher-shell">
+      <div class="media-launcher-shell" data-current-tile="">
         <div class="media-launcher-controls" aria-label="Player controls">
           <div class="media-launcher-control-group">
             <button class="media-launcher-refresh" type="button" aria-label="Refresh player" title="Refresh">↻ <span>Refresh</span></button>
@@ -248,6 +250,7 @@ applyCleanRouting();
             <p>${kind === 'movie' ? 'Loading movie…' : kind === 'app' ? 'Loading app…' : 'Loading game…'}</p>
           </div>
           <iframe id="mediaFrame" src="about:blank" referrerpolicy="no-referrer" allow="autoplay; fullscreen"></iframe>
+          <a class="dulo-embed-link" href="https://dulo.cx" target="_blank" rel="noopener noreferrer">https://dulo.cx</a>
         </div>
 
       </div>
@@ -287,6 +290,7 @@ applyCleanRouting();
 
     function openLauncher(url, tile = null) {
       currentTile = tile;
+      launcher.querySelector('.media-launcher-shell')?.setAttribute('data-current-tile', tile?.id || '');
       if (tile) {
         launcher.dataset.currentFavoriteId = getTileId(tile);
         launcher.dataset.currentKind = getTileKind(tile);
