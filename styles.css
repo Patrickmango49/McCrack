@@ -2867,3 +2867,102 @@ html[data-theme="monochrome-glass"] { --gold: #f4f4f4; --border: rgba(255,255,25
   border: 0 !important;
   background: #000;
 }
+
+/* Monochrome refinement: black + white with restrained light accents. */
+:root {
+  --gold: #f2f2f2;
+  --premium-shadow: 0 24px 70px rgba(0,0,0,.62);
+}
+html[data-theme="obsidian-gold"],
+html[data-theme="matte-noir"],
+html[data-theme="monochrome-glass"],
+html[data-theme="paper-lite"] {
+  --surface: rgba(255,255,255,.045);
+  --border: rgba(255,255,255,.12);
+}
+html[data-accent="subtle"] { --mono-accent: rgba(255,255,255,.18); --mono-accent-strong: rgba(255,255,255,.42); }
+html[data-accent="balanced"] { --mono-accent: rgba(255,255,255,.25); --mono-accent-strong: rgba(255,255,255,.56); }
+html[data-accent="bright"] { --mono-accent: rgba(255,255,255,.34); --mono-accent-strong: rgba(255,255,255,.72); }
+html[data-corners="soft"] { --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 18px; }
+html[data-corners="sharp"] { --radius-sm: 3px; --radius-md: 5px; --radius-lg: 8px; --radius-xl: 10px; }
+html[data-font-scale="large"] { font-size: 17px; }
+html[data-font-scale="xl"] { font-size: 18px; }
+body {
+  background-image:
+    radial-gradient(ellipse 90% 55% at 50% -5%, rgba(255,255,255,0.055) 0%, transparent 62%),
+    radial-gradient(ellipse 55% 40% at 0% 100%, rgba(255,255,255,0.022) 0%, transparent 52%) !important;
+}
+.topbar { background: linear-gradient(180deg, rgba(8,8,8,.97), rgba(0,0,0,.9)) !important; }
+.nav a.active,
+.settings-link.active { box-shadow: inset 0 0 0 1px var(--mono-accent) !important; }
+.home-hero-title .mc {
+  color: #fff !important;
+  background-image: linear-gradient(110deg, #fff 0%, #dadada 36%, #8b8b8b 54%, #fff 76%, #cfcfcf 100%) !important;
+  filter: drop-shadow(0 16px 36px rgba(255,255,255,0.08)) !important;
+}
+.media-tile:hover,
+.media-tile:focus-visible { border-color: var(--mono-accent-strong) !important; box-shadow: var(--premium-shadow), 0 0 26px rgba(255,255,255,.055) !important; }
+.btn,
+.library-filter,
+.embed-get-started-button { border-color: var(--mono-accent) !important; }
+.btn:hover,
+.library-filter:hover { border-color: var(--mono-accent-strong) !important; }
+.btn-secondary,
+.settings-card label,
+.details-kicker,
+.details-meta dt,
+.toast-icon,
+.search-empty::before,
+.search-empty em,
+.library-filter,
+.live-users-counter { color: #dedede !important; }
+.library-filter:hover,
+.library-filter.is-active { background: linear-gradient(135deg, rgba(255,255,255,.16), rgba(0,0,0,.75)) !important; border-color: var(--mono-accent-strong) !important; }
+.quick-actions { inset: auto 12px 50px 12px !important; grid-template-columns: 1fr 1fr !important; gap: 9px !important; }
+.quick-actions span { border-color: var(--mono-accent) !important; background: linear-gradient(145deg, rgba(255,255,255,.18), rgba(255,255,255,.06)) !important; }
+.quick-actions [data-quick-action="play"] { color: #050505 !important; background: linear-gradient(135deg, #fff, #d8d8d8 56%, #9c9c9c) !important; border-color: rgba(255,255,255,.72) !important; }
+.media-launcher-details,
+.quick-actions [data-quick-action="details"] {
+  min-height: 38px !important;
+  border-color: rgba(255,255,255,.34) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.07)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 10px 24px rgba(0,0,0,.28) !important;
+}
+.media-launcher-details:hover,
+.quick-actions [data-quick-action="details"]:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.20), 0 14px 30px rgba(0,0,0,.34) !important; }
+.media-launcher-controls { justify-content: center !important; border-color: var(--mono-accent) !important; }
+.media-launcher-control-group { flex: 0 1 auto !important; justify-content: center !important; }
+.media-launcher-aboutblank {
+  min-height: 44px !important;
+  padding: 0 18px !important;
+  border-color: rgba(255,255,255,.42) !important;
+  background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(214,214,214,.90) 54%, rgba(120,120,120,.88)) !important;
+  color: #050505 !important;
+  font-weight: 900 !important;
+  letter-spacing: .01em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 14px 30px rgba(0,0,0,.34), 0 0 22px rgba(255,255,255,.08) !important;
+}
+.aboutblank-icon { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 999px; color: #fff; background: #050505; }
+.media-launcher-aboutblank:hover { transform: translateY(-2px) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 18px 36px rgba(0,0,0,.42), 0 0 26px rgba(255,255,255,.12) !important; }
+.media-launcher-fullscreen { color: #050505 !important; background: linear-gradient(135deg, #fff, #d7d7d7 58%, #8f8f8f) !important; }
+.details-card { border-color: var(--mono-accent) !important; box-shadow: var(--shadow-lg), 0 0 42px rgba(255,255,255,.055) !important; }
+.details-description { color: #d8d8d8 !important; }
+.live-users-counter { background: linear-gradient(145deg, rgba(10,10,10,.92), rgba(255,255,255,.08)) !important; border-color: rgba(255,255,255,.22) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 20px rgba(0,0,0,.28) !important; }
+.live-users-dot { background: #fff !important; box-shadow: 0 0 10px rgba(255,255,255,.75) !important; }
+.settings-card { min-height: 100%; }
+.settings-card .input { background: rgba(255,255,255,.055); border-color: rgba(255,255,255,.13); color: #fff; }
+.stealth-mode .live-users-counter,
+.stealth-mode .visitor-counter,
+.stealth-mode .premium-toast { display: none !important; }
+.stealth-mode .media-tile:hover,
+.stealth-mode .card:hover { box-shadow: 0 12px 34px rgba(0,0,0,.44) !important; }
+.focus-mode .district-notice,
+.focus-mode .favorites-section,
+.focus-mode .library-filter-count { display: none !important; }
+.dense-nav .topbar-row { padding-top: 6px; padding-bottom: 6px; }
+.dense-nav .nav a { padding: 5px 10px; font-size: .8rem; }
+@media (max-width: 760px) {
+  .media-launcher-controls { align-items: stretch; }
+  .media-launcher-control-group { flex: 1 1 100% !important; }
+  .media-launcher-aboutblank { grid-column: 1 / -1; }
+}

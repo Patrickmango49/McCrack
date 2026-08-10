@@ -75,7 +75,7 @@ applyCleanRouting();
 (function () {
   const DEFAULT_TITLE = 'McCrack';
   const DEFAULT_FAVICON = 'favicon.png';
-  const defaultWallpaper = 'linear-gradient(170deg, #030303 0%, #11100d 45%, #2b2110 100%)';
+  const defaultWallpaper = 'radial-gradient(circle at 50% -12%, rgba(255,255,255,0.10), transparent 34rem), linear-gradient(170deg, #030303 0%, #0b0b0b 52%, #151515 100%)';
   const HOME_SPLASH_MESSAGES = [
     'Now with 99% less school surveillance.',
     'Alt-Tab faster.',
@@ -144,6 +144,12 @@ applyCleanRouting();
     document.body.classList.toggle('reduced-motion-mode', localStorage.getItem('mc_reduced_motion') === 'on');
     document.body.classList.toggle('compact-cards', localStorage.getItem('mc_card_mode') === 'compact');
     document.body.classList.toggle('large-cards', localStorage.getItem('mc_card_mode') === 'large');
+    document.body.classList.toggle('stealth-mode', localStorage.getItem('mc_stealth_mode') === 'on');
+    document.body.classList.toggle('focus-mode', localStorage.getItem('mc_focus_mode') === 'on');
+    document.body.classList.toggle('dense-nav', localStorage.getItem('mc_dense_nav') === 'on');
+    document.documentElement.dataset.accent = localStorage.getItem('mc_accent_strength') || 'subtle';
+    document.documentElement.dataset.corners = localStorage.getItem('mc_corner_style') || 'rounded';
+    document.documentElement.dataset.fontScale = localStorage.getItem('mc_font_scale') || 'normal';
 
     if (wallType === 'url' && wallData) {
       document.body.style.background = `linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,.62)), center / cover fixed no-repeat url('${wallData.replace(/'/g, '%27')}')`;
@@ -231,7 +237,7 @@ applyCleanRouting();
             <button class="media-launcher-refresh" type="button" aria-label="Refresh player" title="Refresh">↻ <span>Refresh</span></button>
             <button class="media-launcher-favorite" type="button" aria-label="Favorite current item" title="Favorite">♡ <span>Favorite</span></button>
             <button class="media-launcher-details" type="button" aria-label="Show details for current item" title="Details">ℹ <span>Details</span></button>
-            ${kind !== 'movie' ? '<button class="media-launcher-aboutblank" type="button">↗ <span>Open in about:blank</span></button>' : ''}
+            ${kind !== 'movie' ? '<button class="media-launcher-aboutblank" type="button" aria-label="Open current item in about blank"><span class="aboutblank-icon" aria-hidden="true">↗</span><span>Open in about:blank</span></button>' : ''}
             <button class="media-launcher-fullscreen" type="button" aria-label="Toggle fullscreen" title="Fullscreen">⛶ <span>Fullscreen</span></button>
           </div>
           <button class="media-launcher-close" type="button" aria-label="Close player" title="Close">✕</button>

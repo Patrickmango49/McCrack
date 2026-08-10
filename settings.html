@@ -42,16 +42,16 @@
           <h2>Appearance</h2>
           <label>Theme selector
             <select id="themeSelect" class="input">
-              <option value="matte-noir">Matte Noir</option>
-              <option value="obsidian-gold">Obsidian Gold</option>
+              <option value="matte-noir">Soft Black</option>
               <option value="monochrome-glass">Monochrome Glass</option>
+              <option value="paper-lite">Paper Lite</option>
             </select>
           </label>
           <label>Wallpaper selector
             <select id="presetSelect" class="input">
-              <option value="linear-gradient(170deg, #030303 0%, #11100d 45%, #2b2110 100%)">Matte Noir</option>
-              <option value="radial-gradient(circle at 50% -12%, rgba(212, 175, 55, 0.16), transparent 34rem), radial-gradient(circle at 8% 14%, rgba(255, 255, 255, 0.045), transparent 28rem), linear-gradient(145deg, #030303 0%, #0c0c0a 48%, #15130e 100%)">Obsidian Gold</option>
-              <option value="linear-gradient(170deg, #050505 0%, #151515 45%, #f5f5f5 140%)">Monochrome Glass</option>
+              <option value="radial-gradient(circle at 50% -12%, rgba(255,255,255,0.10), transparent 34rem), linear-gradient(170deg, #030303 0%, #0b0b0b 52%, #151515 100%)">Soft Black</option>
+              <option value="radial-gradient(circle at 78% 0%, rgba(255,255,255,0.12), transparent 30rem), radial-gradient(circle at 8% 92%, rgba(255,255,255,0.055), transparent 26rem), linear-gradient(145deg, #030303 0%, #0d0d0d 58%, #1d1d1d 100%)">Monochrome Glass</option>
+              <option value="linear-gradient(165deg, #050505 0%, #111 55%, #2a2a2a 130%)">Paper Lite</option>
             </select>
           </label>
           <label>Custom wallpaper image URL
@@ -59,6 +59,27 @@
           </label>
           <label>Upload custom wallpaper image
             <input id="wallpaperUpload" class="input" type="file" accept="image/*" />
+          </label>
+          <label>Accent strength
+            <select id="accentSelect" class="input">
+              <option value="subtle">Subtle</option>
+              <option value="balanced">Balanced</option>
+              <option value="bright">Bright</option>
+            </select>
+          </label>
+          <label>Corner style
+            <select id="cornerSelect" class="input">
+              <option value="rounded">Rounded</option>
+              <option value="soft">Soft</option>
+              <option value="sharp">Sharp</option>
+            </select>
+          </label>
+          <label>Text size
+            <select id="fontScaleSelect" class="input">
+              <option value="normal">Normal</option>
+              <option value="large">Large</option>
+              <option value="xl">Extra Large</option>
+            </select>
           </label>
           <div class="settings-actions">
             <button id="saveTheme" class="btn">Save Theme</button>
@@ -76,6 +97,9 @@
           <label><input id="reducedMotionToggle" type="checkbox" /> Reduced motion mode</label>
           <label><input id="compactCardToggle" type="checkbox" /> Compact card mode</label>
           <label><input id="largeCardToggle" type="checkbox" /> Large card mode</label>
+          <label><input id="stealthToggle" type="checkbox" /> Stealth mode (hide counters and extra glow)</label>
+          <label><input id="focusToggle" type="checkbox" /> Focus mode for cleaner pages</label>
+          <label><input id="denseNavToggle" type="checkbox" /> Compact navbar</label>
           <button id="resetAllSettings" class="btn btn-danger">Reset All Settings</button>
         </article>
 
@@ -109,22 +133,34 @@
     const cloakInfo = document.getElementById('cloakInfo');
     const themeSelect = document.getElementById('themeSelect');
     const wallpaperUrl = document.getElementById('wallpaperUrl');
+    const accentSelect = document.getElementById('accentSelect');
+    const cornerSelect = document.getElementById('cornerSelect');
+    const fontScaleSelect = document.getElementById('fontScaleSelect');
 
     tabName.value = localStorage.getItem('mc_tab_name') || defaults.DEFAULT_TITLE;
     faviconUrl.value = localStorage.getItem('mc_favicon_url') || defaults.DEFAULT_FAVICON;
     themeSelect.value = localStorage.getItem('mc_theme') || 'matte-noir';
+    accentSelect.value = localStorage.getItem('mc_accent_strength') || 'subtle';
+    cornerSelect.value = localStorage.getItem('mc_corner_style') || 'rounded';
+    fontScaleSelect.value = localStorage.getItem('mc_font_scale') || 'normal';
     wallpaperUrl.value = localStorage.getItem('mc_wallpaper_type') === 'url' ? (localStorage.getItem('mc_wallpaper_value') || '') : '';
     document.getElementById('animationsToggle').checked = localStorage.getItem('mc_animations') !== 'off';
     document.getElementById('blurToggle').checked = localStorage.getItem('mc_blur') !== 'off';
     document.getElementById('reducedMotionToggle').checked = localStorage.getItem('mc_reduced_motion') === 'on';
     document.getElementById('compactCardToggle').checked = localStorage.getItem('mc_card_mode') === 'compact';
     document.getElementById('largeCardToggle').checked = localStorage.getItem('mc_card_mode') === 'large';
+    document.getElementById('stealthToggle').checked = localStorage.getItem('mc_stealth_mode') === 'on';
+    document.getElementById('focusToggle').checked = localStorage.getItem('mc_focus_mode') === 'on';
+    document.getElementById('denseNavToggle').checked = localStorage.getItem('mc_dense_nav') === 'on';
     cloakInfo.textContent = `Current default cloak: ${DEFAULT_CLOAK_TITLE} | ${DEFAULT_CLOAK_FAVICON}`;
 
 
 
     document.getElementById('saveTheme').addEventListener('click', () => {
       localStorage.setItem('mc_theme', themeSelect.value);
+      localStorage.setItem('mc_accent_strength', accentSelect.value);
+      localStorage.setItem('mc_corner_style', cornerSelect.value);
+      localStorage.setItem('mc_font_scale', fontScaleSelect.value);
       window.mcApp.applySettings();
     });
 
@@ -164,6 +200,9 @@
     bindToggle('animationsToggle', 'mc_animations', 'on', 'off');
     bindToggle('blurToggle', 'mc_blur', 'on', 'off');
     bindToggle('reducedMotionToggle', 'mc_reduced_motion', 'on', 'off');
+    bindToggle('stealthToggle', 'mc_stealth_mode', 'on', 'off');
+    bindToggle('focusToggle', 'mc_focus_mode', 'on', 'off');
+    bindToggle('denseNavToggle', 'mc_dense_nav', 'on', 'off');
     document.getElementById('compactCardToggle').addEventListener('change', (event) => {
       localStorage.setItem('mc_card_mode', event.target.checked ? 'compact' : 'normal');
       document.getElementById('largeCardToggle').checked = false;
@@ -176,7 +215,7 @@
     });
 
     document.getElementById('resetAllSettings').addEventListener('click', () => {
-      ['mc_theme','mc_wallpaper_type','mc_wallpaper_value','mc_animations','mc_blur','mc_reduced_motion','mc_card_mode','mc_tab_name','mc_favicon_url'].forEach((key) => localStorage.removeItem(key));
+      ['mc_theme','mc_wallpaper_type','mc_wallpaper_value','mc_animations','mc_blur','mc_reduced_motion','mc_card_mode','mc_tab_name','mc_favicon_url','mc_accent_strength','mc_corner_style','mc_font_scale','mc_stealth_mode','mc_focus_mode','mc_dense_nav'].forEach((key) => localStorage.removeItem(key));
       window.location.reload();
     });
 
