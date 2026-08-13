@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>McCrack | Modern Glass OS</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+    :root {
+      /* Base Theme */
+      --brand-main: #107C10; 
+      --brand-glow: rgba(16, 124, 16, 0.6);
+      --focus-color: #107C10; 
+      
+      /* Apple Liquid Glass Properties */
+      --glass-bg: rgba(20, 20, 20, 0.45);
+      --glass-bg-light: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-border-glow: rgba(255, 255, 255, 0.3);
+      --glass-blur: blur(30px) saturate(180%);
+      
+      --text-main: #ffffff;
+      --text-sub: rgba(255, 255, 255, 0.65);
+      --screen-brightness: 1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+    body {
+      background-color: #050505; 
+      /* Updated default background to something colorful so the glass effect shines */
+      background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+      background-size: cover; background-position: center; background-attachment: fixed;
+      color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+      filter: brightness(var(--screen-brightness)); transition: filter 0.3s ease, background-image 0.5s ease;
+    }
+    body.no-anim * { transition: none !important; animation: none !important; }
+
+    /* Soften the overlay to let the background colors through for the glass effect */
+    #bg-overlay { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%); backdrop-filter: blur(10px); }
+
+    /* === Console Header (Profile, Search & Status) === */
+    .console-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 3rem 4rem 1rem 4rem; z-index: 40; }
+    .profile-area { display: flex; align-items: center; gap: 1rem; }
+    #sys-user-pfp { width: 64px; height: 64px; border-radius: 50%; background: #333; border: 2px solid var(--glass-border-glow); background-size: cover; background-position: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+    .user-info { display: flex; flex-direction: column; gap: 0.3rem; }
+    .username-row { display: flex; align-items: center; gap: 0.6rem; }
+    #sys-username { font-size: 1.3rem; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,0.5); letter-spacing: -0.5px;}
+    .badge-ultimate { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); color: #fff; font-size: 0.65rem; padding: 0.3rem 0.6rem; border-radius: 12px; font-weight: 700; letter-spacing: 1px;}
+    .gamerscore { display: flex; align-items: center; gap: 6px; font-size: 0.95rem; color: var(--text-main); font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8);}
+    .g-icon { display: inline-flex; justify-content: center; align-items: center; width: 18px; height: 18px; border: 1.5px solid var(--text-main); border-radius: 50%; font-size: 11px; font-weight: 800; }
+    
+    .header-right { display: flex; align-items: center; gap: 1.5rem; }
+    
+    /* Search Bar - Glassified */
+    .search-bar { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 24px; padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 8px 24px rgba(0,0,0,0.2);}
+    .search-bar input { background: transparent; border: none; color: #fff; font-size: 1rem; outline: none; cursor: pointer; width: 150px; transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); font-weight: 500;}
+    .search-bar input::placeholder { color: var(--text-sub); }
+    .search-bar:focus-within input, .search-bar.focused input { width: 250px; cursor: text; }
+    .search-bar svg { width: 18px; height: 18px; fill: var(--text-sub); }
+    
+    .status-icons { display: flex; align-items: center; gap: 1.2rem; font-size: 1.1rem; color: #fff; background: var(--glass-bg); padding: 0.6rem 1.2rem; border-radius: 24px; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); box-shadow: 0 8px 24px rgba(0,0,0,0.2);}
+    .status-icons span { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.95rem;}
+    
+    #sys-date-time { font-size: 1.3rem; font-weight: 600; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;}
+    #sys-date { font-size: 0.85rem; color: var(--text-sub); font-weight: 500;}
+
+    /* === Horizontal Navigation === */
+    .top-nav { display: flex; gap: 1rem; padding: 0 4rem; margin-bottom: 2rem; z-index: 50; }
+    .nav-btn { font-size: 1.1rem; font-weight: 600; color: var(--text-sub); cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); padding: 0.6rem 1.2rem; border-radius: 20px; text-transform: capitalize; letter-spacing: 0.5px; border: 1px solid transparent;}
+    .nav-btn.active { color: #fff; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,0.15);}
+    .nav-btn.focused { color: #fff; }
+
+    /* === Main Content Area === */
+    .main-content { flex: 1; position: relative; padding: 0 4rem; display: flex; flex-direction: column; overflow: hidden; }
+    
+    .page { display: none; height: 100%; flex-direction: column; animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); padding-bottom: 5rem; overflow-y: auto;}
+    .page.active { display: flex; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* === Console Grids === */
+    .dashboard-rows { display: flex; flex-direction: column; gap: 1.5rem; }
+    .recents-row { display: flex; gap: 1.5rem; height: 340px; }
+    .bottom-row { display: flex; gap: 1.5rem; height: 180px; }
+
+    .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; overflow-y: auto; padding-bottom: 4rem; padding-top: 10px; }
+    
+    /* Tiles styling - Liquid Glass */
+    .tile, .poster-tile { 
+      background-color: var(--glass-bg); 
+      backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+      border-radius: 20px; display: flex; flex-direction: column; justify-content: flex-end; 
+      cursor: pointer; position: relative; overflow: hidden; background-size: cover; background-position: center; 
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+    }
+    .tile { padding: 1.8rem; }
+    .poster-tile { aspect-ratio: 2/3; padding: 1.5rem 1rem; align-items: center; font-weight: bold; text-align: center; }
+    .poster-tile::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%); }
+    .poster-tile span { z-index: 2; position: relative; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.8); font-size: 1.15rem; bottom: 0;}
+    
+    .recents-hero { width: 380px; flex-shrink: 0; padding: 1.8rem; justify-content: flex-end; }
+    .recents-hero::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%); }
+    .recents-hero h2, .recents-hero p { z-index: 2; position: relative; }
+    
+    .recents-small { width: 180px; flex-shrink: 0; justify-content: flex-end; padding: 1.2rem; }
+    .recents-small::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%); }
+    .recents-small span { z-index: 2; position: relative; color: #fff; font-size: 1rem; text-align: left; width: 100%; font-weight: 600;}
+    
+    .promo-card { flex: 1; padding: 1.8rem; justify-content: flex-end; }
+    .promo-card::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%); }
+    .promo-card h3 { z-index: 2; position: relative; font-size: 1.3rem; font-weight: 700; color: #fff;}
+
+    .tile h2 { font-size: 1.7rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; } 
+    .tile p { color: var(--text-sub); font-size: 1.05rem; margin-top: 0.3rem;}
+
+    /* === CONSOLE FOCUS STATES (Modern Glow) === */
+    .focusable { outline: none; }
+    .focusable:focus, .focusable.focused { 
+      transform: scale(1.04); 
+      border-color: var(--focus-color);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 2px var(--focus-color), 0 0 30px var(--brand-glow); 
+      z-index: 10; 
+    }
+    
+    .nav-btn.focused { transform: scale(1.05); background: var(--glass-bg-light); border-color: var(--focus-color); box-shadow: 0 0 20px var(--brand-glow);}
+    .setting-tab.focused { border-color: var(--focus-color); box-shadow: 0 0 20px var(--brand-glow);}
+    .form-input.focused { border-color: var(--focus-color); background: rgba(255,255,255,0.1); box-shadow: 0 0 20px var(--brand-glow);}
+
+    /* === Settings Layout & Forms === */
+    .settings-layout { display: flex; gap: 3rem; height: 100%; margin-top: 1rem; max-width: 1200px;}
+    .settings-sidebar { width: 280px; display: flex; flex-direction: column; gap: 0.8rem; }
+    .setting-tab { padding: 1.2rem 1.5rem; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 16px; font-size: 1.15rem; font-weight: 600; color: var(--text-sub); cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
+    .setting-tab.active-tab { background: var(--glass-bg-light); color: #fff; border-color: var(--glass-border-glow); }
+    
+    .settings-content-area { flex: 1; position: relative; padding-right: 1rem; padding-bottom: 4rem;}
+    .setting-view { display: none; flex-direction: column; gap: 2rem; animation: slideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .setting-view.active { display: flex; }
+    .settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); grid-auto-rows: 160px; gap: 1.5rem; }
+    .settings-header { font-size: 2.2rem; font-weight: 800; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; letter-spacing: -1px;}
+    
+    .color-picker-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-bottom: 1rem;}
+    .color-btn { height: 70px; border-radius: 16px; border: 2px solid var(--glass-border); cursor: pointer; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.2);}
+    
+    .control-row { display: flex; align-items: center; justify-content: space-between; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); padding: 1.8rem; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 10px 25px rgba(0,0,0,0.2);}
+    .control-row h3 { font-size: 1.2rem; margin-bottom: 0.3rem; font-weight: 700;}
+    .small-btn { background: var(--glass-bg-light); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); padding: 1rem 2rem; border-radius: 14px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
+    
+    .form-group { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+    .form-group label { font-weight: 600; color: var(--text-sub); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;}
+    .form-input { padding: 1.2rem; border-radius: 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff; font-size: 1.1rem; outline: none; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); font-family: inherit;}
+    input[type="file"] { display: none; }
+    .file-upload-btn { display: inline-block; background: var(--brand-main); color: #fff; padding: 1rem 1.5rem; border-radius: 14px; font-weight: 600; cursor: pointer; text-align: center; border: none; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3);}
+
+    /* === OOBE Setup Wizard === */
+    #setup-wizard { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%); z-index: 5000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem;}
+    #setup-wizard.active { display: flex; animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .wizard-box { max-width: 600px; width: 100%; background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); padding: 4rem; border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+    .wizard-box h1 { font-size: 2.8rem; margin-bottom: 1rem; color: #fff; font-weight: 800; letter-spacing: -1px;}
+    .wizard-box p { font-size: 1.2rem; color: var(--text-sub); margin-bottom: 3rem;}
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    /* === Universal Search Overlay === */
+    #search-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 4500; backdrop-filter: blur(35px) saturate(200%); -webkit-backdrop-filter: blur(35px) saturate(200%); padding: 5rem; flex-direction: column; animation: fadeIn 0.3s;}
+    #search-overlay.active { display: flex; }
+    #search-input-big { width: 100%; max-width: 800px; margin: 0 auto; background: transparent; border: none; border-bottom: 2px solid var(--glass-border); font-size: 3.5rem; color: #fff; padding: 1rem 0; outline: none; font-weight: 800; transition: border-color 0.3s;}
+    #search-input-big:focus { border-color: var(--brand-main); }
+    .search-results { max-width: 1200px; margin: 4rem auto 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; width: 100%;}
+
+    /* === App Player & Overlays === */
+    #app-player { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; }
+    #app-player.active { display: block; } #app-player iframe { width: 100%; height: 100%; border: none; }
+    .mouse-exit-area { position: absolute; top: 0; left: 0; width: 120px; height: 120px; z-index: 1001; opacity: 0.2; transition: opacity 0.3s; }
+    .mouse-exit-area:hover { opacity: 1; }
+    .mouse-exit-btn { margin: 1.5rem; width: 60px; height: 60px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: var(--glass-blur); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .mouse-exit-btn svg { width: 30px; height: 30px; fill: var(--brand-main); }
+
+    /* === Guide Menu === */
+    #guide-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%); z-index: 2000; justify-content: center; align-items: center; }
+    #guide-overlay.active { display: flex; }
+    .guide-menu { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; width: 450px; padding: 3rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: 0 30px 80px rgba(0,0,0,0.6); animation: popIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    @keyframes popIn { from{transform:scale(0.95); opacity: 0;} to { transform: scale(1); opacity: 1;} }
+    .guide-menu h2 { text-align: center; margin-bottom: 2rem; color: #fff; font-weight: 800; font-size: 1.8rem;}
+    .guide-btn { padding: 1.2rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 14px; text-align: center; font-size: 1.15rem; font-weight: 600; cursor: pointer; color: #fff; transition: all 0.3s;}
+
+    /* Lock Screen & Overlays */
+    #lock-screen, #native-app-layer, #sleep-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 3000; backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%); align-items: center; justify-content: center; flex-direction: column;}
+    #lock-screen.active, #native-app-layer.active, #sleep-overlay.active { display: flex; }
+    .lock-box { background: var(--glass-bg); padding: 4rem; border-radius: 24px; border: 1px solid var(--glass-border); text-align: center; width: 450px; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+    .lock-pfp { width: 150px; height: 150px; border-radius: 50%; border: 3px solid var(--focus-color); margin: 0 auto 2rem auto; background-size: cover; background-position: center; box-shadow: 0 10px 30px var(--brand-glow);}
+
+    .native-app { display: none; width: 85%; height: 85%; background: var(--glass-bg); backdrop-filter: var(--glass-blur); border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: 0 30px 80px rgba(0,0,0,0.6); overflow: hidden;}
+    .native-app.active { display: flex; flex-direction: column;}
+    #note-input { flex: 1; background: transparent; border: none; color: #fff; padding: 4rem; font-size: 1.4rem; font-family: monospace; resize: none; outline: none; line-height: 1.6;}
+    
+    /* === Controller HUD === */
+    .hud { position: fixed; bottom: 2.5rem; right: 4rem; display: flex; gap: 1.5rem; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); padding: 1rem 1.5rem; border-radius: 24px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
+    .hud-item { display: flex; align-items: center; gap: 0.8rem; font-size: 0.95rem; font-weight: 600; color: #fff;}
+    .btn-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .btn-a { background: #107C10; } 
+    .btn-b { background: #D12121; } 
+    .btn-start { background: transparent; border: 2px solid var(--glass-border); color: #fff; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <div id="bg-overlay"></div>
+
+  <div id="setup-wizard">
+    <div class="wizard-box">
+      <h1>Welcome to Console OS</h1>
+      <p>Let's get you set up quickly.</p>
+      
+      <div id="wizard-step-1">
+        <div class="form-group" style="text-align: left;">
+            <label>Choose a Gamertag</label>
+            <input type="text" id="wiz-name" class="form-input focusable" placeholder="PlayerOne" value="New Player">
+        </div>
+        <div class="small-btn focusable" onclick="nextWizard(2)" style="background: var(--brand-main); color: #fff; margin-top: 1rem; border: none;">Next</div>
+      </div>
+
+      <div id="wizard-step-2" style="display: none;">
+        <h3 style="margin-bottom: 1rem; font-weight: 600;">Pick a Theme Color</h3>
+        <div class="color-picker-grid" style="margin-bottom: 2rem; justify-content: center;">
+            <div class="color-btn focusable" style="background: #107C10;" onclick="setWizColor('#107C10')"></div> 
+            <div class="color-btn focusable" style="background: #005A9E;" onclick="setWizColor('#005A9E')"></div> 
+            <div class="color-btn focusable" style="background: #D13438;" onclick="setWizColor('#D13438')"></div> 
+            <div class="color-btn focusable" style="background: #FFB900;" onclick="setWizColor('#FFB900')"></div> 
+            <div class="color-btn focusable" style="background: #881798;" onclick="setWizColor('#881798')"></div>
+        </div>
+        <div class="small-btn focusable" onclick="finishWizard()" style="background: var(--brand-main); color: #fff; border: none;">Finish Setup</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="search-overlay">
+      <input type="text" id="search-input-big" class="focusable" placeholder="Search games, movies, apps..." autocomplete="off">
+      <div id="search-results-container" class="search-results"></div>
+  </div>
+
+  <div id="lock-screen">
+    <div class="lock-box">
+      <div id="lock-pfp" class="lock-pfp"></div>
+      <h2 id="lock-name" style="margin-bottom:2rem; font-size: 2.2rem; font-weight: 800;">User</h2>
+      <input type="password" id="lock-input" class="form-input focusable" style="width:100%; text-align:center; font-size:1.8rem; margin-bottom:1.5rem; letter-spacing: 8px;" placeholder="PIN">
+      <div class="small-btn focusable" data-action="unlock" style="background:var(--brand-main); color:#fff; font-size: 1.1rem; border: none; padding: 1.2rem 2rem;">Sign In</div>
+      <p id="lock-err" style="color:#ff4d4d; margin-top:1.5rem; display:none; font-weight: 600;">Incorrect Passcode</p>
+    </div>
+  </div>
+
+  <header class="console-header">
+    <div class="profile-area">
+      <div id="sys-user-pfp" style="background-image: url('https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=150&q=80')"></div>
+      <div class="user-info">
+        <div class="username-row">
+            <span id="sys-username">PlayerOne</span>
+            <span class="badge-ultimate">ULTIMATE</span>
+        </div>
+        <span class="gamerscore"><span class="g-icon">G</span> 21,337</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="search-bar focusable" tabindex="0" id="btn-open-search" data-action="open-search">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" placeholder="Search" readonly style="pointer-events: none;">
+      </div>
+      <div class="status-icons">
+        <span>⚙️</span>
+        <span id="sys-battery" title="Device Battery">🔋 100%</span>
+      </div>
+      <div id="sys-date-time">
+          <span id="sys-time">04:55 PM</span>
+          <span id="sys-date">Wednesday, Jan 1</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="top-nav">
+    <div class="nav-btn focusable active" data-target="page-home">Home</div>
+    <div class="nav-btn focusable" data-target="page-games">Games</div>
+    <div class="nav-btn focusable" data-target="page-movies">Movies</div>
+    <div class="nav-btn focusable" data-target="page-apps">Apps</div>
+    <div class="nav-btn focusable" data-target="page-chat">Chat</div>
+    <div class="nav-btn focusable" data-target="page-settings">Settings</div>
+  </nav>
+
+  <div class="main-content">
+    
+    <div id="page-home" class="page active">
+      <div class="dashboard-rows">
+        <div class="recents-row">
+          <div class="tile recents-hero focusable" tabindex="0" data-target="page-games" style="background-image: url('https://images.unsplash.com/photo-1542273917363-3b1817f69a56?auto=format&fit=crop&q=80&w=600');">
+            <h2>Ori and the Will of the Wisps</h2>
+          </div>
+          <div class="tile recents-small focusable" tabindex="0" style="background-image: url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=300');">
+            <span>GHOSTWIRE</span>
+          </div>
+          <div class="tile recents-small focusable" tabindex="0" style="background-image: url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&w=300');">
+            <span>REDFALL</span>
+          </div>
+          <div class="tile recents-small focusable" tabindex="0" style="background-image: url('https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=300');">
+            <span>HALO INFINITE</span>
+          </div>
+          <div class="tile recents-small focusable" tabindex="0" style="background-image: url('https://images.unsplash.com/photo-1546614042-7df3c24c9e5d?auto=format&fit=crop&w=300');">
+            <span>FORZA</span>
+          </div>
+        </div>
+
+        <div class="bottom-row">
+          <div class="tile promo-card focusable" tabindex="0" data-target="page-games" style="background: linear-gradient(to right, rgba(0,0,0,0.6), transparent), url('https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=600'); background-size: cover;">
+            <h3>Browse your library</h3>
+          </div>
+          <div class="tile promo-card focusable" tabindex="0" style="background: linear-gradient(135deg, rgba(16,124,16,0.3), rgba(0,0,0,0.5)); backdrop-filter: var(--glass-blur);">
+            <div style="text-align: center; width: 100%; margin-bottom: 1.5rem; font-size: 2.5rem; text-shadow: 0 4px 15px rgba(0,0,0,0.5);">🎧</div>
+            <h3>Audio Settings</h3>
+          </div>
+          <div class="tile promo-card focusable" tabindex="0" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600');">
+            <span class="badge-ultimate" style="position: absolute; top: 1rem; left: 1rem; background: rgba(0,0,0,0.5);">GAME PASS</span>
+            <h3>Play Hi-Fi RUSH</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-games" class="page">
+      <h2 style="margin-bottom: 1.5rem; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">My Games</h2>
+      <div class="content-grid" id="games-container"></div>
+    </div>
+
+    <div id="page-movies" class="page">
+      <h2 style="margin-bottom: 1.5rem; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">Movies & TV</h2>
+      <div class="content-grid" id="movies-container"></div>
+    </div>
+
+    <div id="page-apps" class="page">
+      <h2 style="margin-bottom: 1.5rem; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">Apps</h2>
+      <div class="content-grid" id="apps-container"></div>
+    </div>
+
+    <div id="page-chat" class="page">
+      <h2 style="margin-bottom: 1.5rem; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">Party Chat</h2>
+      <div class="dashboard-rows"><div class="control-row" style="max-width: 600px;"><h3>Start a Party</h3><div class="small-btn focusable" style="background: var(--brand-main); color: #fff; border: none;">Invite Friends</div></div></div>
+    </div>
+
+    <div id="page-settings" class="page">
+      <div class="settings-layout">
+        <div class="settings-sidebar">
+          <div class="setting-tab focusable active-tab" tabindex="0" data-sub="set-main">General</div>
+          <div class="setting-tab focusable" tabindex="0" data-sub="set-account">Account Profile</div>
+          <div class="setting-tab focusable" tabindex="0" data-sub="set-person">Personalization</div>
+          <div class="setting-tab focusable" tabindex="0" data-sub="set-system">System Info</div>
+        </div>
+        
+        <div class="settings-content-area">
+          <div id="set-main" class="setting-view active settings-grid">
+            <div class="tile focusable" tabindex="0" data-sub="set-account" style="background: var(--glass-bg);"><h2>Profile</h2><p>Name & Security</p></div>
+            <div class="tile focusable" tabindex="0" data-sub="set-person" style="background: var(--glass-bg);"><h2>Appearance</h2><p>Colors & Backgrounds</p></div>
+            <div class="tile focusable" tabindex="0" data-sub="set-system" style="background: var(--glass-bg);"><h2>System</h2><p>Reset & Display</p></div>
+          </div>
+
+          <div id="set-account" class="setting-view">
+            <h2 class="settings-header">Account Profile <div class="small-btn focusable" data-action="save-account" style="background: var(--brand-main); border: none; color: #fff;">Save Changes</div></h2>
+            <div style="display:flex; gap:3rem; align-items:flex-start;">
+              <div style="flex:1;">
+                <div class="form-group"><label>Gamertag</label><input type="text" id="acc-user" class="form-input focusable" placeholder="e.g. PlayerOne"></div>
+                <div class="form-group"><label>Real Name</label><input type="text" id="acc-name" class="form-input focusable" placeholder="Your Name"></div>
+                <div class="form-group"><label>Console PIN (Leave blank for none)</label><input type="password" id="acc-pass" class="form-input focusable" placeholder="Secret PIN"></div>
+              </div>
+              <div style="flex:1; background:var(--glass-bg); padding:2rem; border-radius:24px; border:1px solid var(--glass-border); text-align: center; backdrop-filter: var(--glass-blur);">
+                <h3 style="margin-bottom: 1.5rem; font-weight: 700;">Gamerpic</h3>
+                <div id="pfp-preview" style="width:150px; height:150px; border-radius:50%; background:rgba(0,0,0,0.3); margin:0 auto 2rem auto; border:3px solid var(--glass-border-glow); background-size:cover; background-position:center; box-shadow: 0 10px 25px rgba(0,0,0,0.4);"></div>
+                <div class="form-group" style="text-align: left;"><label>Image URL</label><input type="text" id="pfp-url" class="form-input focusable" placeholder="https://..." oninput="updatePreview('pfp-preview', this.value)"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="set-person" class="setting-view">
+            <h2 class="settings-header">Theme Color</h2>
+            <div class="color-picker-grid">
+              <div class="color-btn focusable" style="background: #107C10;" data-action="set-color" data-val="#107C10"></div> 
+              <div class="color-btn focusable" style="background: #005A9E;" data-action="set-color" data-val="#005A9E"></div> 
+              <div class="color-btn focusable" style="background: #D13438;" data-action="set-color" data-val="#D13438"></div> 
+              <div class="color-btn focusable" style="background: #FFB900;" data-action="set-color" data-val="#FFB900"></div> 
+              <div class="color-btn focusable" style="background: #881798;" data-action="set-color" data-val="#881798"></div> 
+              <div class="color-btn focusable" style="background: #E81123;" data-action="set-color" data-val="#E81123"></div> 
+            </div>
+            
+            <h2 class="settings-header" style="margin-top: 2rem;">Custom Background</h2>
+            <div class="control-row" style="flex-direction:column; gap:2rem; align-items:stretch;">
+              <div class="form-group" style="margin:0;">
+                <label>Option 1: Background Image URL</label>
+                <div style="display:flex; gap:1rem;">
+                  <input type="text" id="wp-url" class="form-input focusable" style="flex:1;" placeholder="Paste image URL here...">
+                  <div class="small-btn focusable" data-action="set-custom-bg" style="background:var(--brand-main); border: none; color: #fff;">Apply URL</div>
+                </div>
+              </div>
+              <div class="form-group" style="margin:0;">
+                 <label>Option 2: Upload from Device</label>
+                 <div style="display: flex; gap: 1.5rem; align-items: center;">
+                    <label class="file-upload-btn focusable" tabindex="0">
+                        Browse Files
+                        <input type="file" id="wp-upload" accept="image/*">
+                    </label>
+                    <span id="upload-status" style="color: var(--text-main); font-size: 0.95rem; font-weight: 500;">No file selected</span>
+                 </div>
+              </div>
+              <div style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem; margin-top: 0.5rem;">
+                 <div class="small-btn focusable" data-action="set-bg" data-val="none" style="display: inline-block; background: transparent; color: #fff;">Reset to Default Glass Theme</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="set-system" class="setting-view">
+            <h2 class="settings-header">System Options</h2>
+            <div class="control-row"><div><h3>Clock Format</h3><p style="color: var(--text-sub);">Toggle 12-hour or 24-hour time display</p></div><div class="small-btn focusable" data-action="toggle-clock" id="btn-clock">12-Hour</div></div>
+            <div class="control-row"><div><h3>UI Animations</h3><p style="color: var(--text-sub);">Turn off for maximum performance</p></div><div class="small-btn focusable" data-action="toggle-anim" id="btn-anim">Enabled</div></div>
+            <div class="control-row" style="border-color: rgba(255, 77, 77, 0.4); background: rgba(255, 77, 77, 0.1);"><div><h3 style="color: #ff4d4d;">Reset Console</h3><p style="color: var(--text-sub);">Wipes all saved profiles, apps, and preferences.</p></div><div class="small-btn focusable" data-action="clear-cache" style="border:1px solid #ff4d4d; color:#ff4d4d; background: rgba(255, 77, 77, 0.1);">Format OS</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-player">
+    <iframe id="game-frame" src=""></iframe>
+    <div class="mouse-exit-area"><div class="mouse-exit-btn" onclick="openGuideMenu()"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div></div>
+  </div>
+
+  <div id="native-app-layer">
+    <div id="app-notes" class="native-app"><textarea id="note-input" class="focusable" placeholder="Start typing... Saves locally to device storage."></textarea></div>
+  </div>
+
+  <div id="guide-overlay">
+    <div class="guide-menu">
+      <h2>Guide Menu</h2>
+      <div class="guide-btn focusable" tabindex="0" onclick="closeGuideMenu()">Resume</div>
+      <div class="guide-btn focusable" tabindex="0" onclick="quitGame()" style="color: #ff4d4d; border-color: rgba(255, 77, 77, 0.3); background: rgba(255, 77, 77, 0.1);">Quit to Home</div>
+    </div>
+  </div>
+
+  <div id="sleep-overlay" onclick="wakeSystem()"><h2 style="color:rgba(255,255,255,0.7); font-weight: 400;">Console is asleep... Press A to wake</h2></div>
+
+  <div class="hud">
+    <div class="hud-item"><span class="btn-icon btn-a">A</span> Select</div>
+    <div class="hud-item"><span class="btn-icon btn-b">B</span> Back</div>
+    <div class="hud-item"><span class="btn-icon btn-start">☰</span> Menu</div>
+  </div>
+
+  <script>
+    /* ==========================================
+       Data Arrays (Universal DB for grids & search)
+       ========================================== */
+    const myGames = [
+      { title: "Retro Bowl", link: "https://example.com", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80", type: "game" },
+      { title: "Minecraft", link: "https://example.com", img: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=400&q=80", type: "game" },
+      { title: "Halo Infinite", link: "https://example.com", img: "https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=400", type: "game" },
+      { title: "Forza Horizon", link: "https://example.com", img: "https://images.unsplash.com/photo-1546614042-7df3c24c9e5d?auto=format&fit=crop&w=400", type: "game" }
+    ];
+
+    const myMovies = [
+      { title: "Dune", link: "", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400", type: "movie" },
+      { title: "The Batman", link: "", img: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?auto=format&fit=crop&w=400", type: "movie" },
+      { title: "Interstellar", link: "", img: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=400", type: "movie" }
+    ];
+
+    const myApps = [
+      { title: "Notes App", nativeapp: "app-notes", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=400", type: "app" },
+      { title: "Settings", target: "page-settings", img: "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?auto=format&fit=crop&w=400", type: "app" }
+    ];
+
+    const allContent = [...myGames, ...myMovies, ...myApps];
+
+    function populateGrid(data, containerId) {
+      const container = document.getElementById(containerId);
+      if(!container) return;
+      container.innerHTML = '';
+      data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'poster-tile focusable';
+        if (item.link) div.dataset.link = item.link;
+        if (item.nativeapp) div.dataset.nativeapp = item.nativeapp;
+        if (item.target) div.dataset.target = item.target;
+        
+        if (item.img) div.style.backgroundImage = `url('${item.img}')`;
+        div.innerHTML = `<span>${item.title}</span>`;
+        container.appendChild(div);
+      });
+    }
+
+    // Initialize grids
+    populateGrid(myGames, 'games-container');
+    populateGrid(myMovies, 'movies-container');
+    populateGrid(myApps, 'apps-container');
+
+    /* ==========================================
+       OS Settings & Preferences Engine
+       ========================================== */
+    const isFirstTime = !localStorage.getItem('os_setup_complete');
+    
+    const prefs = {
+      color: localStorage.getItem('os_color') || '#107C10',
+      bg: localStorage.getItem('os_bg') || "none",
+      clock24: localStorage.getItem('os_clock24') === 'true',
+      anim: localStorage.getItem('os_anim') !== 'false'
+    };
+
+    const account = {
+      user: localStorage.getItem('acc_user') || 'PlayerOne',
+      name: localStorage.getItem('acc_name') || '',
+      pass: localStorage.getItem('acc_pass') || '',
+      pfp: localStorage.getItem('acc_pfp') || ''
+    };
+
+    let osState = 'dashboard';
+
+    function applyPrefs() {
+      document.documentElement.style.setProperty('--brand-main', prefs.color);
+      document.documentElement.style.setProperty('--focus-color', prefs.color);
+      
+      // Update glow to follow main color
+      let r = 255, g = 255, b = 255;
+      if(prefs.color.startsWith('#') && prefs.color.length === 7) {
+          r = parseInt(prefs.color.slice(1,3), 16);
+          g = parseInt(prefs.color.slice(3,5), 16);
+          b = parseInt(prefs.color.slice(5,7), 16);
+      }
+      document.documentElement.style.setProperty('--brand-glow', `rgba(${r}, ${g}, ${b}, 0.5)`);
+      
+      if(prefs.bg !== 'none') {
+        document.body.style.backgroundImage = `url('${prefs.bg}')`;
+      } else {
+        document.body.style.backgroundImage = `url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')`;
+      }
+      
+      document.getElementById('btn-clock').innerText = prefs.clock24 ? "24-Hour" : "12-Hour";
+      document.getElementById('btn-anim').innerText = prefs.anim ? "Enabled" : "Disabled";
+      if (!prefs.anim) document.body.classList.add('no-anim'); else document.body.classList.remove('no-anim');
+
+      document.getElementById('sys-username').innerText = account.user;
+      document.getElementById('acc-user').value = account.user !== 'PlayerOne' ? account.user : '';
+      document.getElementById('acc-name').value = account.name;
+      document.getElementById('acc-pass').value = account.pass;
+      document.getElementById('pfp-url').value = account.pfp.length < 200 ? account.pfp : '';
+
+      if (account.pfp) {
+         const pfpBg = `url('${account.pfp}')`;
+         document.getElementById('sys-user-pfp').style.backgroundImage = pfpBg;
+         document.getElementById('pfp-preview').style.backgroundImage = pfpBg;
+         document.getElementById('lock-pfp').style.backgroundImage = pfpBg;
+      }
+      document.getElementById('lock-name').innerText = account.user;
+    }
+    
+    // Boot sequence
+    if (isFirstTime) {
+        osState = 'setup';
+        document.getElementById('setup-wizard').classList.add('active');
+    } else {
+        applyPrefs();
+        if (account.pass !== '') {
+          osState = 'locked';
+          document.getElementById('lock-screen').classList.add('active');
+        }
+    }
+
+    // Setup Wizard Logic
+    let tempWizColor = '#107C10';
+    function nextWizard(step) {
+        document.getElementById('wizard-step-1').style.display = 'none';
+        document.getElementById(`wizard-step-${step}`).style.display = 'block';
+        playSound('select');
+        setFocus(0); // refocus on new step
+    }
+    function setWizColor(color) {
+        tempWizColor = color;
+        document.documentElement.style.setProperty('--brand-main', color);
+        document.documentElement.style.setProperty('--focus-color', color);
+        playSound('select');
+    }
+    function finishWizard() {
+        account.user = document.getElementById('wiz-name').value || 'PlayerOne';
+        prefs.color = tempWizColor;
+        localStorage.setItem('acc_user', account.user);
+        localStorage.setItem('os_color', prefs.color);
+        localStorage.setItem('os_setup_complete', 'true');
+        document.getElementById('setup-wizard').classList.remove('active');
+        playSound('select');
+        osState = 'dashboard';
+        applyPrefs();
+        setFocus(0);
+    }
+
+    // Lock Screen Enter Key
+    document.getElementById('lock-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') triggerAction({ dataset: { action: 'unlock' } });
+    });
+
+    /* ==========================================
+       Image Encoders & File Uploads
+       ========================================== */
+    function updatePreview(id, url) { document.getElementById(id).style.backgroundImage = `url('${url}')`; }
+
+    document.getElementById('wp-upload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById('upload-status').innerText = "Processing...";
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    prefs.bg = evt.target.result;
+                    localStorage.setItem('os_bg', prefs.bg);
+                    applyPrefs();
+                    document.getElementById('upload-status').innerText = "Wallpaper applied!";
+                    playSound('select');
+                } catch (err) {
+                    alert("Image too large to save to local storage. Try a smaller image or use a URL.");
+                    document.getElementById('upload-status').innerText = "Upload failed (too large).";
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    /* ==========================================
+       Clock, Date & Battery Engine
+       ========================================== */
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('sys-time').innerText = 
+        `${now.toLocaleTimeString([], { hour: prefs.clock24 ? 'numeric' : '2-digit', hour12: !prefs.clock24, minute: '2-digit' }).toUpperCase()}`;
+      
+      const options = { weekday: 'long', month: 'short', day: 'numeric' };
+      document.getElementById('sys-date').innerText = now.toLocaleDateString(undefined, options);
+    }, 1000);
+
+    // Battery API
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(function(battery) {
+            function updateBattery() {
+                const level = Math.round(battery.level * 100);
+                const charging = battery.charging ? "⚡" : "🔋";
+                document.getElementById('sys-battery').innerText = `${charging} ${level}%`;
+            }
+            updateBattery();
+            battery.addEventListener('levelchange', updateBattery);
+            battery.addEventListener('chargingchange', updateBattery);
+        });
+    }
+
+    // Audio Engine
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      if (type === 'move') { osc.frequency.value = 350; gain.gain.value = 0.02; gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); osc.start(); osc.stop(audioCtx.currentTime + 0.05); } 
+      else if (type === 'select') { osc.frequency.value = 600; gain.gain.value = 0.04; gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); } 
+      else if (type === 'back') { osc.frequency.value = 300; osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.1); gain.gain.value = 0.04; gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
+    }
+
+    /* ==========================================
+       Navigation Logic & Actions
+       ========================================== */
+    let currentFocusables = [];
+    let currentIndex = 0;
+    
+    function getActiveFocusables() {
+      if (osState === 'setup') return Array.from(document.querySelectorAll('#setup-wizard .focusable')).filter(el => el.offsetParent !== null);
+      if (osState === 'locked') return Array.from(document.querySelectorAll('#lock-screen .focusable'));
+      if (osState === 'guide') return Array.from(document.querySelectorAll('#guide-overlay .focusable'));
+      if (osState === 'search') return Array.from(document.querySelectorAll('#search-overlay .focusable'));
+      
+      const headerBtns = Array.from(document.querySelectorAll('.console-header .focusable'));
+      const topTabs = Array.from(document.querySelectorAll('.top-nav .focusable'));
+      let pageItems = [];
+      
+      const activePage = document.querySelector('.page.active');
+      if (activePage) {
+        const activeView = activePage.querySelector('.setting-view.active');
+        if (activeView) {
+            pageItems = Array.from(activeView.querySelectorAll('.focusable'));
+        } else {
+            pageItems = Array.from(activePage.querySelectorAll('.focusable'));
+        }
+        
+        // Include sidebar setting tabs if on settings page
+        if (activePage.id === 'page-settings') {
+           const sideTabs = Array.from(document.querySelectorAll('.settings-sidebar .focusable'));
+           pageItems = [...sideTabs, ...pageItems];
+        }
+      }
+      return [...headerBtns, ...topTabs, ...pageItems];
+    }
+
+    function setFocus(index) {
+      if (['playing', 'playing_native', 'sleep'].includes(osState)) return;
+      currentFocusables = getActiveFocusables();
+      if (currentFocusables.length === 0) return;
+      
+      currentFocusables.forEach(el => el.classList.remove('focused'));
+      
+      // Keep index in bounds
+      if (index < 0) index = currentFocusables.length - 1;
+      if (index >= currentFocusables.length) index = 0;
+      
+      currentIndex = index;
+      if(currentFocusables[currentIndex]){
+        currentFocusables[currentIndex].classList.add('focused');
+        
+        // Avoid auto-focusing text inputs heavily if using controller, but needed for keyboard
+        if(currentFocusables[currentIndex].tagName !== 'INPUT' || currentFocusables[currentIndex].type === 'button' || currentFocusables[currentIndex].type === 'file') {
+            currentFocusables[currentIndex].focus();
+        } else {
+            // It's a text input, let user manually click to type, or auto focus for keyboard
+             currentFocusables[currentIndex].focus();
+        }
+        
+        // Scroll into view if needed
+        currentFocusables[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        
+        playSound('move');
+      }
+    }
+
+    function switchPage(pageId) {
+      osState = 'dashboard';
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      
+      const newPage = document.getElementById(pageId);
+      if (newPage) newPage.classList.add('active');
+      
+      const targetNav = document.querySelector(`.nav-btn[data-target="${pageId}"]`);
+      if (targetNav) targetNav.classList.add('active');
+      
+      document.querySelectorAll('.setting-view').forEach(v => v.classList.remove('active'));
+      if(document.getElementById('set-main')) document.getElementById('set-main').classList.add('active');
+      
+      // Reset scroll
+      if(newPage) newPage.scrollTop = 0;
+      
+      // Focus first item on new page
+      setTimeout(() => { setFocus(currentFocusables.indexOf(targetNav)); }, 50);
+    }
+
+    // SEARCH LOGIC
+    document.getElementById('search-input-big').addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase();
+        if(query.length < 1) { document.getElementById('search-results-container').innerHTML = ''; return; }
+        
+        const results = allContent.filter(item => item.title.toLowerCase().includes(query));
+        populateGrid(results, 'search-results-container');
+        
+        // Re-evaluate focusables so results can be selected
+        currentFocusables = getActiveFocusables();
+    });
+
+    function closeSearch() {
+        document.getElementById('search-overlay').classList.remove('active');
+        document.getElementById('search-input-big').value = '';
+        document.getElementById('search-results-container').innerHTML = '';
+        osState = 'dashboard';
+        setFocus(0);
+        playSound('back');
+    }
+
+    function triggerAction(el) {
+      if (['playing', 'playing_native', 'sleep'].includes(osState)) return;
+      
+      // Search
+      if (el.dataset.action === 'open-search') {
+          playSound('select');
+          osState = 'search';
+          document.getElementById('search-overlay').classList.add('active');
+          setTimeout(() => { setFocus(0); }, 50);
+          return;
+      }
+
+      // Unlock Screen
+      if (el.dataset?.action === 'unlock' || el.id === 'lock-input') {
+        const inp = document.getElementById('lock-input');
+        if (inp.value === account.pass) {
+          document.getElementById('lock-screen').classList.remove('active');
+          osState = 'dashboard'; setFocus(0); playSound('select');
+        } else {
+          document.getElementById('lock-err').style.display = 'block';
+          inp.value = ''; playSound('back');
+        }
+        return;
+      }
+
+      if (osState === 'guide') { playSound('select'); el.click(); return; }
+      
+      // Check if it's a search result being clicked, close search overlay
+      if(osState === 'search' && el.id !== 'search-input-big') {
+          document.getElementById('search-overlay').classList.remove('active');
+          osState = 'dashboard';
+      }
+
+      if (el.dataset.target) { playSound('select'); switchPage(el.dataset.target); return; }
+
+      // iFrame Apps (Games/Movies)
+      if (el.dataset.link) {
+        playSound('select'); osState = 'playing';
+        document.getElementById('game-frame').src = el.dataset.link;
+        document.getElementById('app-player').classList.add('active');
+        return;
+      }
+
+      // Native Apps (Notes)
+      if (el.dataset.nativeapp) {
+        playSound('select'); osState = 'playing_native';
+        document.getElementById('native-app-layer').classList.add('active');
+        document.querySelectorAll('.native-app').forEach(a => a.classList.remove('active'));
+        document.getElementById(el.dataset.nativeapp).classList.add('active');
+        if (el.dataset.nativeapp === 'app-notes') {
+          document.getElementById('note-input').value = localStorage.getItem('os_notes') || '';
+          document.getElementById('note-input').focus();
+        }
+        return;
+      }
+
+      // Settings Tabs
+      if (el.dataset.sub) {
+        playSound('select');
+        document.querySelectorAll('.setting-tab').forEach(t => t.classList.remove('active-tab'));
+        if(el.classList.contains('setting-tab')) el.classList.add('active-tab');
+        document.querySelectorAll('.setting-view').forEach(v => v.classList.remove('active'));
+        document.getElementById(el.dataset.sub).classList.add('active');
+        setTimeout(() => { setFocus(currentFocusables.indexOf(el)); }, 50);
+        return;
+      }
+
+      // Custom Actions
+      if (el.dataset.action === 'set-color') { playSound('select'); prefs.color = el.dataset.val; localStorage.setItem('os_color', prefs.color); applyPrefs(); return; }
+      if (el.dataset.action === 'set-bg') { playSound('select'); prefs.bg = el.dataset.val; localStorage.setItem('os_bg', prefs.bg); applyPrefs(); return; }
+      if (el.dataset.action === 'set-custom-bg') { playSound('select'); prefs.bg = document.getElementById('wp-url').value; localStorage.setItem('os_bg', prefs.bg); applyPrefs(); return; }
+      if (el.dataset.action === 'toggle-clock') { playSound('select'); prefs.clock24 = !prefs.clock24; localStorage.setItem('os_clock24', prefs.clock24); applyPrefs(); return; }
+      if (el.dataset.action === 'toggle-anim') { playSound('select'); prefs.anim = !prefs.anim; localStorage.setItem('os_anim', prefs.anim); applyPrefs(); return; }
+      
+      if (el.dataset.action === 'clear-cache') {
+        playSound('select');
+        if(confirm("Factory reset? All data will be lost.")) { localStorage.clear(); location.reload(); }
+        return;
+      }
+      
+      if (el.dataset.action === 'save-account') {
+        playSound('select');
+        account.user = document.getElementById('acc-user').value || 'PlayerOne';
+        account.name = document.getElementById('acc-name').value;
+        account.pass = document.getElementById('acc-pass').value;
+        account.pfp = document.getElementById('pfp-url').value;
+        
+        localStorage.setItem('acc_user', account.user);
+        localStorage.setItem('acc_name', account.name);
+        localStorage.setItem('acc_pass', account.pass);
+        localStorage.setItem('acc_pfp', account.pfp);
+        applyPrefs();
+        alert('Account Saved!');
+      }
+    }
+
+    /* ==========================================
+       Gamepad / Controller API Engine
+       ========================================== */
+    let lastGamepadInput = 0;
+    const inputDelay = 150; // ms delay between rapid inputs
+
+    function pollGamepad() {
+        const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+        if (!gamepads) return;
+
+        const gp = gamepads[0];
+        if (gp) {
+            const now = Date.now();
+            
+            // If enough time has passed since last input (Debounce)
+            if (now - lastGamepadInput > inputDelay) {
+                
+                // Navigation (D-Pad or Left Stick)
+                const up = gp.buttons[12]?.pressed || gp.axes[1] < -0.5;
+                const down = gp.buttons[13]?.pressed || gp.axes[1] > 0.5;
+                const left = gp.buttons[14]?.pressed || gp.axes[0] < -0.5;
+                const right = gp.buttons[15]?.pressed || gp.axes[0] > 0.5;
+
+                if (right) { setFocus(currentIndex + 1); lastGamepadInput = now; }
+                else if (left) { setFocus(currentIndex - 1); lastGamepadInput = now; }
+                // For up/down, we jump by a rough grid size (e.g., 3 columns)
+                else if (down) { setFocus(currentIndex + 3); lastGamepadInput = now; }
+                else if (up) { setFocus(currentIndex - 3); lastGamepadInput = now; }
+                
+                // Action Buttons
+                const aBtn = gp.buttons[0]?.pressed;
+                const bBtn = gp.buttons[1]?.pressed;
+                const startBtn = gp.buttons[9]?.pressed; // Menu/Start button
+
+                if (aBtn && currentFocusables[currentIndex]) {
+                    triggerAction(currentFocusables[currentIndex]);
+                    lastGamepadInput = now + 100; // Extra delay after click
+                }
+
+                if (bBtn) {
+                    if (osState === 'search') closeSearch();
+                    else if (osState === 'guide') closeGuideMenu();
+                    else playSound('back'); // Visual/Audio feedback for back
+                    lastGamepadInput = now + 100;
+                }
+
+                if (startBtn) {
+                    if (['playing', 'playing_native', 'dashboard'].includes(osState)) {
+                        openGuideMenu();
+                        lastGamepadInput = now + 200;
+                    }
+                }
+            }
+        }
+        requestAnimationFrame(pollGamepad);
+    }
+    // Start Controller Polling Loop
+    requestAnimationFrame(pollGamepad);
+
+    /* ==========================================
+       Keyboard Navigation Engine
+       ========================================== */
+    window.addEventListener('keydown', (e) => {
+      // Don't intercept typing if focused on an input
+      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+          if(e.key === 'Escape') {
+              if (osState === 'search') closeSearch();
+              document.activeElement.blur();
+          }
+          return;
+      }
+
+      if (['playing', 'playing_native', 'sleep'].includes(osState)) {
+        if (e.key === 'Escape' || e.key === 'q') closeGuideMenu(); 
+        return;
+      }
+
+      if (osState === 'search' && e.key === 'Escape') { closeSearch(); return; }
+      
+      currentFocusables = getActiveFocusables();
+      if(currentFocusables.length === 0) return;
+      
+      if (e.key === 'ArrowRight' || e.key === 'd') { e.preventDefault(); setFocus(currentIndex + 1); }
+      if (e.key === 'ArrowLeft' || e.key === 'a') { e.preventDefault(); setFocus(currentIndex - 1); }
+      if (e.key === 'ArrowDown' || e.key === 's') { e.preventDefault(); setFocus(currentIndex + 3); }
+      if (e.key === 'ArrowUp' || e.key === 'w') { e.preventDefault(); setFocus(currentIndex - 3); }
+      if (e.key === 'Enter' || e.key === ' ') { 
+          e.preventDefault(); 
+          if(currentFocusables[currentIndex].tagName !== 'INPUT' || currentFocusables[currentIndex].type === 'file') {
+              triggerAction(currentFocusables[currentIndex]); 
+          }
+      }
+    });
+
+    // Native App Logic
+    document.getElementById('note-input').addEventListener('input', (e) => { localStorage.setItem('os_notes', e.target.value); });
+    
+    // Guide Menu Handlers
+    function openGuideMenu() {
+      if (osState === 'dashboard' || osState === 'setup') return;
+      document.getElementById('guide-overlay').classList.add('active');
+      osState = 'guide'; setFocus(0);
+      playSound('select');
+    }
+    function closeGuideMenu() {
+      document.getElementById('guide-overlay').classList.remove('active');
+      osState = document.getElementById('app-player').classList.contains('active') ? 'playing' : 
+                (document.getElementById('native-app-layer').classList.contains('active') ? 'playing_native' : 'dashboard');
+      if(osState === 'dashboard') setFocus(0);
+      playSound('back');
+    }
+    function quitGame() {
+      document.getElementById('guide-overlay').classList.remove('active');
+      document.getElementById('app-player').classList.remove('active');
+      document.getElementById('native-app-layer').classList.remove('active');
+      document.getElementById('game-frame').src = '';
+      osState = 'dashboard'; setFocus(0);
+      playSound('back');
+    }
+    
+    // Mouse Interaction
+    document.addEventListener('click', (e) => {
+      // Exclude direct clicks on file inputs as they trigger via label
+      if(e.target.tagName === 'INPUT' && e.target.type === 'file') return;
+      
+      const focusable = e.target.closest('.focusable');
+      if (focusable) triggerAction(focusable);
+    });
+
+    setTimeout(() => { if(osState === 'dashboard') setFocus(0); }, 100);
+  </script>
+</body>
+</html>
