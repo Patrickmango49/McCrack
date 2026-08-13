@@ -84,7 +84,8 @@
     .recents-row { display: flex; gap: 1.5rem; height: 340px; }
     .bottom-row { display: flex; gap: 1.5rem; height: 180px; }
 
-    .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; overflow-y: auto; padding-bottom: 4rem; padding-top: 10px; }
+    .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 0.85rem; overflow-y: auto; padding: 4px 6px 4rem 2px; align-content: start; }
+    #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); }
     
     /* Tiles styling - Liquid Glass */
     .tile, .poster-tile { 
@@ -166,7 +167,7 @@
     #search-overlay.active { display: flex; }
     #search-input-big { width: 100%; max-width: 800px; margin: 0 auto; background: transparent; border: none; border-bottom: 2px solid var(--glass-border); font-size: 3.5rem; color: #fff; padding: 1rem 0; outline: none; font-weight: 800; transition: border-color 0.3s;}
     #search-input-big:focus { border-color: var(--brand-main); }
-    .search-results { max-width: 1200px; margin: 4rem auto 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; width: 100%;}
+    .search-results { max-width: 1320px; margin: 2rem auto 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 0.85rem; width: 100%; overflow-y: auto; padding: 4px 6px 3rem 2px;}
 
     /* === App Player & Overlays === */
     #app-player { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; }
@@ -203,13 +204,19 @@
     .btn-start { background: transparent; border: 2px solid var(--glass-border); color: #fff; font-size: 14px; }
 
     /* === Library Card Actions & Details === */
-    .poster-tile { min-height: 300px; }
-    .poster-tile .card-title { z-index: 3; position: relative; padding: 0 0.5rem; }
-    .poster-tile .card-actions { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem; z-index: 4; display: grid; grid-template-columns: 1fr auto auto; gap: 0.45rem; opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; }
+    .poster-tile { aspect-ratio: 1 / 1.18; min-height: 0; padding: 0; align-items: stretch; justify-content: flex-end; border-radius: 16px; background-color: rgba(5,5,5,0.72); background-size: cover; background-position: center; box-shadow: 0 10px 26px rgba(0,0,0,0.28); }
+    .poster-tile[data-type="movie"] { aspect-ratio: 2 / 3; }
+    .poster-tile::before { content: ''; position: absolute; inset: auto 0 0; height: 42%; z-index: 1; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.86) 100%); pointer-events: none; }
+    .poster-tile::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(140deg, rgba(255,255,255,0.07), transparent 45%, rgba(0,0,0,0.2)); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+    .poster-tile:hover { transform: translateY(-5px) scale(1.018); border-color: rgba(255,255,255,0.24); box-shadow: 0 16px 34px rgba(0,0,0,0.44), 0 0 0 1px rgba(255,255,255,0.05); }
+    .poster-tile:hover::after, .poster-tile.focused::after, .poster-tile:focus-within::after { opacity: 1; }
+    .poster-tile .card-title { z-index: 3; position: relative; margin-top: auto; min-height: 38px; padding: 2.1rem 0.65rem 0.55rem; display: flex; align-items: flex-end; justify-content: center; color: #fff; font-size: 0.78rem; font-weight: 800; line-height: 1.18; text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,0.9); overflow: hidden; }
+    .poster-tile .card-actions { position: absolute; left: 0.42rem; right: 0.42rem; top: 0.42rem; z-index: 4; display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.32rem; opacity: 0; transform: translateY(-6px); transition: opacity 0.18s ease, transform 0.18s ease; }
     .poster-tile:hover .card-actions, .poster-tile:focus .card-actions, .poster-tile.focused .card-actions, .poster-tile:focus-within .card-actions { opacity: 1; transform: translateY(0); }
-    .card-action { border: 1px solid var(--glass-border); background: rgba(0,0,0,0.58); color: #fff; border-radius: 999px; padding: 0.58rem 0.72rem; font-weight: 800; cursor: pointer; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease; }
-    .card-action:hover, .card-action:focus, .card-action.focused { transform: translateY(-2px) scale(1.04); background: var(--brand-main); border-color: var(--focus-color); outline: none; }
-    .card-action.favorite.is-favorite { color: #ff6b91; background: rgba(255,255,255,0.16); }
+    .card-action { border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.66); color: #fff; border-radius: 999px; padding: 0.36rem 0.48rem; font-size: 0.68rem; font-weight: 900; cursor: pointer; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease; }
+    .card-action.favorite { min-width: 2rem; font-size: 0.82rem; line-height: 1; }
+    .card-action:hover, .card-action:focus, .card-action.focused { transform: translateY(-2px); background: var(--brand-main); border-color: var(--focus-color); outline: 2px solid rgba(255,255,255,0.72); outline-offset: 1px; }
+    .card-action.favorite.is-favorite { color: #ff6b91; background: rgba(255,255,255,0.18); border-color: rgba(255,107,145,0.75); }
     .details-modal { display: none; position: fixed; inset: 0; z-index: 4800; align-items: center; justify-content: center; padding: 3rem; background: rgba(0,0,0,0.62); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); }
     .details-modal.active { display: flex; animation: fadeIn 0.2s ease; }
     .details-card { width: min(940px, 96vw); max-height: 86vh; overflow: auto; display: grid; grid-template-columns: minmax(220px, 34%) 1fr; gap: 2rem; background: var(--glass-bg); border: 1px solid var(--glass-border-glow); border-radius: 28px; padding: 2rem; box-shadow: 0 30px 80px rgba(0,0,0,0.65); }
@@ -496,7 +503,7 @@
        ========================================== */
     const myGames = [
       {
-            "id": "game-001",
+            "id": "game-popular-001",
             "title": "Roblox",
             "link": "https://db2.duckmath.org/2001/cloud/index.html",
             "img": "https://yt3.googleusercontent.com/xTxr7gmbkxiPKjrmN5ut0Kn8UcHpkkgyTv-_EeDPphcQusrWyKfSZw13EKCYXQyYdeoC3ON1zQ=s900-c-k-c0x00ffffff-no-rj",
@@ -504,7 +511,7 @@
             "description": "Open Roblox from the existing McCrack game library."
       },
       {
-            "id": "game-002",
+            "id": "game-popular-002",
             "title": "Slope",
             "link": "https://cdn.myunblockedgames.com/games/slope/index.html",
             "img": "https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs",
@@ -512,7 +519,7 @@
             "description": "Open Slope from the existing McCrack game library."
       },
       {
-            "id": "game-003",
+            "id": "game-popular-003",
             "title": "Basketball Stars",
             "link": "https://cdn.myunblockedgames.com/games/basketball-stars/index.html",
             "img": "https://m.media-amazon.com/images/I/81BL1Hx2KuL.png",
@@ -520,7 +527,7 @@
             "description": "Open Basketball Stars from the existing McCrack game library."
       },
       {
-            "id": "game-004",
+            "id": "game-popular-004",
             "title": "Retro Bowl",
             "link": "https://cdn.myunblockedgames.com/games/Retro-Bowl/index.html",
             "img": "https://www.thisdaddylife.com/wp-content/uploads/2020/05/Retro-Bowl-Avatar-600px.png",
@@ -800,14 +807,6 @@
             "description": "Open The Grim Donut (PinkBike) from the existing McCrack game library."
       },
       {
-            "id": "game-035",
-            "title": "Retro Bowl",
-            "link": "https://cdn.myunblockedgames.com/games/Retro-Bowl/index.html",
-            "img": "https://www.thisdaddylife.com/wp-content/uploads/2020/05/Retro-Bowl-Avatar-600px.png",
-            "type": "game",
-            "description": "Open Retro Bowl from the existing McCrack game library."
-      },
-      {
             "id": "game-036",
             "title": "Super Smash Flash",
             "link": "https://www.twoplayergames.org/gameframe/super-smash-flash",
@@ -1048,14 +1047,6 @@
             "description": "Open Crazy Cattle 3D from the existing McCrack game library."
       },
       {
-            "id": "game-066",
-            "title": "Basketball Stars",
-            "link": "https://cdn.myunblockedgames.com/games/basketball-stars/index.html",
-            "img": "https://m.media-amazon.com/images/I/81BL1Hx2KuL.png",
-            "type": "game",
-            "description": "Open Basketball Stars from the existing McCrack game library."
-      },
-      {
             "id": "game-067",
             "title": "Football Legends",
             "link": "https://cdn.myunblockedgames.com/games/football-legends/index.html",
@@ -1110,14 +1101,6 @@
             "img": "https://doodle-baseball.com/data/image/game/doodle-baseball/doodle-baseball.png",
             "type": "game",
             "description": "Open Doodle Baseball from the existing McCrack game library."
-      },
-      {
-            "id": "game-074",
-            "title": "Slope",
-            "link": "https://cdn.myunblockedgames.com/games/slope/index.html",
-            "img": "https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs",
-            "type": "game",
-            "description": "Open Slope from the existing McCrack game library."
       },
       {
             "id": "game-075",
@@ -1326,14 +1309,6 @@
             "img": "https://geometrydashspam.com/media/uploads/games/thumb/geometry-dash-wave.webp",
             "type": "game",
             "description": "Open GDash Waves from the existing McCrack game library."
-      },
-      {
-            "id": "game-101",
-            "title": "Roblox",
-            "link": "https://db2.duckmath.org/2001/cloud/index.html",
-            "img": "https://yt3.googleusercontent.com/xTxr7gmbkxiPKjrmN5ut0Kn8UcHpkkgyTv-_EeDPphcQusrWyKfSZw13EKCYXQyYdeoC3ON1zQ=s900-c-k-c0x00ffffff-no-rj",
-            "type": "game",
-            "description": "Open Roblox from the existing McCrack game library."
       },
       {
             "id": "game-102",
@@ -2373,9 +2348,22 @@
 ];
 
     const myApps = [
-      { title: "Notes App", id: "app-notes-native", nativeapp: "app-notes", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=400", type: "app", description: "A local notes app that saves text on this device." },
-      { title: "Settings", id: "app-settings-native", target: "page-settings", img: "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?auto=format&fit=crop&w=400", type: "app", description: "Open OS settings and personalization." },
-      ...[
+      {
+            "title": "Notes App",
+            "id": "app-notes-native",
+            "nativeapp": "app-notes",
+            "img": "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=400",
+            "type": "app",
+            "description": "A local notes app that saves text on this device."
+      },
+      {
+            "title": "Settings",
+            "id": "app-settings-native",
+            "target": "page-settings",
+            "img": "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?auto=format&fit=crop&w=400",
+            "type": "app",
+            "description": "Open OS settings and personalization."
+      },
       {
             "id": "YouTube",
             "title": "YouTube",
@@ -2480,8 +2468,7 @@
             "type": "app",
             "description": "Dulo is a fast web app shortcut added to the McCrack Apps library."
       }
-]
-    ];
+];
 
     const allContent = [...myGames, ...myMovies, ...myApps];
     const FAVORITES_KEY = 'mc_os_favorites_v1';
@@ -2527,6 +2514,7 @@
         if (item.link) div.dataset.link = item.link;
         if (item.nativeapp) div.dataset.nativeapp = item.nativeapp;
         if (item.target) div.dataset.target = item.target;
+        if (item.type) div.dataset.type = item.type;
         if (item.img) div.style.backgroundImage = `url('${item.img.replace(/'/g, '%27')}')`;
         div.innerHTML = `<span class="card-title">${escapeHtml(item.title)}</span><div class="card-actions"><button class="card-action focusable open" type="button" data-action="open-item">Open</button><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}">♡</button></div>`;
         container.appendChild(div);
