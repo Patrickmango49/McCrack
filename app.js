@@ -1523,3 +1523,24 @@ applyCleanRouting();
   setupVisitorCounter();
   registerServiceWorker();
 })();
+
+
+// Redirect into the console OS as soon as a controller is connected from any non-OS page.
+(function setupControllerOsRedirect() {
+  const isOsPage = /(^|\/)OS\.html$/i.test(window.location.pathname);
+  if (isOsPage || window.__mcControllerOsRedirectReady) return;
+  window.__mcControllerOsRedirectReady = true;
+
+  const goToOs = () => {
+    window.location.assign('/OS.html');
+  };
+
+  window.addEventListener('gamepadconnected', goToOs, { once: true });
+
+  const checkExistingPads = () => {
+    const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()) : [];
+    if (pads.some(Boolean)) goToOs();
+  };
+
+  window.addEventListener('DOMContentLoaded', checkExistingPads, { once: true });
+})();
