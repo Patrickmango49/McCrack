@@ -30,5 +30,14 @@
 </head>
 <body>
   <p>Page not found.</p>
+
+<script>
+(function setupControllerOsRedirect(){
+  if (/(^|\/)OS\.html$/i.test(location.pathname)) return;
+  const go=()=>location.assign('/OS.html');
+  addEventListener('gamepadconnected', go, {once:true});
+  addEventListener('DOMContentLoaded', ()=>{ if (navigator.getGamepads && Array.from(navigator.getGamepads()).some(Boolean)) go(); }, {once:true});
+})();
+</script>
 </body>
 </html>
