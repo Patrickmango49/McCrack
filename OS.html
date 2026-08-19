@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>McCrack | Modern Glass OS</title>
+  <title>McCrack-COS | Modern Glass OS</title>
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <style>
@@ -86,9 +86,6 @@
     .recents-row { display: flex; gap: 1.5rem; height: 340px; }
     .bottom-row { display: flex; gap: 1.5rem; height: 180px; }
 
-    .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 1rem; overflow-y: auto; padding: 4px 0 4rem; align-content: start; width: 100%; }
-    #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); }
-    
     /* Tiles styling - Liquid Glass */
     .tile, .poster-tile { 
       background-color: var(--glass-bg); 
@@ -169,7 +166,7 @@
     #search-overlay.active { display: flex; }
     #search-input-big { width: 100%; max-width: 800px; margin: 0 auto; background: transparent; border: none; border-bottom: 2px solid var(--glass-border); font-size: 3.5rem; color: #fff; padding: 1rem 0; outline: none; font-weight: 800; transition: border-color 0.3s;}
     #search-input-big:focus { border-color: var(--brand-main); }
-    .search-results { max-width: 1320px; margin: 2rem auto 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 0.85rem; width: 100%; overflow-y: auto; padding: 4px 6px 3rem 2px;}
+    .search-results { max-width: 1320px; margin: 2rem auto 0 auto; }
 
     /* === App Player & Overlays === */
     #app-player { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; }
@@ -209,10 +206,23 @@
     .library-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 0 0 1.15rem; }
     .library-heading h2 { margin: 0; font-size: clamp(1.85rem, 3vw, 2.35rem); font-weight: 850; letter-spacing: -0.035em; }
     .library-heading .content-count { margin: 0; width: fit-content; padding: 8px 14px; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; background: rgba(18,18,18,0.72); color: var(--text-sub); font-size: 0.84rem; font-weight: 800; letter-spacing: 0.02em; white-space: nowrap; }
-    #games-container, #apps-container, #movies-container, .search-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 1rem; align-items: start; width: 100%; }
-    #movies-container { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); }
+    .content-grid,
+    #games-container,
+    #apps-container,
+    #movies-container,
+    .search-results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1.75rem;
+      align-items: start;
+      align-content: start;
+      width: 100%;
+      padding: 0.5rem 0.5rem 6rem;
+      overflow: visible;
+    }
+    #movies-container { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
     /* Match the real site's compact media-tile poster cards rather than giant dashboard tiles. */
-    .poster-tile { aspect-ratio: 1 / 1.18; min-height: 0; padding: 0; align-items: stretch; justify-content: flex-end; border-radius: 18px; background-color: rgba(5,5,5,0.92); background-size: cover; background-position: center; border: 1px solid rgba(255,255,255,0.09); box-shadow: 0 10px 24px rgba(0,0,0,0.28); overflow: hidden; }
+    .poster-tile { width: 100%; min-width: 0; min-height: 0; aspect-ratio: 1 / 1.18; padding: 0; align-items: stretch; justify-content: flex-end; border-radius: 18px; background-color: rgba(5,5,5,0.92); background-size: cover; background-position: center; border: 1px solid rgba(255,255,255,0.09); box-shadow: 0 10px 24px rgba(0,0,0,0.28); overflow: hidden; }
     .poster-tile[data-type="movie"] { aspect-ratio: 2 / 3; }
     .poster-tile::before { content: ''; position: absolute; inset: auto 0 0; height: 42%; z-index: 1; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.86) 100%); pointer-events: none; }
     .poster-tile::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(140deg, rgba(255,255,255,0.07), transparent 45%, rgba(0,0,0,0.2)); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
@@ -235,7 +245,19 @@
     .details-meta { display: grid; gap: 0.75rem; margin: 1rem 0; }
     .details-meta div { padding: 0.9rem; border-radius: 16px; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); overflow-wrap: anywhere; }
     .details-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.2rem; }
-    @media (max-width: 760px) { .details-card { grid-template-columns: 1fr; } .console-header { padding: 1.5rem; } .top-nav, .main-content { padding-left: 1.5rem; padding-right: 1.5rem; } .library-heading { align-items: flex-start; flex-direction: column; } #games-container, #apps-container, #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 0.65rem; } }
+    @media (max-width: 1100px) {
+      .content-grid,
+      #games-container,
+      #apps-container,
+      #movies-container,
+      .search-results {
+        grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+        gap: 1.25rem;
+        padding: 0.45rem 0.45rem 5.5rem;
+      }
+      #movies-container { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
+    }
+    @media (max-width: 760px) { .details-card { grid-template-columns: 1fr; } .console-header { padding: 1.5rem; } .top-nav, .main-content { padding-left: 1.5rem; padding-right: 1.5rem; } .library-heading { align-items: flex-start; flex-direction: column; } .content-grid, #games-container, #apps-container, #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 0.9rem; padding: 0.35rem 0.35rem 5rem; } }
 
 
 
@@ -251,8 +273,6 @@
     @keyframes bootRise { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: none; } }
     @keyframes logoPulse { 50% { transform: scale(1.035); filter: drop-shadow(0 0 55px var(--brand-glow)); } }
     @keyframes bootLoad { from { transform: translateX(-105%); } to { transform: translateX(245%); } }
-    .content-grid, #games-container, #apps-container, #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(184px, 1fr)); gap: 1.55rem; padding: .4rem .55rem 6rem; }
-    #movies-container { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); }
     .poster-tile { border-radius: 24px; box-shadow: 0 18px 42px rgba(0,0,0,.42); border-color: rgba(255,255,255,.13); }
     .poster-tile .card-title { font-size: .98rem; padding: 3rem .95rem .95rem; }
     .recents-row { height: clamp(300px, 38vh, 430px); }
@@ -4623,12 +4643,12 @@
             "description": "Music streaming and discovery platform especially popular with independent artists and electronic music."
       },
       {
-            "id": "McCrackOS",
-            "title": "McCrackOS",
+            "id": "McCrack-COS",
+            "title": "McCrack-COS",
             "link": "https://patrickmango49.github.io/McCrackOS/",
             "img": "https://i.imgur.com/aEWXDMr.png",
             "type": "app",
-            "description": "A full McCrackOS desktop-style experience launched from the Apps library with the standard player controls."
+            "description": "A full McCrack-COS desktop-style experience launched from the Apps library with the standard player controls."
       },
       {
             "id": "Freefy",
