@@ -228,6 +228,8 @@
     .poster-tile::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(140deg, rgba(255,255,255,0.07), transparent 45%, rgba(0,0,0,0.2)); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
     .poster-tile:hover { transform: translateY(-5px) scale(1.018); border-color: rgba(255,255,255,0.24); box-shadow: 0 16px 34px rgba(0,0,0,0.44), 0 0 0 1px rgba(255,255,255,0.05); }
     .poster-tile:hover::after, .poster-tile.focused::after, .poster-tile:focus-within::after { opacity: 1; }
+    .poster-tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 250ms ease, filter 250ms ease; }
+    .poster-tile:hover img, .poster-tile.focused img { transform: scale(1.05); filter: brightness(1.03) contrast(1.04) saturate(1.07); }
     .poster-tile .card-title { z-index: 3; position: relative; margin-top: auto; min-height: 0; padding: 2.15rem 0.72rem 0.72rem; display: block; color: #fff; font-size: 0.78rem; font-weight: 800; line-height: 1.18; text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,0.9); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .poster-tile .card-actions { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 7px; flex-wrap: wrap; padding: 14px; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; }
     .poster-tile:hover .card-actions, .poster-tile:focus .card-actions, .poster-tile.focused .card-actions, .poster-tile:focus-within .card-actions { opacity: 1; transform: translateY(0); }
@@ -257,6 +259,14 @@
       }
       #movies-container { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
     }
+
+    .movie-letter-section { grid-column: 1 / -1; display: grid; gap: 1rem; }
+    .movie-letter-heading { position: sticky; top: 0; z-index: 8; width: fit-content; min-width: 54px; padding: 0.55rem 1rem; border: 1px solid var(--glass-border); border-radius: 999px; background: rgba(0,0,0,0.58); color: #fff; font-size: 1.1rem; font-weight: 900; letter-spacing: 0.08em; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); box-shadow: 0 12px 30px rgba(0,0,0,.28); }
+    .movie-letter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 1.75rem; align-items: start; }
+    body.compact-tiles .content-grid, body.compact-tiles #games-container, body.compact-tiles #apps-container, body.compact-tiles #movies-container, body.compact-tiles .search-results { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 1rem; }
+    body.compact-tiles .movie-letter-grid { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 1rem; }
+    body.hide-hud .hud { display: none; }
+    body.reduced-glass { --glass-bg: rgba(12, 12, 12, 0.82); --glass-bg-light: rgba(255,255,255,0.12); --glass-blur: blur(8px) saturate(130%); }
     @media (max-width: 760px) { .details-card { grid-template-columns: 1fr; } .console-header { padding: 1.5rem; } .top-nav, .main-content { padding-left: 1.5rem; padding-right: 1.5rem; } .library-heading { align-items: flex-start; flex-direction: column; } .content-grid, #games-container, #apps-container, #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 0.9rem; padding: 0.35rem 0.35rem 5rem; } }
 
 
@@ -397,13 +407,13 @@
           <div class="tile promo-card focusable" tabindex="0" data-target="page-games" style="background: linear-gradient(to right, rgba(0,0,0,0.6), transparent), url('https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=600'); background-size: cover;">
             <h3>Browse your library</h3>
           </div>
-          <div class="tile promo-card focusable" tabindex="0" style="background: linear-gradient(135deg, rgba(16,124,16,0.3), rgba(0,0,0,0.5)); backdrop-filter: var(--glass-blur);">
-            <svg class="svg-icon" style="width:54px;height:54px;margin:0 auto 1.5rem;display:block;filter:drop-shadow(0 4px 15px rgba(0,0,0,.5))" viewBox="0 0 24 24"><path d="M12 3a8 8 0 0 0-8 8v6a3 3 0 0 0 3 3h2v-8H6v-1a6 6 0 0 1 12 0v1h-3v8h2a3 3 0 0 0 3-3v-6a8 8 0 0 0-8-8Z"/></svg>
-            <h3>Audio Settings</h3>
+          <div class="tile promo-card focusable" tabindex="0" data-action="open-search" style="background: linear-gradient(135deg, rgba(16,124,16,0.3), rgba(0,0,0,0.5)); backdrop-filter: var(--glass-blur);">
+            <svg class="svg-icon" style="width:54px;height:54px;margin:0 auto 1.5rem;display:block;filter:drop-shadow(0 4px 15px rgba(0,0,0,.5))" viewBox="0 0 24 24"><path d="M9.5 3a6.5 6.5 0 0 1 5.17 10.44l5.44 5.44-1.42 1.42-5.44-5.44A6.5 6.5 0 1 1 9.5 3Zm0 2a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Z"/></svg>
+            <h3>Search everything</h3>
           </div>
-          <div class="tile promo-card focusable" tabindex="0" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600');">
-            <span class="badge-ultimate" style="position: absolute; top: 1rem; left: 1rem; background: rgba(0,0,0,0.5);">GAME PASS</span>
-            <h3>Play Hi-Fi RUSH</h3>
+          <div class="tile promo-card focusable" tabindex="0" data-target="page-settings" style="background-image: linear-gradient(to top, rgba(0,0,0,.78), transparent 60%), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600');">
+            <span class="badge-ultimate" style="position: absolute; top: 1rem; left: 1rem; background: rgba(0,0,0,0.5);">CUSTOMIZE</span>
+            <h3>Personalize McCrack-COS</h3>
           </div>
         </div>
       </div>
@@ -443,6 +453,9 @@
             <div class="tile focusable" tabindex="0" data-sub="set-account" style="background: var(--glass-bg);"><h2>Profile</h2><p>Name & Security</p></div>
             <div class="tile focusable" tabindex="0" data-sub="set-person" style="background: var(--glass-bg);"><h2>Appearance</h2><p>Colors & Backgrounds</p></div>
             <div class="tile focusable" tabindex="0" data-sub="set-system" style="background: var(--glass-bg);"><h2>System</h2><p>Reset & Display</p></div>
+            <div class="tile focusable" tabindex="0" data-action="toggle-compact" style="background: var(--glass-bg);"><h2>Compact Tiles</h2><p id="compact-summary">More items per row</p></div>
+            <div class="tile focusable" tabindex="0" data-action="toggle-hud" style="background: var(--glass-bg);"><h2>Controller HUD</h2><p id="hud-summary">Show button hints</p></div>
+            <div class="tile focusable" tabindex="0" data-action="toggle-glass" style="background: var(--glass-bg);"><h2>Glass Strength</h2><p id="glass-summary">Reduce blur for speed</p></div>
           </div>
 
           <div id="set-account" class="setting-view">
@@ -501,6 +514,9 @@
             <h2 class="settings-header">System Options</h2>
             <div class="control-row"><div><h3>Clock Format</h3><p style="color: var(--text-sub);">Toggle 12-hour or 24-hour time display</p></div><div class="small-btn focusable" data-action="toggle-clock" id="btn-clock">12-Hour</div></div>
             <div class="control-row"><div><h3>UI Animations</h3><p style="color: var(--text-sub);">Turn off for maximum performance</p></div><div class="small-btn focusable" data-action="toggle-anim" id="btn-anim">Enabled</div></div>
+            <div class="control-row"><div><h3>Compact Library Tiles</h3><p style="color: var(--text-sub);">Fit more games, movies, and apps on screen.</p></div><div class="small-btn focusable" data-action="toggle-compact" id="btn-compact">Off</div></div>
+            <div class="control-row"><div><h3>Controller HUD</h3><p style="color: var(--text-sub);">Show or hide on-screen controller button hints.</p></div><div class="small-btn focusable" data-action="toggle-hud" id="btn-hud">Shown</div></div>
+            <div class="control-row"><div><h3>Reduced Glass</h3><p style="color: var(--text-sub);">Lower blur and transparency for readability and performance.</p></div><div class="small-btn focusable" data-action="toggle-glass" id="btn-glass">Off</div></div>
             <div class="control-row" style="border-color: rgba(255, 77, 77, 0.4); background: rgba(255, 77, 77, 0.1);"><div><h3 style="color: #ff4d4d;">Reset Console</h3><p style="color: var(--text-sub);">Wipes all saved profiles, apps, and preferences.</p></div><div class="small-btn focusable" data-action="clear-cache" style="border:1px solid #ff4d4d; color:#ff4d4d; background: rgba(255, 77, 77, 0.1);">Format OS</div></div>
           </div>
 
@@ -4732,7 +4748,11 @@
       }
 ];
 
-    const allContent = [...myGames, ...myMovies, ...myApps];
+    const sortByTitle = (items) => [...items].sort((a, b) => (a.title || '').localeCompare(b.title || '', undefined, { numeric: true, sensitivity: 'base' }));
+    const sortedGames = sortByTitle(myGames);
+    const sortedMovies = sortByTitle(myMovies);
+    const sortedApps = sortByTitle(myApps);
+    const allContent = [...sortedGames, ...sortedMovies, ...sortedApps];
 
     function updateLibraryCounters() {
       const counters = [
@@ -4818,23 +4838,46 @@
       if (detailFav && activeDetailsItem) detailFav.textContent = isFavorite(activeDetailsItem) ? '♥ Favorited' : '♡ Favorite';
     }
 
+    function buildTile(item) {
+      const div = document.createElement('div');
+      div.className = 'poster-tile media-tile focusable';
+      div.tabIndex = 0;
+      div.dataset.itemKey = itemKey(item);
+      div.dataset.item = JSON.stringify(item);
+      if (item.link) div.dataset.link = item.link;
+      if (item.nativeapp) div.dataset.nativeapp = item.nativeapp;
+      if (item.target) div.dataset.target = item.target;
+      if (item.type) div.dataset.type = item.type;
+      div.innerHTML = `${item.img ? `<img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.title)} artwork" loading="lazy">` : ''}<span class="card-title media-title">${escapeHtml(item.title)}</span><div class="card-actions quick-actions"><button class="card-action focusable open" type="button" data-action="open-item">Open</button><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}">♡</button></div>`;
+      return div;
+    }
+
     function populateGrid(data, containerId) {
       const container = document.getElementById(containerId);
       if(!container) return;
       container.innerHTML = '';
-      data.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'poster-tile focusable';
-        div.tabIndex = 0;
-        div.dataset.itemKey = itemKey(item);
-        div.dataset.item = JSON.stringify(item);
-        if (item.link) div.dataset.link = item.link;
-        if (item.nativeapp) div.dataset.nativeapp = item.nativeapp;
-        if (item.target) div.dataset.target = item.target;
-        if (item.type) div.dataset.type = item.type;
-        if (item.img) div.style.backgroundImage = `url('${item.img.replace(/'/g, '%27')}')`;
-        div.innerHTML = `<span class="card-title">${escapeHtml(item.title)}</span><div class="card-actions"><button class="card-action focusable open" type="button" data-action="open-item">Open</button><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}">♡</button></div>`;
-        container.appendChild(div);
+      data.forEach(item => container.appendChild(buildTile(item)));
+      refreshFavoriteButtons();
+    }
+
+    function populateMovieSections(data, containerId) {
+      const container = document.getElementById(containerId);
+      if(!container) return;
+      container.innerHTML = '';
+      const groups = data.reduce((acc, item) => {
+        const first = (item.title || '#').trim().charAt(0).toUpperCase();
+        const letter = /[A-Z]/.test(first) ? first : '#';
+        (acc[letter] ||= []).push(item);
+        return acc;
+      }, {});
+      Object.keys(groups).sort().forEach(letter => {
+        const section = document.createElement('section');
+        section.className = 'movie-letter-section';
+        section.setAttribute('aria-label', `${letter} movies`);
+        section.innerHTML = `<h3 class="movie-letter-heading">${letter}</h3><div class="movie-letter-grid"></div>`;
+        const grid = section.querySelector('.movie-letter-grid');
+        groups[letter].forEach(item => grid.appendChild(buildTile(item)));
+        container.appendChild(section);
       });
       refreshFavoriteButtons();
     }
@@ -4867,9 +4910,9 @@
 
     // Initialize grids with the existing library content parsed from games.html, movies.html, and apps.html.
     updateLibraryCounters();
-    populateGrid(myGames, 'games-container');
-    populateGrid(myMovies, 'movies-container');
-    populateGrid(myApps, 'apps-container');
+    populateGrid(sortedGames, 'games-container');
+    populateMovieSections(sortedMovies, 'movies-container');
+    populateGrid(sortedApps, 'apps-container');
     updateRecentCards();
 
     /* ==========================================
@@ -4881,7 +4924,10 @@
       color: localStorage.getItem('os_color') || '#107C10',
       bg: localStorage.getItem('os_bg') || "none",
       clock24: localStorage.getItem('os_clock24') === 'true',
-      anim: localStorage.getItem('os_anim') !== 'false'
+      anim: localStorage.getItem('os_anim') !== 'false',
+      compact: localStorage.getItem('os_compact') === 'true',
+      hud: localStorage.getItem('os_hud') !== 'false',
+      reducedGlass: localStorage.getItem('os_reduced_glass') === 'true'
     };
 
     const account = {
@@ -4914,7 +4960,16 @@
       
       document.getElementById('btn-clock').innerText = prefs.clock24 ? "24-Hour" : "12-Hour";
       document.getElementById('btn-anim').innerText = prefs.anim ? "Enabled" : "Disabled";
-      if (!prefs.anim) document.body.classList.add('no-anim'); else document.body.classList.remove('no-anim');
+      document.getElementById('btn-compact').innerText = prefs.compact ? "On" : "Off";
+      document.getElementById('btn-hud').innerText = prefs.hud ? "Shown" : "Hidden";
+      document.getElementById('btn-glass').innerText = prefs.reducedGlass ? "On" : "Off";
+      document.getElementById('compact-summary').innerText = prefs.compact ? "Compact library is on" : "More items per row";
+      document.getElementById('hud-summary').innerText = prefs.hud ? "Button hints visible" : "Button hints hidden";
+      document.getElementById('glass-summary').innerText = prefs.reducedGlass ? "Reduced blur enabled" : "Full liquid glass";
+      document.body.classList.toggle('no-anim', !prefs.anim);
+      document.body.classList.toggle('compact-tiles', prefs.compact);
+      document.body.classList.toggle('hide-hud', !prefs.hud);
+      document.body.classList.toggle('reduced-glass', prefs.reducedGlass);
 
       document.getElementById('sys-username').innerText = account.user;
       renderGScore();
@@ -5248,6 +5303,9 @@
       if (el.dataset.action === 'set-custom-bg') { playSound('select'); prefs.bg = document.getElementById('wp-url').value; localStorage.setItem('os_bg', prefs.bg); applyPrefs(); return; }
       if (el.dataset.action === 'toggle-clock') { playSound('select'); prefs.clock24 = !prefs.clock24; localStorage.setItem('os_clock24', prefs.clock24); applyPrefs(); return; }
       if (el.dataset.action === 'toggle-anim') { playSound('select'); prefs.anim = !prefs.anim; localStorage.setItem('os_anim', prefs.anim); applyPrefs(); return; }
+      if (el.dataset.action === 'toggle-compact') { playSound('select'); prefs.compact = !prefs.compact; localStorage.setItem('os_compact', prefs.compact); applyPrefs(); return; }
+      if (el.dataset.action === 'toggle-hud') { playSound('select'); prefs.hud = !prefs.hud; localStorage.setItem('os_hud', prefs.hud); applyPrefs(); return; }
+      if (el.dataset.action === 'toggle-glass') { playSound('select'); prefs.reducedGlass = !prefs.reducedGlass; localStorage.setItem('os_reduced_glass', prefs.reducedGlass); applyPrefs(); return; }
       
       if (el.dataset.action === 'clear-cache') {
         playSound('select');
@@ -5275,7 +5333,26 @@
        Gamepad / Controller API Engine
        ========================================== */
     let lastGamepadInput = 0;
-    const inputDelay = 150; // ms delay between rapid inputs
+    const inputDelay = 135; // ms delay between rapid inputs
+    const axisDeadzone = 0.45;
+
+    function getGridColumns() {
+      const active = currentFocusables[currentIndex];
+      const grid = active?.closest?.('.content-grid, .movie-letter-grid, .settings-grid, .recents-row, .bottom-row');
+      if (!grid) return 3;
+      const columns = getComputedStyle(grid).gridTemplateColumns;
+      if (columns && columns !== 'none') return Math.max(1, columns.split(' ').length);
+      const peers = Array.from(grid.querySelectorAll('.focusable')).filter(el => el.offsetParent !== null);
+      if (peers.length < 2) return 1;
+      const top = peers[0].getBoundingClientRect().top;
+      return Math.max(1, peers.filter(el => Math.abs(el.getBoundingClientRect().top - top) < 8).length);
+    }
+
+    function moveControllerFocus(direction) {
+      const columns = getGridColumns();
+      const delta = direction === 'right' ? 1 : direction === 'left' ? -1 : direction === 'down' ? columns : -columns;
+      setFocus(currentIndex + delta);
+    }
 
     function pollGamepad() {
         const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
@@ -5289,16 +5366,15 @@
             if (now - lastGamepadInput > inputDelay) {
                 
                 // Navigation (D-Pad or Left Stick)
-                const up = gp.buttons[12]?.pressed || gp.axes[1] < -0.5;
-                const down = gp.buttons[13]?.pressed || gp.axes[1] > 0.5;
-                const left = gp.buttons[14]?.pressed || gp.axes[0] < -0.5;
-                const right = gp.buttons[15]?.pressed || gp.axes[0] > 0.5;
+                const up = gp.buttons[12]?.pressed || gp.axes[1] < -axisDeadzone;
+                const down = gp.buttons[13]?.pressed || gp.axes[1] > axisDeadzone;
+                const left = gp.buttons[14]?.pressed || gp.axes[0] < -axisDeadzone;
+                const right = gp.buttons[15]?.pressed || gp.axes[0] > axisDeadzone;
 
-                if (right) { setFocus(currentIndex + 1); lastGamepadInput = now; }
-                else if (left) { setFocus(currentIndex - 1); lastGamepadInput = now; }
-                // For up/down, we jump by a rough grid size (e.g., 3 columns)
-                else if (down) { setFocus(currentIndex + 3); lastGamepadInput = now; }
-                else if (up) { setFocus(currentIndex - 3); lastGamepadInput = now; }
+                if (right) { moveControllerFocus('right'); lastGamepadInput = now; }
+                else if (left) { moveControllerFocus('left'); lastGamepadInput = now; }
+                else if (down) { moveControllerFocus('down'); lastGamepadInput = now; }
+                else if (up) { moveControllerFocus('up'); lastGamepadInput = now; }
                 
                 // Action Buttons
                 const aBtn = gp.buttons[0]?.pressed;
@@ -5314,13 +5390,13 @@
                     if (osState === 'search') closeSearch();
                     else if (osState === 'guide') closeGuideMenu();
                     else if (osState === 'details') closeDetails();
-                    else if (osState === 'playing' || osState === 'playing_native') openGuideMenu();
+                    else if (osState === 'playing' || osState === 'playing_native') playSound('back');
                     else playSound('back'); // Visual/Audio feedback for back
                     lastGamepadInput = now + 100;
                 }
 
                 if (startBtn) {
-                    if (['playing', 'playing_native', 'dashboard'].includes(osState)) {
+                    if (['playing', 'playing_native'].includes(osState)) {
                         openGuideMenu();
                         lastGamepadInput = now + 200;
                     }
@@ -5356,10 +5432,10 @@
       currentFocusables = getActiveFocusables();
       if(currentFocusables.length === 0) return;
       
-      if (e.key === 'ArrowRight' || e.key === 'd') { e.preventDefault(); setFocus(currentIndex + 1); }
-      if (e.key === 'ArrowLeft' || e.key === 'a') { e.preventDefault(); setFocus(currentIndex - 1); }
-      if (e.key === 'ArrowDown' || e.key === 's') { e.preventDefault(); setFocus(currentIndex + 3); }
-      if (e.key === 'ArrowUp' || e.key === 'w') { e.preventDefault(); setFocus(currentIndex - 3); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); setFocus(currentIndex + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); setFocus(currentIndex - 1); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); setFocus(currentIndex + getGridColumns()); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setFocus(currentIndex - getGridColumns()); }
       if (e.key === 'Enter' || e.key === ' ') { 
           e.preventDefault(); 
           if(currentFocusables[currentIndex].tagName !== 'INPUT' || currentFocusables[currentIndex].type === 'file') {
