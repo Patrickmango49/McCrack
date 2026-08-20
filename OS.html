@@ -171,10 +171,12 @@
     /* === App Player & Overlays === */
     #app-player { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; }
     #app-player.active { display: block; } #app-player iframe { width: 100%; height: 100%; border: none; }
-    .mouse-exit-area { position: absolute; top: 0; left: 0; width: 120px; height: 120px; z-index: 1001; opacity: 0.2; transition: opacity 0.3s; }
-    .mouse-exit-area:hover { opacity: 1; }
-    .mouse-exit-btn { margin: 1.5rem; width: 60px; height: 60px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: var(--glass-blur); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .mouse-exit-btn svg { width: 30px; height: 30px; fill: var(--brand-main); }
+    .mouse-exit-area { position: absolute; top: 0; left: 0; z-index: 1001; opacity: 0.24; transition: opacity 0.3s; display: flex; gap: 0.85rem; padding: 1.5rem; }
+    .mouse-exit-area:hover, .mouse-exit-area:focus-within { opacity: 1; }
+    .player-overlay-btn { width: 60px; height: 60px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); box-shadow: 0 10px 25px rgba(0,0,0,0.5); color: #fff; transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease; }
+    .player-overlay-btn:hover, .player-overlay-btn:focus-visible { transform: translateY(-2px) scale(1.04); border-color: var(--focus-color); box-shadow: 0 16px 34px rgba(0,0,0,.56), 0 0 24px var(--brand-glow); outline: none; }
+    .player-overlay-btn img { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; filter: drop-shadow(0 0 12px var(--brand-glow)); }
+    .player-overlay-btn svg { width: 28px; height: 28px; fill: currentColor; }
 
     /* === Guide Menu === */
     #guide-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%); z-index: 2000; justify-content: center; align-items: center; }
@@ -283,8 +285,12 @@
     @keyframes bootRise { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: none; } }
     @keyframes logoPulse { 50% { transform: scale(1.035); filter: drop-shadow(0 0 55px var(--brand-glow)); } }
     @keyframes bootLoad { from { transform: translateX(-105%); } to { transform: translateX(245%); } }
-    .poster-tile { border-radius: 24px; box-shadow: 0 18px 42px rgba(0,0,0,.42); border-color: rgba(255,255,255,.13); }
+    .poster-tile { border-radius: 24px; box-shadow: 0 18px 42px rgba(0,0,0,.42); border-color: rgba(255,255,255,.13); transform: translateZ(0); }
+    .poster-tile::before { height: 48%; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.72) 42%, rgba(0,0,0,.94) 100%); }
     .poster-tile .card-title { font-size: .98rem; padding: 3rem .95rem .95rem; }
+    .poster-tile .card-actions { background: radial-gradient(circle at center, rgba(16,124,16,.2), rgba(0,0,0,.22) 62%, transparent); }
+    .poster-tile.hidden-placeholder { display: none !important; }
+    .library-heading::after { content: 'A Open  •  Details  •  ♥ Favorite'; color: var(--text-sub); font-size: .78rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; padding: .55rem .8rem; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; background: rgba(0,0,0,.36); }
     .recents-row { height: clamp(300px, 38vh, 430px); }
     .last-card { width: min(48%, 560px); min-width: 360px; padding: 2rem; }
     .last-card .kicker { z-index: 2; position: relative; color: var(--brand-main); text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; font-weight: 900; margin-bottom: .4rem; }
@@ -548,7 +554,7 @@
 
   <div id="app-player">
     <iframe id="game-frame" src=""></iframe>
-    <div class="mouse-exit-area"><div class="mouse-exit-btn" onclick="openGuideMenu()"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div></div>
+    <div class="mouse-exit-area" aria-label="Embed quick controls"><button class="player-overlay-btn focusable" type="button" onclick="openGuideMenu()" aria-label="Open guide menu"><img src="favicon.png" alt="McCrack guide"></button><button class="player-overlay-btn focusable" type="button" onclick="refreshEmbed()" aria-label="Refresh embed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.45 10.9 1 1 0 1 0-1.86-.74A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h8V3l-3.35 3.35Z"/></svg></button></div>
   </div>
 
   <div id="native-app-layer">
@@ -4749,16 +4755,16 @@
 ];
 
     const sortByTitle = (items) => [...items].sort((a, b) => (a.title || '').localeCompare(b.title || '', undefined, { numeric: true, sensitivity: 'base' }));
-    const sortedGames = sortByTitle(myGames);
-    const sortedMovies = sortByTitle(myMovies);
-    const sortedApps = sortByTitle(myApps);
+    const sortedGames = sortByTitle(myGames).filter(item => !isPlaceholderItem(item));
+    const sortedMovies = sortByTitle(myMovies).filter(item => !isPlaceholderItem(item));
+    const sortedApps = sortByTitle(myApps).filter(item => !isPlaceholderItem(item));
     const allContent = [...sortedGames, ...sortedMovies, ...sortedApps];
 
     function updateLibraryCounters() {
       const counters = [
-        ['games-count', 'Games', myGames.length],
-        ['movies-count', 'Movies', myMovies.length],
-        ['apps-count', 'Apps', myApps.length]
+        ['games-count', 'Games', sortedGames.length],
+        ['movies-count', 'Movies', sortedMovies.length],
+        ['apps-count', 'Apps', sortedApps.length]
       ];
       counters.forEach(([id, label, count]) => {
         const el = document.getElementById(id);
@@ -4838,6 +4844,10 @@
       if (detailFav && activeDetailsItem) detailFav.textContent = isFavorite(activeDetailsItem) ? '♥ Favorited' : '♡ Favorite';
     }
 
+    function isPlaceholderItem(item) {
+      return /^(Game|App|Movie)\s+\d+$/i.test((item?.title || '').trim());
+    }
+
     function buildTile(item) {
       const div = document.createElement('div');
       div.className = 'poster-tile media-tile focusable';
@@ -4848,6 +4858,7 @@
       if (item.nativeapp) div.dataset.nativeapp = item.nativeapp;
       if (item.target) div.dataset.target = item.target;
       if (item.type) div.dataset.type = item.type;
+      if (isPlaceholderItem(item)) div.classList.add('hidden-placeholder');
       div.innerHTML = `${item.img ? `<img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.title)} artwork" loading="lazy">` : ''}<span class="card-title media-title">${escapeHtml(item.title)}</span><div class="card-actions quick-actions"><button class="card-action focusable open" type="button" data-action="open-item">Open</button><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}">♡</button></div>`;
       return div;
     }
@@ -4856,7 +4867,8 @@
       const container = document.getElementById(containerId);
       if(!container) return;
       container.innerHTML = '';
-      data.forEach(item => container.appendChild(buildTile(item)));
+      data.filter(item => !isPlaceholderItem(item)).forEach(item => container.appendChild(buildTile(item)));
+      if (!container.children.length) container.innerHTML = '<p class="guide-meta">No finished tiles yet. Placeholder items are hidden automatically.</p>';
       refreshFavoriteButtons();
     }
 
@@ -4871,6 +4883,8 @@
         return acc;
       }, {});
       Object.keys(groups).sort().forEach(letter => {
+        groups[letter] = groups[letter].filter(item => !isPlaceholderItem(item));
+        if (!groups[letter].length) return;
         const section = document.createElement('section');
         section.className = 'movie-letter-section';
         section.setAttribute('aria-label', `${letter} movies`);
@@ -5256,7 +5270,7 @@
 
       if (osState === 'guide') {
         playSound('select');
-        if (el.dataset.action === 'guide-refresh') { const frame = document.getElementById('game-frame'); if (frame.src) frame.src = frame.src; return; }
+        if (el.dataset.action === 'guide-refresh') { refreshEmbed(); return; }
         if (el.dataset.action === 'guide-details' && currentLaunchedItem) { closeGuideMenu(); openDetails(currentLaunchedItem); return; }
         if (el.dataset.action === 'guide-favorite' && currentLaunchedItem) { toggleFavorite(currentLaunchedItem); el.textContent = isFavorite(currentLaunchedItem) ? 'Favorited' : 'Favorite'; return; }
         el.click(); return;
@@ -5448,6 +5462,11 @@
     document.getElementById('note-input').addEventListener('input', (e) => { localStorage.setItem('os_notes', e.target.value); });
     
     // Guide Menu Handlers
+    function refreshEmbed() {
+      const frame = document.getElementById('game-frame');
+      if (frame?.src) { frame.src = frame.src; playSound('select'); }
+    }
+
     function openGuideMenu() {
       if (osState === 'dashboard' || osState === 'setup') return;
       document.getElementById('guide-overlay').classList.add('active');
