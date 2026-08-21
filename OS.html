@@ -39,8 +39,6 @@
     }
     body.no-anim * { transition: none !important; animation: none !important; }
 
-    /* Soften the overlay to let the background colors through for the glass effect */
-    #bg-overlay { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%); backdrop-filter: blur(10px); }
 
     /* === Console Header (Profile, Search & Status) === */
     .console-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 3rem 4rem 1rem 4rem; z-index: 40; }
@@ -62,8 +60,12 @@
     .search-bar:focus-within input, .search-bar.focused input { width: 250px; cursor: text; }
     .search-bar svg { width: 18px; height: 18px; fill: var(--text-sub); }
     
-    .status-icons { display: flex; align-items: center; gap: 1.2rem; font-size: 1.1rem; color: #fff; background: var(--glass-bg); padding: 0.6rem 1.2rem; border-radius: 24px; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); box-shadow: 0 8px 24px rgba(0,0,0,0.2);}
-    .status-icons span { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.95rem;}
+    .status-icons { display: flex; align-items: center; gap: 0.55rem; color: #fff; }
+    .status-bubble { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; font-weight: 750; font-size: 0.95rem; color: #fff; background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06)); padding: 0.58rem 0.88rem; border-radius: 999px; backdrop-filter: blur(18px) saturate(170%); -webkit-backdrop-filter: blur(18px) saturate(170%); border: 1px solid rgba(255,255,255,0.16); box-shadow: 0 8px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.12); }
+    .settings-gear { width: 42px; padding: 0; cursor: pointer; transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease; }
+    .settings-gear:hover, .settings-gear:focus, .settings-gear.focused { transform: translateY(-1px) scale(1.04); border-color: var(--focus-color); background: var(--glass-bg-light); box-shadow: 0 12px 30px rgba(0,0,0,0.28), 0 0 22px var(--brand-glow); outline: none; }
+    .settings-gear .svg-icon { width: 18px; height: 18px; fill: currentColor; }
+    .battery-icon { filter: drop-shadow(0 0 8px rgba(255,255,255,0.18)); }
     
     #sys-date-time { font-size: 1.3rem; font-weight: 600; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;}
     #sys-date { font-size: 0.85rem; color: var(--text-sub); font-weight: 500;}
@@ -235,10 +237,12 @@
     .poster-tile .card-title { z-index: 3; position: relative; margin-top: auto; min-height: 0; padding: 2.15rem 0.72rem 0.72rem; display: block; color: #fff; font-size: 0.78rem; font-weight: 800; line-height: 1.18; text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,0.9); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .poster-tile .card-actions { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 7px; flex-wrap: wrap; padding: 14px; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; }
     .poster-tile:hover .card-actions, .poster-tile:focus .card-actions, .poster-tile.focused .card-actions, .poster-tile:focus-within .card-actions { opacity: 1; transform: translateY(0); }
-    .card-action { width: auto; min-height: 0; border: 1px solid rgba(255,255,255,0.16); background: rgba(0,0,0,0.58); color: #fff; border-radius: 999px; padding: 7px 10px; font-size: 0.78rem; font-weight: 800; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); pointer-events: auto; transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease; }
-    .card-action.favorite { position: absolute; top: 9px; right: 9px; width: 34px; height: 34px; min-width: 34px; padding: 0; font-size: 0.9rem; line-height: 1; border-radius: 50%; }
-    .card-action:hover, .card-action:focus, .card-action.focused { transform: translateY(-2px); background: var(--brand-main); border-color: var(--focus-color); outline: 2px solid rgba(255,255,255,0.72); outline-offset: 1px; }
-    .card-action.favorite.is-favorite { color: #ff6b91; background: rgba(255,255,255,0.18); border-color: rgba(255,107,145,0.75); }
+    .card-action { width: auto; min-height: 32px; border: 1px solid rgba(255,255,255,0.18); background: linear-gradient(135deg, rgba(18,18,18,0.72), rgba(255,255,255,0.1)); color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 0.76rem; letter-spacing: 0.02em; font-weight: 850; cursor: pointer; backdrop-filter: blur(14px) saturate(155%); -webkit-backdrop-filter: blur(14px) saturate(155%); pointer-events: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.1); transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease; }
+    .card-action.details { background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)); }
+    .card-action.favorite { position: absolute; top: 9px; right: 9px; width: 34px; height: 34px; min-width: 34px; min-height: 34px; padding: 0; font-size: 0.98rem; line-height: 1; border-radius: 50%; }
+    .card-action:hover, .card-action:focus, .card-action.focused { transform: translateY(-2px); background: linear-gradient(135deg, var(--brand-main), rgba(255,255,255,0.18)); border-color: var(--focus-color); box-shadow: 0 12px 26px rgba(0,0,0,0.42), 0 0 22px var(--brand-glow), inset 0 1px 0 rgba(255,255,255,0.18); outline: none; }
+    .card-action:active { transform: translateY(0) scale(0.97); box-shadow: 0 5px 14px rgba(0,0,0,0.38), inset 0 2px 8px rgba(0,0,0,0.2); }
+    .card-action.favorite.is-favorite { color: #fff; background: linear-gradient(135deg, #ff3f7d, #ff85a8); border-color: rgba(255,186,207,0.9); box-shadow: 0 10px 24px rgba(255,63,125,0.28), inset 0 1px 0 rgba(255,255,255,0.22); }
     .details-modal { display: none; position: fixed; inset: 0; z-index: 4800; align-items: center; justify-content: center; padding: 3rem; background: rgba(0,0,0,0.62); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); }
     .details-modal.active { display: flex; animation: fadeIn 0.2s ease; }
     .details-card { width: min(940px, 96vw); max-height: 86vh; overflow: auto; display: grid; grid-template-columns: minmax(220px, 34%) 1fr; gap: 2rem; background: var(--glass-bg); border: 1px solid var(--glass-border-glow); border-radius: 28px; padding: 2rem; box-shadow: 0 30px 80px rgba(0,0,0,0.65); }
@@ -310,7 +314,6 @@
 
   <div id="boot-screen" aria-label="McCrack-COS loading screen"><div class="boot-card"><img class="boot-logo" src="favicon.png" alt="McCrack logo"><div class="boot-title">McCrack-COS</div><div class="boot-progress"><span></span></div></div></div>
 
-  <div id="bg-overlay"></div>
 
   <div id="setup-wizard">
     <div class="wizard-box">
@@ -373,8 +376,8 @@
           <input type="text" placeholder="Search" readonly style="pointer-events: none;">
       </div>
       <div class="status-icons">
-        <span title="Settings"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2.1-1.6-2-3.5-2.5 1a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.4 2.9A7.7 7.7 0 0 0 7 6.4l-2.5-1-2 3.5 2.1 1.6A9.2 9.2 0 0 0 4.5 12c0 .5 0 1 .1 1.5l-2.1 1.6 2 3.5 2.5-1a7.7 7.7 0 0 0 2.6 1.5L10 22h4l.4-2.9a7.7 7.7 0 0 0 2.6-1.5l2.5 1 2-3.5-2.1-1.6ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg></span>
-        <span id="sys-battery" title="Device Battery">100%</span>
+        <span class="status-bubble battery-bubble" title="Device Battery"><span class="battery-icon" aria-hidden="true">🔋</span><span id="sys-battery">100%</span></span>
+        <button class="status-bubble settings-gear focusable" type="button" data-target="page-settings" aria-label="Open Settings" title="Settings"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2.1-1.6-2-3.5-2.5 1a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.4 2.9A7.7 7.7 0 0 0 7 6.4l-2.5-1-2 3.5 2.1 1.6A9.2 9.2 0 0 0 4.5 12c0 .5 0 1 .1 1.5l-2.1 1.6 2 3.5 2.5-1a7.7 7.7 0 0 0 2.6 1.5L10 22h4l.4-2.9a7.7 7.7 0 0 0 2.6-1.5l2.5 1 2-3.5-2.1-1.6ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg></button>
       </div>
       <div id="sys-date-time">
           <span id="sys-time">04:55 PM</span>
@@ -389,7 +392,6 @@
     <div class="nav-btn focusable" data-target="page-movies">Movies</div>
     <div class="nav-btn focusable" data-target="page-apps">Apps</div>
     <div class="nav-btn focusable" data-target="page-chat">Chat</div>
-    <div class="nav-btn focusable" data-target="page-settings">Settings</div>
   </nav>
 
   <div class="main-content">
@@ -4771,7 +4773,7 @@
         if (el) el.textContent = `${label} • ${count}`;
       });
     }
-    const FAVORITES_KEY = 'mc_os_favorites_v1';
+    const FAVORITES_KEY = 'mc_favorites_v2';
     const LAST_GAME_KEY = 'mc_os_last_game_v1';
     const LAST_MOVIE_KEY = 'mc_os_last_movie_v1';
     const G_SCORE_KEY = 'mc_os_g_score_v1';
@@ -4785,9 +4787,13 @@
       return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
     }
 
-    function itemKey(item) { return `${item.type}:${item.id || 'item'}:${item.title || item.link || item.nativeapp || item.target}`; }
-    function readFavorites() { try { return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]'); } catch { return []; } }
-    function saveFavorites(favorites) { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites)); }
+    function slugify(value) { return String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'item'; }
+    function itemKind(item) { return item?.type === 'app' ? 'app' : (item?.type === 'movie' ? 'movie' : 'game'); }
+    function itemFavoriteId(item) { return item?.id || slugify(`${item?.title || ''}-${item?.link || item?.nativeapp || item?.target || ''}`); }
+    function favoritesKey(kind) { return `${FAVORITES_KEY}_${kind}`; }
+    function itemKey(item) { return `${itemKind(item)}:${itemFavoriteId(item)}`; }
+    function readFavorites(kind) { try { return JSON.parse(localStorage.getItem(favoritesKey(kind)) || '[]'); } catch { return []; } }
+    function saveFavorites(favorites, kind) { localStorage.setItem(favoritesKey(kind), JSON.stringify(favorites)); }
     function readGScore() {
       const savedScore = Number(localStorage.getItem(G_SCORE_KEY));
       return Number.isFinite(savedScore) && savedScore > 0 ? Math.floor(savedScore) : 0;
@@ -4811,14 +4817,19 @@
       window.clearInterval(gScoreTimer);
       gScoreTimer = null;
     }
-    function isFavorite(item) { return readFavorites().some(fav => fav.key === itemKey(item)); }
+    function isFavorite(item) {
+      const kind = itemKind(item), id = itemFavoriteId(item);
+      return readFavorites(kind).some(fav => fav.id === id);
+    }
     function toggleFavorite(item) {
-      const key = itemKey(item);
-      const favorites = readFavorites();
-      const next = favorites.some(fav => fav.key === key) ? favorites.filter(fav => fav.key !== key) : [{ key, ...item }, ...favorites];
-      saveFavorites(next.slice(0, 400));
+      const kind = itemKind(item), id = itemFavoriteId(item);
+      const favorites = readFavorites(kind);
+      const exists = favorites.some(fav => fav.id === id);
+      const next = exists ? favorites.filter(fav => fav.id !== id) : [{ id, title: item.title || 'Untitled', image: item.img || '', src: item.link || item.nativeapp || item.target || '', kind }, ...favorites];
+      saveFavorites(next.slice(0, 300), kind);
       refreshFavoriteButtons();
-      return next.some(fav => fav.key === key);
+      document.dispatchEvent(new CustomEvent('mc:favorites-changed'));
+      return !exists;
     }
     function updateRecentCards() {
       [['lastGame', LAST_GAME_KEY], ['lastMovie', LAST_MOVIE_KEY]].forEach(([attr, key]) => {
@@ -4835,9 +4846,10 @@
 
     function refreshFavoriteButtons() {
       document.querySelectorAll('[data-favorite-key]').forEach(btn => {
-        const active = readFavorites().some(fav => fav.key === btn.dataset.favoriteKey);
+        const active = readFavorites(btn.dataset.favoriteKind).some(fav => fav.id === btn.dataset.favoriteId);
         btn.classList.toggle('is-favorite', active);
         btn.textContent = active ? '♥' : '♡';
+        btn.setAttribute('aria-pressed', String(active));
         btn.setAttribute('aria-label', active ? 'Remove from favorites' : 'Add to favorites');
       });
       const detailFav = document.querySelector('[data-action="details-favorite"]');
@@ -4859,7 +4871,7 @@
       if (item.target) div.dataset.target = item.target;
       if (item.type) div.dataset.type = item.type;
       if (isPlaceholderItem(item)) div.classList.add('hidden-placeholder');
-      div.innerHTML = `${item.img ? `<img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.title)} artwork" loading="lazy">` : ''}<span class="card-title media-title">${escapeHtml(item.title)}</span><div class="card-actions quick-actions"><button class="card-action focusable open" type="button" data-action="open-item">Open</button><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}">♡</button></div>`;
+      div.innerHTML = `${item.img ? `<img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.title)} artwork" loading="lazy">` : ''}<span class="card-title media-title">${escapeHtml(item.title)}</span><div class="card-actions quick-actions"><button class="card-action focusable open" type="button" data-action="open-item">Open</button><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}" data-favorite-kind="${escapeHtml(itemKind(item))}" data-favorite-id="${escapeHtml(itemFavoriteId(item))}" aria-pressed="false">♡</button></div>`;
       return div;
     }
 
@@ -5500,6 +5512,8 @@
       // Exclude direct clicks on file inputs as they trigger via label
       if(e.target.tagName === 'INPUT' && e.target.type === 'file') return;
       
+      const actionControl = e.target.closest('button[data-action], .card-action, [data-action="details-favorite"], [data-action="details-open"], [data-action="details-close"]');
+      if (actionControl) { e.preventDefault(); e.stopPropagation(); }
       const focusable = e.target.closest('.focusable');
       if (focusable) triggerAction(focusable);
     });
