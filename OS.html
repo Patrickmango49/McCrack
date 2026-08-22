@@ -555,11 +555,11 @@
   </div>
 
   <div id="app-player">
-    <iframe id="game-frame" src=""></iframe>
+    <iframe id="game-frame" src="" tabindex="-1"></iframe>
     <div class="mouse-exit-area" aria-label="Embed quick controls"><button class="player-overlay-btn focusable" type="button" onclick="openGuideMenu()" aria-label="Open guide menu"><img src="favicon.png" alt="McCrack guide"></button><button class="player-overlay-btn focusable" type="button" onclick="refreshEmbed()" aria-label="Refresh embed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.45 10.9 1 1 0 1 0-1.86-.74A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h8V3l-3.35 3.35Z"/></svg></button></div>
   </div>
 
-  <div id="native-app-layer">
+  <div id="native-app-layer" tabindex="-1">
     <div id="app-notes" class="native-app"><textarea id="note-input" class="focusable" placeholder="Start typing... Saves locally to device storage."></textarea></div>
   </div>
 
@@ -5236,9 +5236,9 @@
         if (item.type === 'game') localStorage.setItem(LAST_GAME_KEY, JSON.stringify(item));
         if (item.type === 'movie') localStorage.setItem(LAST_MOVIE_KEY, JSON.stringify(item));
         updateRecentCards();
-        osState = 'playing';
         document.getElementById('game-frame').src = item.link;
         document.getElementById('app-player').classList.add('active');
+        enterEmbedMode();
         startGScoreTimer();
         return;
       }
@@ -5380,6 +5380,28 @@
       setFocus(currentIndex + delta);
     }
 
+    function isEmbedControllerMode() {
+      return ['playing', 'playing_native'].includes(osState);
+    }
+
+    function focusActiveEmbed() {
+      if (document.getElementById('app-player').classList.contains('active')) {
+        document.getElementById('game-frame')?.focus();
+      } else if (document.getElementById('native-app-layer').classList.contains('active')) {
+        document.getElementById('native-app-layer')?.focus();
+      }
+    }
+
+    function enterEmbedMode() {
+      osState = document.getElementById('native-app-layer').classList.contains('active') ? 'playing_native' : 'playing';
+      currentFocusables.forEach(el => el.classList.remove('focused'));
+      setTimeout(focusActiveEmbed, 50);
+    }
+
+    function isGuideButtonPressed(gp) {
+      return gp.buttons[9]?.pressed || gp.buttons[16]?.pressed;
+    }
+
     function pollGamepad() {
         const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
         if (!gamepads) return;
@@ -5390,6 +5412,16 @@
             
             // If enough time has passed since last input (Debounce)
             if (now - lastGamepadInput > inputDelay) {
+                const guideBtn = isGuideButtonPressed(gp);
+
+                if (isEmbedControllerMode()) {
+                    if (guideBtn) {
+                        openGuideMenu();
+                        lastGamepadInput = now + 200;
+                    }
+                    requestAnimationFrame(pollGamepad);
+                    return;
+                }
                 
                 // Navigation (D-Pad or Left Stick)
                 const up = gp.buttons[12]?.pressed || gp.axes[1] < -axisDeadzone;
@@ -5405,7 +5437,6 @@
                 // Action Buttons
                 const aBtn = gp.buttons[0]?.pressed;
                 const bBtn = gp.buttons[1]?.pressed;
-                const startBtn = gp.buttons[9]?.pressed; // Menu/Start button
 
                 if (aBtn && currentFocusables[currentIndex]) {
                     triggerAction(currentFocusables[currentIndex]);
@@ -5416,16 +5447,12 @@
                     if (osState === 'search') closeSearch();
                     else if (osState === 'guide') closeGuideMenu();
                     else if (osState === 'details') closeDetails();
-                    else if (osState === 'playing' || osState === 'playing_native') playSound('back');
                     else playSound('back'); // Visual/Audio feedback for back
                     lastGamepadInput = now + 100;
                 }
 
-                if (startBtn) {
-                    if (['playing', 'playing_native'].includes(osState)) {
-                        openGuideMenu();
-                        lastGamepadInput = now + 200;
-                    }
+                if (guideBtn && osState === 'guide') {
+                    lastGamepadInput = now + 200;
                 }
             }
         }
@@ -5491,9 +5518,12 @@
     }
     function closeGuideMenu() {
       document.getElementById('guide-overlay').classList.remove('active');
-      osState = document.getElementById('app-player').classList.contains('active') ? 'playing' : 
-                (document.getElementById('native-app-layer').classList.contains('active') ? 'playing_native' : 'dashboard');
-      if(osState === 'dashboard') setFocus(0);
+      if (document.getElementById('app-player').classList.contains('active') || document.getElementById('native-app-layer').classList.contains('active')) {
+        enterEmbedMode();
+      } else {
+        osState = 'dashboard';
+        setFocus(0);
+      }
       playSound('back');
     }
     function quitGame() {
