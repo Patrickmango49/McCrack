@@ -11,17 +11,17 @@
 
     :root {
       /* Base Theme */
-      --brand-main: #107C10; 
+      --brand-main: #107C10;
       --brand-glow: rgba(16, 124, 16, 0.6);
-      --focus-color: #107C10; 
-      
+      --focus-color: #107C10;
+
       /* Apple Liquid Glass Properties */
       --glass-bg: rgba(20, 20, 20, 0.45);
       --glass-bg-light: rgba(255, 255, 255, 0.08);
       --glass-border: rgba(255, 255, 255, 0.12);
       --glass-border-glow: rgba(255, 255, 255, 0.3);
       --glass-blur: blur(30px) saturate(180%);
-      
+
       --text-main: #ffffff;
       --text-sub: rgba(255, 255, 255, 0.65);
       --screen-brightness: 1;
@@ -30,9 +30,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 
     body {
-      background-color: #050505; 
+      background-color: #050505;
       /* Updated default background to something colorful so the glass effect shines */
-      background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+      background-image: url('https://i.imgur.com/mRkcSg6.png');
       background-size: cover; background-position: center; background-attachment: fixed;
       color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column;
       filter: brightness(var(--screen-brightness)); transition: filter 0.3s ease, background-image 0.5s ease;
@@ -50,35 +50,37 @@
     .badge-ultimate { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); color: #fff; font-size: 0.65rem; padding: 0.3rem 0.6rem; border-radius: 12px; font-weight: 700; letter-spacing: 1px;}
     .gamerscore { display: flex; align-items: center; gap: 6px; font-size: 0.95rem; color: var(--text-main); font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8);}
     .g-icon { display: inline-flex; justify-content: center; align-items: center; width: 18px; height: 18px; border: 1.5px solid var(--text-main); border-radius: 50%; font-size: 11px; font-weight: 800; }
-    
+
     .header-right { display: flex; align-items: center; gap: 1.5rem; }
-    
+
     /* Search Bar - Glassified */
     .search-bar { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 24px; padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 8px 24px rgba(0,0,0,0.2);}
     .search-bar input { background: transparent; border: none; color: #fff; font-size: 1rem; outline: none; cursor: pointer; width: 150px; transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); font-weight: 500;}
     .search-bar input::placeholder { color: var(--text-sub); }
     .search-bar:focus-within input, .search-bar.focused input { width: 250px; cursor: text; }
     .search-bar svg { width: 18px; height: 18px; fill: var(--text-sub); }
-    
+
     .status-icons { display: flex; align-items: center; gap: 0.55rem; color: #fff; }
     .status-bubble { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; font-weight: 750; font-size: 0.95rem; color: #fff; background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06)); padding: 0.58rem 0.88rem; border-radius: 999px; backdrop-filter: blur(18px) saturate(170%); -webkit-backdrop-filter: blur(18px) saturate(170%); border: 1px solid rgba(255,255,255,0.16); box-shadow: 0 8px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.12); }
     .settings-gear { width: 42px; padding: 0; cursor: pointer; transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease; }
     .settings-gear:hover, .settings-gear:focus, .settings-gear.focused { transform: translateY(-1px) scale(1.04); border-color: var(--focus-color); background: var(--glass-bg-light); box-shadow: 0 12px 30px rgba(0,0,0,0.28), 0 0 22px var(--brand-glow); outline: none; }
     .settings-gear .svg-icon { width: 18px; height: 18px; fill: currentColor; }
     .battery-icon { filter: drop-shadow(0 0 8px rgba(255,255,255,0.18)); }
-    
+
     #sys-date-time { font-size: 1.3rem; font-weight: 600; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;}
     #sys-date { font-size: 0.85rem; color: var(--text-sub); font-weight: 500;}
 
-    /* === Horizontal Navigation === */
-    .top-nav { display: flex; gap: 1rem; padding: 0 4rem; margin-bottom: 2rem; z-index: 50; }
-    .nav-btn { font-size: 1.1rem; font-weight: 600; color: var(--text-sub); cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); padding: 0.6rem 1.2rem; border-radius: 20px; text-transform: capitalize; letter-spacing: 0.5px; border: 1px solid transparent;}
-    .nav-btn.active { color: #fff; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,0.15);}
-    .nav-btn.focused { color: #fff; }
+    /* === Compact Icon Navigation === */
+    .top-nav { display: flex; gap: .65rem; width: max-content; align-self: center; margin: 0 auto 1.55rem; padding: .45rem; z-index: 50; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(10,10,10,.38); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); box-shadow: 0 18px 44px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08); }
+    .nav-btn { width: 48px; height: 48px; display: grid; place-items: center; color: var(--text-sub); cursor: pointer; transition: transform .22s ease, color .22s ease, background .22s ease, border-color .22s ease, box-shadow .22s ease; padding: 0; border-radius: 50%; border: 1px solid transparent;}
+    .nav-btn .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .nav-btn .svg-icon { width: 22px; height: 22px; }
+    .nav-btn.active { color: #fff; background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(16,124,16,.24)); border-color: rgba(255,255,255,.24); box-shadow: 0 10px 26px rgba(0,0,0,.24), 0 0 24px var(--brand-glow);}
+    .nav-btn:hover, .nav-btn:focus-visible, .nav-btn.focused { color: #fff; transform: translateY(-2px) scale(1.06); background: var(--glass-bg-light); border-color: var(--focus-color); box-shadow: 0 0 24px var(--brand-glow); outline: none; }
 
     /* === Main Content Area === */
     .main-content { flex: 1; position: relative; padding: 0 2rem; display: flex; flex-direction: column; overflow: hidden; }
-    
+
     .page { display: none; height: 100%; flex-direction: column; animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); padding-bottom: 5rem; overflow-y: auto;}
     .page.active { display: flex; }
     @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -89,44 +91,44 @@
     .bottom-row { display: flex; gap: 1.5rem; height: 180px; }
 
     /* Tiles styling - Liquid Glass */
-    .tile, .poster-tile { 
-      background-color: var(--glass-bg); 
+    .tile, .poster-tile {
+      background-color: var(--glass-bg);
       backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-      border-radius: 20px; display: flex; flex-direction: column; justify-content: flex-end; 
-      cursor: pointer; position: relative; overflow: hidden; background-size: cover; background-position: center; 
-      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease; 
+      border-radius: 20px; display: flex; flex-direction: column; justify-content: flex-end;
+      cursor: pointer; position: relative; overflow: hidden; background-size: cover; background-position: center;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
     }
     .tile { padding: 1.8rem; }
     .poster-tile { aspect-ratio: 2/3; padding: 1.5rem 1rem; align-items: center; font-weight: bold; text-align: center; }
     .poster-tile::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%); }
     .poster-tile span { z-index: 2; position: relative; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.8); font-size: 1.15rem; bottom: 0;}
-    
+
     .recents-hero { width: 380px; flex-shrink: 0; padding: 1.8rem; justify-content: flex-end; }
     .recents-hero::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%); }
     .recents-hero h2, .recents-hero p { z-index: 2; position: relative; }
-    
+
     .recents-small { width: 180px; flex-shrink: 0; justify-content: flex-end; padding: 1.2rem; }
     .recents-small::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%); }
     .recents-small span { z-index: 2; position: relative; color: #fff; font-size: 1rem; text-align: left; width: 100%; font-weight: 600;}
-    
+
     .promo-card { flex: 1; padding: 1.8rem; justify-content: flex-end; }
     .promo-card::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%); }
     .promo-card h3 { z-index: 2; position: relative; font-size: 1.3rem; font-weight: 700; color: #fff;}
 
-    .tile h2 { font-size: 1.7rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; } 
+    .tile h2 { font-size: 1.7rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
     .tile p { color: var(--text-sub); font-size: 1.05rem; margin-top: 0.3rem;}
 
     /* === CONSOLE FOCUS STATES (Modern Glow) === */
     .focusable { outline: none; }
-    .focusable:focus, .focusable.focused { 
-      transform: scale(1.04); 
+    .focusable:focus, .focusable.focused {
+      transform: scale(1.04);
       border-color: var(--focus-color);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 2px var(--focus-color), 0 0 30px var(--brand-glow); 
-      z-index: 10; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 2px var(--focus-color), 0 0 30px var(--brand-glow);
+      z-index: 10;
     }
-    
-    .nav-btn.focused { transform: scale(1.05); background: var(--glass-bg-light); border-color: var(--focus-color); box-shadow: 0 0 20px var(--brand-glow);}
+
+    .library-side-btn.focused { transform: translateX(3px) scale(1.02); background: var(--glass-bg-light); border-color: var(--focus-color); box-shadow: 0 0 20px var(--brand-glow);}
     .setting-tab.focused { border-color: var(--focus-color); box-shadow: 0 0 20px var(--brand-glow);}
     .form-input.focused { border-color: var(--focus-color); background: rgba(255,255,255,0.1); box-shadow: 0 0 20px var(--brand-glow);}
 
@@ -135,20 +137,20 @@
     .settings-sidebar { width: 280px; display: flex; flex-direction: column; gap: 0.8rem; }
     .setting-tab { padding: 1.2rem 1.5rem; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 16px; font-size: 1.15rem; font-weight: 600; color: var(--text-sub); cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
     .setting-tab.active-tab { background: var(--glass-bg-light); color: #fff; border-color: var(--glass-border-glow); }
-    
+
     .settings-content-area { flex: 1; position: relative; padding-right: 1rem; padding-bottom: 4rem;}
     .setting-view { display: none; flex-direction: column; gap: 2rem; animation: slideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
     .setting-view.active { display: flex; }
     .settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); grid-auto-rows: 160px; gap: 1.5rem; }
     .settings-header { font-size: 2.2rem; font-weight: 800; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; letter-spacing: -1px;}
-    
+
     .color-picker-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-bottom: 1rem;}
     .color-btn { height: 70px; border-radius: 16px; border: 2px solid var(--glass-border); cursor: pointer; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.2);}
-    
+
     .control-row { display: flex; align-items: center; justify-content: space-between; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); padding: 1.8rem; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 10px 25px rgba(0,0,0,0.2);}
     .control-row h3 { font-size: 1.2rem; margin-bottom: 0.3rem; font-weight: 700;}
     .small-btn { background: var(--glass-bg-light); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); padding: 1rem 2rem; border-radius: 14px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
-    
+
     .form-group { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
     .form-group label { font-weight: 600; color: var(--text-sub); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;}
     .form-input { padding: 1.2rem; border-radius: 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff; font-size: 1.1rem; outline: none; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); font-family: inherit;}
@@ -197,13 +199,13 @@
     .native-app { display: none; width: 85%; height: 85%; background: var(--glass-bg); backdrop-filter: var(--glass-blur); border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: 0 30px 80px rgba(0,0,0,0.6); overflow: hidden;}
     .native-app.active { display: flex; flex-direction: column;}
     #note-input { flex: 1; background: transparent; border: none; color: #fff; padding: 4rem; font-size: 1.4rem; font-family: monospace; resize: none; outline: none; line-height: 1.6;}
-    
+
     /* === Controller HUD === */
     .hud { position: fixed; bottom: 2.5rem; right: 4rem; display: flex; gap: 1.5rem; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); padding: 1rem 1.5rem; border-radius: 24px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
     .hud-item { display: flex; align-items: center; gap: 0.8rem; font-size: 0.95rem; font-weight: 600; color: #fff;}
     .btn-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .btn-a { background: #107C10; } 
-    .btn-b { background: #D12121; } 
+    .btn-a { background: #107C10; }
+    .btn-b { background: #D12121; }
     .btn-start { background: transparent; border: 2px solid var(--glass-border); color: #fff; font-size: 14px; }
 
     /* === Library Card Actions & Details === */
@@ -294,6 +296,17 @@
     .poster-tile .card-title { font-size: .98rem; padding: 3rem .95rem .95rem; }
     .poster-tile .card-actions { background: radial-gradient(circle at center, rgba(16,124,16,.2), rgba(0,0,0,.22) 62%, transparent); }
     .poster-tile.hidden-placeholder { display: none !important; }
+
+    .library-shell { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 1.4rem; min-height: 100%; }
+    .library-side-nav { position: sticky; top: .5rem; align-self: start; display: flex; flex-direction: column; gap: .55rem; padding: .65rem; border: 1px solid var(--glass-border); border-radius: 22px; background: rgba(10,10,10,.34); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+    .library-side-btn { min-height: 42px; padding: .7rem .85rem; border: 1px solid transparent; border-radius: 16px; color: var(--text-sub); font-weight: 850; cursor: pointer; transition: all .22s ease; }
+    .library-side-btn.active { color: #fff; background: linear-gradient(135deg, rgba(16,124,16,.34), rgba(255,255,255,.08)); border-color: rgba(255,255,255,.18); box-shadow: 0 10px 24px rgba(0,0,0,.2), 0 0 18px var(--brand-glow); }
+    .library-panel { display: none; min-width: 0; } .library-panel.active { display: block; animation: slideIn .28s cubic-bezier(.2,.8,.2,1); }
+    #embed-loading { position: absolute; inset: 0; z-index: 1002; display: none; place-items: center; background: linear-gradient(140deg, rgba(0,0,0,.48), rgba(0,0,0,.78)), url('https://i.imgur.com/mRkcSg6.png') center/cover; opacity: 0; transition: opacity .28s ease; }
+    #embed-loading.active { display: grid; opacity: 1; } #embed-loading.done { opacity: 0; pointer-events: none; }
+    .embed-load-card { display: grid; justify-items: center; gap: 1rem; min-width: min(420px, 82vw); padding: 2.2rem; border-radius: 28px; background: rgba(12,12,12,.48); border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(28px) saturate(180%); box-shadow: 0 28px 80px rgba(0,0,0,.55); text-align: center; }
+    .embed-load-title { font-size: 1.7rem; font-weight: 950; letter-spacing: -.04em; } .embed-load-sub { color: var(--text-sub); font-weight: 750; }
+
     .library-heading::after { content: 'A Open  •  Details  •  ♥ Favorite'; color: var(--text-sub); font-size: .78rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; padding: .55rem .8rem; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; background: rgba(0,0,0,.36); }
     .recents-row { height: clamp(300px, 38vh, 430px); }
     .last-card { width: min(48%, 560px); min-width: 360px; padding: 2rem; }
@@ -319,7 +332,7 @@
     <div class="wizard-box">
       <h1>Welcome to Console OS</h1>
       <p>Let's get you set up quickly.</p>
-      
+
       <div id="wizard-step-1">
         <div class="form-group" style="text-align: left;">
             <label>Choose a Gamertag</label>
@@ -331,10 +344,10 @@
       <div id="wizard-step-2" style="display: none;">
         <h3 style="margin-bottom: 1rem; font-weight: 600;">Pick a Theme Color</h3>
         <div class="color-picker-grid" style="margin-bottom: 2rem; justify-content: center;">
-            <div class="color-btn focusable" style="background: #107C10;" onclick="setWizColor('#107C10')"></div> 
-            <div class="color-btn focusable" style="background: #005A9E;" onclick="setWizColor('#005A9E')"></div> 
-            <div class="color-btn focusable" style="background: #D13438;" onclick="setWizColor('#D13438')"></div> 
-            <div class="color-btn focusable" style="background: #FFB900;" onclick="setWizColor('#FFB900')"></div> 
+            <div class="color-btn focusable" style="background: #107C10;" onclick="setWizColor('#107C10')"></div>
+            <div class="color-btn focusable" style="background: #005A9E;" onclick="setWizColor('#005A9E')"></div>
+            <div class="color-btn focusable" style="background: #D13438;" onclick="setWizColor('#D13438')"></div>
+            <div class="color-btn focusable" style="background: #FFB900;" onclick="setWizColor('#FFB900')"></div>
             <div class="color-btn focusable" style="background: #881798;" onclick="setWizColor('#881798')"></div>
         </div>
         <div class="small-btn focusable" onclick="finishWizard()" style="background: var(--brand-main); color: #fff; border: none;">Finish Setup</div>
@@ -386,16 +399,14 @@
     </div>
   </header>
 
-  <nav class="top-nav">
-    <div class="nav-btn focusable active" data-target="page-home">Home</div>
-    <div class="nav-btn focusable" data-target="page-games">Games</div>
-    <div class="nav-btn focusable" data-target="page-movies">Movies</div>
-    <div class="nav-btn focusable" data-target="page-apps">Apps</div>
-    <div class="nav-btn focusable" data-target="page-chat">Chat</div>
+  <nav class="top-nav" aria-label="Primary navigation">
+    <div class="nav-btn focusable active" tabindex="0" data-target="page-home" aria-label="Home" title="Home"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 10.6V21h6v-6h6v6h6V10.6L12 3Z"/></svg><span class="nav-label">Home</span></div>
+    <div class="nav-btn focusable" tabindex="0" data-target="page-library" aria-label="Library" title="Library"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h4v18H6a2 2 0 0 1-2-2V5Zm8-2h3v18h-3V3Zm5 0h1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-1V3Z"/></svg><span class="nav-label">Library</span></div>
+    <div class="nav-btn focusable" tabindex="0" data-target="page-settings" aria-label="Settings" title="Settings"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2.1-1.6-2-3.5-2.5 1a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.4 2.9A7.7 7.7 0 0 0 7 6.4l-2.5-1-2 3.5 2.1 1.6A9.2 9.2 0 0 0 4.5 12c0 .5 0 1 .1 1.5l-2.1 1.6 2 3.5 2.5-1a7.7 7.7 0 0 0 2.6 1.5L10 22h4l.4-2.9a7.7 7.7 0 0 0 2.6-1.5l2.5 1 2-3.5-2.1-1.6ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg><span class="nav-label">Settings</span></div>
   </nav>
 
   <div class="main-content">
-    
+
     <div id="page-home" class="page active">
       <div class="dashboard-rows">
         <div class="recents-row">
@@ -412,7 +423,7 @@
         </div>
 
         <div class="bottom-row">
-          <div class="tile promo-card focusable" tabindex="0" data-target="page-games" style="background: linear-gradient(to right, rgba(0,0,0,0.6), transparent), url('https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=600'); background-size: cover;">
+          <div class="tile promo-card focusable" tabindex="0" data-target="page-library" style="background: linear-gradient(to right, rgba(0,0,0,0.6), transparent), url('https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=600'); background-size: cover;">
             <h3>Browse your library</h3>
           </div>
           <div class="tile promo-card focusable" tabindex="0" data-action="open-search" style="background: linear-gradient(135deg, rgba(16,124,16,0.3), rgba(0,0,0,0.5)); backdrop-filter: var(--glass-blur);">
@@ -427,24 +438,19 @@
       </div>
     </div>
 
-    <div id="page-games" class="page">
-      <div class="library-heading"><h2>Games</h2><span class="content-count" id="games-count" aria-live="polite">Games • 0</span></div>
-      <div class="content-grid" id="games-container"></div>
-    </div>
-
-    <div id="page-movies" class="page">
-      <div class="library-heading"><h2>Movies</h2><span class="content-count" id="movies-count" aria-live="polite">Movies • 0</span></div>
-      <div class="content-grid" id="movies-container"></div>
-    </div>
-
-    <div id="page-apps" class="page">
-      <div class="library-heading"><h2>Apps</h2><span class="content-count" id="apps-count" aria-live="polite">Apps • 0</span></div>
-      <div class="content-grid" id="apps-container"></div>
-    </div>
-
-    <div id="page-chat" class="page">
-      <h2 style="margin-bottom: 1.5rem; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">Party Chat</h2>
-      <div class="dashboard-rows"><div class="control-row" style="max-width: 600px;"><h3>Start a Party</h3><div class="small-btn focusable" style="background: var(--brand-main); color: #fff; border: none;">Invite Friends</div></div></div>
+    <div id="page-library" class="page">
+      <div class="library-shell">
+        <aside class="library-side-nav" aria-label="Library categories">
+          <div class="library-side-btn focusable active" tabindex="0" data-library-tab="games">Games</div>
+          <div class="library-side-btn focusable" tabindex="0" data-library-tab="movies">Movies</div>
+          <div class="library-side-btn focusable" tabindex="0" data-library-tab="apps">Apps</div>
+        </aside>
+        <section class="library-main">
+          <div id="library-games" class="library-panel active" data-library-panel="games"><div class="library-heading"><h2>Games</h2><span class="content-count" id="games-count" aria-live="polite">Games • 0</span></div><div class="content-grid" id="games-container"></div></div>
+          <div id="library-movies" class="library-panel" data-library-panel="movies"><div class="library-heading"><h2>Movies</h2><span class="content-count" id="movies-count" aria-live="polite">Movies • 0</span></div><div class="content-grid" id="movies-container"></div></div>
+          <div id="library-apps" class="library-panel" data-library-panel="apps"><div class="library-heading"><h2>Apps</h2><span class="content-count" id="apps-count" aria-live="polite">Apps • 0</span></div><div class="content-grid" id="apps-container"></div></div>
+        </section>
+      </div>
     </div>
 
     <div id="page-settings" class="page">
@@ -455,7 +461,7 @@
           <div class="setting-tab focusable" tabindex="0" data-sub="set-person">Personalization</div>
           <div class="setting-tab focusable" tabindex="0" data-sub="set-system">System Info</div>
         </div>
-        
+
         <div class="settings-content-area">
           <div id="set-main" class="setting-view active settings-grid">
             <div class="tile focusable" tabindex="0" data-sub="set-account" style="background: var(--glass-bg);"><h2>Profile</h2><p>Name & Security</p></div>
@@ -485,14 +491,14 @@
           <div id="set-person" class="setting-view">
             <h2 class="settings-header">Theme Color</h2>
             <div class="color-picker-grid">
-              <div class="color-btn focusable" style="background: #107C10;" data-action="set-color" data-val="#107C10"></div> 
-              <div class="color-btn focusable" style="background: #005A9E;" data-action="set-color" data-val="#005A9E"></div> 
-              <div class="color-btn focusable" style="background: #D13438;" data-action="set-color" data-val="#D13438"></div> 
-              <div class="color-btn focusable" style="background: #FFB900;" data-action="set-color" data-val="#FFB900"></div> 
-              <div class="color-btn focusable" style="background: #881798;" data-action="set-color" data-val="#881798"></div> 
-              <div class="color-btn focusable" style="background: #E81123;" data-action="set-color" data-val="#E81123"></div> 
+              <div class="color-btn focusable" style="background: #107C10;" data-action="set-color" data-val="#107C10"></div>
+              <div class="color-btn focusable" style="background: #005A9E;" data-action="set-color" data-val="#005A9E"></div>
+              <div class="color-btn focusable" style="background: #D13438;" data-action="set-color" data-val="#D13438"></div>
+              <div class="color-btn focusable" style="background: #FFB900;" data-action="set-color" data-val="#FFB900"></div>
+              <div class="color-btn focusable" style="background: #881798;" data-action="set-color" data-val="#881798"></div>
+              <div class="color-btn focusable" style="background: #E81123;" data-action="set-color" data-val="#E81123"></div>
             </div>
-            
+
             <h2 class="settings-header" style="margin-top: 2rem;">Custom Background</h2>
             <div class="control-row" style="flex-direction:column; gap:2rem; align-items:stretch;">
               <div class="form-group" style="margin:0;">
@@ -556,6 +562,7 @@
 
   <div id="app-player">
     <iframe id="game-frame" src="" tabindex="-1"></iframe>
+    <div id="embed-loading" aria-live="polite"><div class="embed-load-card"><img class="boot-logo" src="favicon.png" alt=""><div class="embed-load-title">McCrack-COS</div><div class="embed-load-sub">Loading embedded experience…</div><div class="boot-progress"><span></span></div></div></div>
     <div class="mouse-exit-area" aria-label="Embed quick controls"><button class="player-overlay-btn focusable" type="button" onclick="openGuideMenu()" aria-label="Open guide menu"><img src="favicon.png" alt="McCrack guide"></button><button class="player-overlay-btn focusable" type="button" onclick="refreshEmbed()" aria-label="Refresh embed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.45 10.9 1 1 0 1 0-1.86-.74A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h8V3l-3.35 3.35Z"/></svg></button></div>
   </div>
 
@@ -4627,6 +4634,14 @@
 
     const myApps = [
       {
+            "id": "McCrack Chat",
+            "title": "McCrack Chat",
+            "link": "https://patrickmango49.github.io/McCrack-Chat/",
+            "img": "https://i.imgur.com/mRkcSg6.png",
+            "type": "app",
+            "description": "Official McCrack Chat embedded app for messaging from inside McCrack-COS."
+      },
+      {
             "id": "YouTube",
             "title": "YouTube",
             "link": "https://mccracktube.onrender.com/",
@@ -4871,7 +4886,7 @@
       if (item.target) div.dataset.target = item.target;
       if (item.type) div.dataset.type = item.type;
       if (isPlaceholderItem(item)) div.classList.add('hidden-placeholder');
-      div.innerHTML = `${item.img ? `<img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.title)} artwork" loading="lazy">` : ''}<span class="card-title media-title">${escapeHtml(item.title)}</span><div class="card-actions quick-actions"><button class="card-action focusable open" type="button" data-action="open-item">Open</button><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}" data-favorite-kind="${escapeHtml(itemKind(item))}" data-favorite-id="${escapeHtml(itemFavoriteId(item))}" aria-pressed="false">♡</button></div>`;
+      div.innerHTML = `${item.img ? `<img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.title)} artwork" loading="lazy">` : ''}<span class="card-title media-title">${escapeHtml(item.title)}</span><div class="card-actions quick-actions"><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}" data-favorite-kind="${escapeHtml(itemKind(item))}" data-favorite-id="${escapeHtml(itemFavoriteId(item))}" aria-pressed="false">♡</button></div>`;
       return div;
     }
 
@@ -4945,7 +4960,7 @@
        OS Settings & Preferences Engine
        ========================================== */
     const isFirstTime = !localStorage.getItem('os_setup_complete');
-    
+
     const prefs = {
       color: localStorage.getItem('os_color') || '#107C10',
       bg: localStorage.getItem('os_bg') || "none",
@@ -4968,7 +4983,7 @@
     function applyPrefs() {
       document.documentElement.style.setProperty('--brand-main', prefs.color);
       document.documentElement.style.setProperty('--focus-color', prefs.color);
-      
+
       // Update glow to follow main color
       let r = 255, g = 255, b = 255;
       if(prefs.color.startsWith('#') && prefs.color.length === 7) {
@@ -4977,13 +4992,13 @@
           b = parseInt(prefs.color.slice(5,7), 16);
       }
       document.documentElement.style.setProperty('--brand-glow', `rgba(${r}, ${g}, ${b}, 0.5)`);
-      
+
       if(prefs.bg !== 'none') {
         document.body.style.backgroundImage = `url('${prefs.bg}')`;
       } else {
-        document.body.style.backgroundImage = `url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')`;
+        document.body.style.backgroundImage = `url('https://i.imgur.com/mRkcSg6.png')`;
       }
-      
+
       document.getElementById('btn-clock').innerText = prefs.clock24 ? "24-Hour" : "12-Hour";
       document.getElementById('btn-anim').innerText = prefs.anim ? "Enabled" : "Disabled";
       document.getElementById('btn-compact').innerText = prefs.compact ? "On" : "Off";
@@ -5012,7 +5027,7 @@
       }
       document.getElementById('lock-name').innerText = account.user;
     }
-    
+
     // Boot sequence
     if (isFirstTime) {
         osState = 'setup';
@@ -5088,9 +5103,9 @@
        ========================================== */
     setInterval(() => {
       const now = new Date();
-      document.getElementById('sys-time').innerText = 
+      document.getElementById('sys-time').innerText =
         `${now.toLocaleTimeString([], { hour: prefs.clock24 ? 'numeric' : '2-digit', hour12: !prefs.clock24, minute: '2-digit' }).toUpperCase()}`;
-      
+
       const options = { weekday: 'long', month: 'short', day: 'numeric' };
       document.getElementById('sys-date').innerText = now.toLocaleDateString(undefined, options);
     }, 1000);
@@ -5115,8 +5130,8 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
       osc.connect(gain); gain.connect(audioCtx.destination);
-      if (type === 'move') { osc.frequency.value = 350; gain.gain.value = 0.02; gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); osc.start(); osc.stop(audioCtx.currentTime + 0.05); } 
-      else if (type === 'select') { osc.frequency.value = 600; gain.gain.value = 0.04; gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); } 
+      if (type === 'move') { osc.frequency.value = 350; gain.gain.value = 0.02; gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
+      else if (type === 'select') { osc.frequency.value = 600; gain.gain.value = 0.04; gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
       else if (type === 'back') { osc.frequency.value = 300; osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.1); gain.gain.value = 0.04; gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
     }
 
@@ -5125,18 +5140,26 @@
        ========================================== */
     let currentFocusables = [];
     let currentIndex = 0;
-    
+
+    function setLibraryTab(tab) {
+      document.querySelectorAll('.library-side-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.libraryTab === tab));
+      document.querySelectorAll('.library-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.libraryPanel === tab));
+      const panel = document.querySelector(`.library-panel[data-library-panel="${tab}"]`);
+      if (panel) panel.scrollTop = 0;
+      setTimeout(() => { currentFocusables = getActiveFocusables(); const first = panel?.querySelector('.poster-tile.focusable:not(.hidden-placeholder)') || document.querySelector(`.library-side-btn[data-library-tab="${tab}"]`); setFocus(Math.max(0, currentFocusables.indexOf(first))); }, 50);
+    }
+
     function getActiveFocusables() {
       if (osState === 'setup') return Array.from(document.querySelectorAll('#setup-wizard .focusable')).filter(el => el.offsetParent !== null);
       if (osState === 'locked') return Array.from(document.querySelectorAll('#lock-screen .focusable'));
       if (osState === 'guide') return Array.from(document.querySelectorAll('#guide-overlay .focusable'));
       if (osState === 'search') return Array.from(document.querySelectorAll('#search-overlay .focusable'));
       if (osState === 'details') return Array.from(document.querySelectorAll('#details-modal .focusable'));
-      
+
       const headerBtns = Array.from(document.querySelectorAll('.console-header .focusable'));
       const topTabs = Array.from(document.querySelectorAll('.top-nav .focusable'));
       let pageItems = [];
-      
+
       const activePage = document.querySelector('.page.active');
       if (activePage) {
         const activeView = activePage.querySelector('.setting-view.active');
@@ -5145,31 +5168,31 @@
         } else {
             pageItems = Array.from(activePage.querySelectorAll('.focusable'));
         }
-        
+
         // Include sidebar setting tabs if on settings page
         if (activePage.id === 'page-settings') {
            const sideTabs = Array.from(document.querySelectorAll('.settings-sidebar .focusable'));
            pageItems = [...sideTabs, ...pageItems];
         }
       }
-      return [...headerBtns, ...topTabs, ...pageItems];
+      return [...headerBtns, ...topTabs, ...pageItems].filter(el => el.offsetParent !== null && !el.closest('.library-panel:not(.active)'));
     }
 
     function setFocus(index) {
       if (['playing', 'playing_native', 'sleep'].includes(osState)) return;
       currentFocusables = getActiveFocusables();
       if (currentFocusables.length === 0) return;
-      
+
       currentFocusables.forEach(el => el.classList.remove('focused'));
-      
+
       // Keep index in bounds
       if (index < 0) index = currentFocusables.length - 1;
       if (index >= currentFocusables.length) index = 0;
-      
+
       currentIndex = index;
       if(currentFocusables[currentIndex]){
         currentFocusables[currentIndex].classList.add('focused');
-        
+
         // Avoid auto-focusing text inputs heavily if using controller, but needed for keyboard
         if(currentFocusables[currentIndex].tagName !== 'INPUT' || currentFocusables[currentIndex].type === 'button' || currentFocusables[currentIndex].type === 'file') {
             currentFocusables[currentIndex].focus();
@@ -5177,10 +5200,10 @@
             // It's a text input, let user manually click to type, or auto focus for keyboard
              currentFocusables[currentIndex].focus();
         }
-        
+
         // Scroll into view if needed
         currentFocusables[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-        
+
         playSound('move');
       }
     }
@@ -5189,31 +5212,31 @@
       osState = 'dashboard';
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      
+
       const newPage = document.getElementById(pageId);
       if (newPage) newPage.classList.add('active');
-      
+
       const targetNav = document.querySelector(`.nav-btn[data-target="${pageId}"]`);
       if (targetNav) targetNav.classList.add('active');
-      
+
       document.querySelectorAll('.setting-view').forEach(v => v.classList.remove('active'));
       if(document.getElementById('set-main')) document.getElementById('set-main').classList.add('active');
-      
+
       // Reset scroll
       if(newPage) newPage.scrollTop = 0;
-      
+
       // Focus first item on new page
-      setTimeout(() => { setFocus(currentFocusables.indexOf(targetNav)); }, 50);
+      setTimeout(() => { currentFocusables = getActiveFocusables(); const firstPageItem = newPage?.querySelector('.focusable:not(.hidden-placeholder)'); const idx = currentFocusables.indexOf(firstPageItem || targetNav); setFocus(idx >= 0 ? idx : 0); }, 50);
     }
 
     // SEARCH LOGIC
     document.getElementById('search-input-big').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase();
         if(query.length < 1) { document.getElementById('search-results-container').innerHTML = ''; return; }
-        
+
         const results = allContent.filter(item => item.title.toLowerCase().includes(query));
         populateGrid(results, 'search-results-container');
-        
+
         // Re-evaluate focusables so results can be selected
         currentFocusables = getActiveFocusables();
     });
@@ -5227,6 +5250,38 @@
         playSound('back');
     }
 
+    let embedLoadTimer = null;
+    function showEmbedLoading(item) {
+      const loader = document.getElementById('embed-loading');
+      if (!loader) return;
+      loader.classList.remove('done');
+      loader.classList.add('active');
+      loader.querySelector('.embed-load-sub').textContent = `Loading ${item?.title || 'embedded experience'}…`;
+      clearTimeout(embedLoadTimer);
+      embedLoadTimer = setTimeout(() => {
+        if (loader.classList.contains('active') && !loader.classList.contains('done')) {
+          loader.querySelector('.embed-load-sub').textContent = 'Still loading. Press B or open the guide to return to McCrack-COS.';
+        }
+      }, 8000);
+    }
+    function hideEmbedLoading() {
+      const loader = document.getElementById('embed-loading');
+      if (!loader) return;
+      clearTimeout(embedLoadTimer);
+      loader.classList.add('done');
+      setTimeout(() => loader.classList.remove('active', 'done'), 320);
+    }
+    document.getElementById('game-frame')?.addEventListener('load', () => {
+      if (document.getElementById('app-player')?.classList.contains('active')) setTimeout(hideEmbedLoading, 350);
+    });
+    document.getElementById('game-frame')?.addEventListener('error', () => {
+      const loader = document.getElementById('embed-loading');
+      if (loader) {
+        loader.classList.add('active');
+        loader.querySelector('.embed-load-sub').textContent = 'Could not load this embed. Press B or open the guide to return.';
+      }
+    });
+
     function launchItem(item) {
       if (!item) return;
       if (item.target) { playSound('select'); switchPage(item.target); return; }
@@ -5236,7 +5291,10 @@
         if (item.type === 'game') localStorage.setItem(LAST_GAME_KEY, JSON.stringify(item));
         if (item.type === 'movie') localStorage.setItem(LAST_MOVIE_KEY, JSON.stringify(item));
         updateRecentCards();
-        document.getElementById('game-frame').src = item.link;
+        showEmbedLoading(item);
+        const frame = document.getElementById('game-frame');
+        frame.src = 'about:blank';
+        setTimeout(() => { frame.src = item.link; }, 30);
         document.getElementById('app-player').classList.add('active');
         enterEmbedMode();
         startGScoreTimer();
@@ -5257,7 +5315,7 @@
 
     function triggerAction(el) {
       if (['playing', 'playing_native', 'sleep'].includes(osState)) return;
-      
+
       // Search
       if (el.dataset.action === 'open-search') {
           playSound('select');
@@ -5298,7 +5356,7 @@
       if (el.dataset.action === 'toggle-favorite') { playSound('select'); toggleFavorite(getItemFromElement(el)); return; }
       if (el.dataset.action === 'open-item') { launchItem(getItemFromElement(el)); return; }
       if (el.dataset.recent) { launchItem(getItemFromElement(el)); return; }
-      
+
       // Check if it's a search result being clicked, close search overlay
       if(osState === 'search' && el.id !== 'search-input-big') {
           document.getElementById('search-overlay').classList.remove('active');
@@ -5311,6 +5369,12 @@
 
       // iFrame and native apps (games/movies/apps)
       if (el.dataset.link || el.dataset.nativeapp) { launchItem(getItemFromElement(el)); return; }
+
+      if (el.dataset.libraryTab) {
+        playSound('select');
+        setLibraryTab(el.dataset.libraryTab);
+        return;
+      }
 
       // Settings Tabs
       if (el.dataset.sub) {
@@ -5332,20 +5396,20 @@
       if (el.dataset.action === 'toggle-compact') { playSound('select'); prefs.compact = !prefs.compact; localStorage.setItem('os_compact', prefs.compact); applyPrefs(); return; }
       if (el.dataset.action === 'toggle-hud') { playSound('select'); prefs.hud = !prefs.hud; localStorage.setItem('os_hud', prefs.hud); applyPrefs(); return; }
       if (el.dataset.action === 'toggle-glass') { playSound('select'); prefs.reducedGlass = !prefs.reducedGlass; localStorage.setItem('os_reduced_glass', prefs.reducedGlass); applyPrefs(); return; }
-      
+
       if (el.dataset.action === 'clear-cache') {
         playSound('select');
         if(confirm("Factory reset? All data will be lost.")) { localStorage.clear(); location.reload(); }
         return;
       }
-      
+
       if (el.dataset.action === 'save-account') {
         playSound('select');
         account.user = document.getElementById('acc-user').value || 'PlayerOne';
         account.name = document.getElementById('acc-name').value;
         account.pass = document.getElementById('acc-pass').value;
         account.pfp = document.getElementById('pfp-url').value;
-        
+
         localStorage.setItem('acc_user', account.user);
         localStorage.setItem('acc_name', account.name);
         localStorage.setItem('acc_pass', account.pass);
@@ -5362,6 +5426,13 @@
     const inputDelay = 135; // ms delay between rapid inputs
     const axisDeadzone = 0.45;
 
+    function getGridPeers() {
+      const active = currentFocusables[currentIndex];
+      const grid = active?.closest?.('.content-grid, .movie-letter-grid, .settings-grid, .recents-row, .bottom-row, .top-nav, .library-side-nav, .settings-sidebar, .details-actions, .guide-menu');
+      if (!grid) return null;
+      return Array.from(grid.querySelectorAll('.focusable')).filter(el => el.offsetParent !== null);
+    }
+
     function getGridColumns() {
       const active = currentFocusables[currentIndex];
       const grid = active?.closest?.('.content-grid, .movie-letter-grid, .settings-grid, .recents-row, .bottom-row');
@@ -5375,6 +5446,28 @@
     }
 
     function moveControllerFocus(direction) {
+      currentFocusables = getActiveFocusables();
+      const active = currentFocusables[currentIndex];
+      const peers = getGridPeers();
+      if (peers && peers.includes(active)) {
+        const rect = active.getBoundingClientRect();
+        if (direction === 'left' || direction === 'right') {
+          const sameRow = peers.filter(el => Math.abs(el.getBoundingClientRect().top - rect.top) < Math.max(12, rect.height * .45));
+          const ordered = sameRow.sort((a,b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+          const idx = ordered.indexOf(active);
+          const target = ordered[idx + (direction === 'right' ? 1 : -1)];
+          if (target) return setFocus(currentFocusables.indexOf(target));
+        } else {
+          const candidates = peers.filter(el => direction === 'down' ? el.getBoundingClientRect().top > rect.top + 8 : el.getBoundingClientRect().bottom < rect.bottom - 8);
+          candidates.sort((a,b) => {
+            const ar = a.getBoundingClientRect(), br = b.getBoundingClientRect();
+            const da = Math.abs((ar.left + ar.width/2) - (rect.left + rect.width/2)) + Math.abs(ar.top - rect.top) * .9;
+            const db = Math.abs((br.left + br.width/2) - (rect.left + rect.width/2)) + Math.abs(br.top - rect.top) * .9;
+            return da - db;
+          });
+          if (candidates[0]) return setFocus(currentFocusables.indexOf(candidates[0]));
+        }
+      }
       const columns = getGridColumns();
       const delta = direction === 'right' ? 1 : direction === 'left' ? -1 : direction === 'down' ? columns : -columns;
       setFocus(currentIndex + delta);
@@ -5409,12 +5502,13 @@
         const gp = gamepads[0];
         if (gp) {
             const now = Date.now();
-            
+
             // If enough time has passed since last input (Debounce)
             if (now - lastGamepadInput > inputDelay) {
                 const guideBtn = isGuideButtonPressed(gp);
 
                 if (isEmbedControllerMode()) {
+                    if (gp.buttons[1]?.pressed) { quitGame(); lastGamepadInput = now + 250; requestAnimationFrame(pollGamepad); return; }
                     if (guideBtn) {
                         openGuideMenu();
                         lastGamepadInput = now + 200;
@@ -5422,7 +5516,7 @@
                     requestAnimationFrame(pollGamepad);
                     return;
                 }
-                
+
                 // Navigation (D-Pad or Left Stick)
                 const up = gp.buttons[12]?.pressed || gp.axes[1] < -axisDeadzone;
                 const down = gp.buttons[13]?.pressed || gp.axes[1] > axisDeadzone;
@@ -5433,10 +5527,20 @@
                 else if (left) { moveControllerFocus('left'); lastGamepadInput = now; }
                 else if (down) { moveControllerFocus('down'); lastGamepadInput = now; }
                 else if (up) { moveControllerFocus('up'); lastGamepadInput = now; }
-                
+
                 // Action Buttons
                 const aBtn = gp.buttons[0]?.pressed;
                 const bBtn = gp.buttons[1]?.pressed;
+                const lShoulder = gp.buttons[4]?.pressed;
+                const rShoulder = gp.buttons[5]?.pressed;
+
+                if ((lShoulder || rShoulder) && document.getElementById('page-library')?.classList.contains('active')) {
+                    const tabs = Array.from(document.querySelectorAll('.library-side-btn'));
+                    const active = tabs.findIndex(t => t.classList.contains('active'));
+                    const next = (active + (rShoulder ? 1 : -1) + tabs.length) % tabs.length;
+                    triggerAction(tabs[next]);
+                    lastGamepadInput = now + 150;
+                }
 
                 if (aBtn && currentFocusables[currentIndex]) {
                     triggerAction(currentFocusables[currentIndex]);
@@ -5447,6 +5551,7 @@
                     if (osState === 'search') closeSearch();
                     else if (osState === 'guide') closeGuideMenu();
                     else if (osState === 'details') closeDetails();
+                    else if (document.getElementById('page-library')?.classList.contains('active')) switchPage('page-home');
                     else playSound('back'); // Visual/Audio feedback for back
                     lastGamepadInput = now + 100;
                 }
@@ -5481,25 +5586,25 @@
 
       if (osState === 'search' && e.key === 'Escape') { closeSearch(); return; }
       if (osState === 'details' && e.key === 'Escape') { closeDetails(); return; }
-      
+
       currentFocusables = getActiveFocusables();
       if(currentFocusables.length === 0) return;
-      
-      if (e.key === 'ArrowRight') { e.preventDefault(); setFocus(currentIndex + 1); }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); setFocus(currentIndex - 1); }
-      if (e.key === 'ArrowDown') { e.preventDefault(); setFocus(currentIndex + getGridColumns()); }
-      if (e.key === 'ArrowUp') { e.preventDefault(); setFocus(currentIndex - getGridColumns()); }
-      if (e.key === 'Enter' || e.key === ' ') { 
-          e.preventDefault(); 
+
+      if (e.key === 'ArrowRight') { e.preventDefault(); moveControllerFocus('right'); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); moveControllerFocus('left'); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); moveControllerFocus('down'); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); moveControllerFocus('up'); }
+      if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
           if(currentFocusables[currentIndex].tagName !== 'INPUT' || currentFocusables[currentIndex].type === 'file') {
-              triggerAction(currentFocusables[currentIndex]); 
+              triggerAction(currentFocusables[currentIndex]);
           }
       }
     });
 
     // Native App Logic
     document.getElementById('note-input').addEventListener('input', (e) => { localStorage.setItem('os_notes', e.target.value); });
-    
+
     // Guide Menu Handlers
     function refreshEmbed() {
       const frame = document.getElementById('game-frame');
@@ -5530,18 +5635,19 @@
       document.getElementById('guide-overlay').classList.remove('active');
       document.getElementById('app-player').classList.remove('active');
       document.getElementById('native-app-layer').classList.remove('active');
+      hideEmbedLoading();
       document.getElementById('game-frame').src = '';
       stopGScoreTimer();
       currentLaunchedItem = null;
       osState = 'dashboard'; setFocus(0);
       playSound('back');
     }
-    
+
     // Mouse Interaction
     document.addEventListener('click', (e) => {
       // Exclude direct clicks on file inputs as they trigger via label
       if(e.target.tagName === 'INPUT' && e.target.type === 'file') return;
-      
+
       const actionControl = e.target.closest('button[data-action], .card-action, [data-action="details-favorite"], [data-action="details-open"], [data-action="details-close"]');
       if (actionControl) { e.preventDefault(); e.stopPropagation(); }
       const focusable = e.target.closest('.focusable');
