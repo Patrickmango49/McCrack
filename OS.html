@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>McCrack-COS | Modern Glass OS</title>
+  <title>McCrack-COS</title>
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <style>
@@ -12,13 +12,16 @@
     :root {
       /* Base Theme */
       --brand-main: #107C10;
-      --brand-glow: rgba(16, 124, 16, 0.6);
+      --brand-secondary: #4be26b;
+      --brand-glow: rgba(16, 124, 16, 0.42);
       --focus-color: #107C10;
+      --surface-tint: rgba(8, 16, 12, 0.28);
+      --surface-tint-strong: rgba(8, 14, 12, 0.46);
 
       /* Apple Liquid Glass Properties */
-      --glass-bg: rgba(20, 20, 20, 0.45);
-      --glass-bg-light: rgba(255, 255, 255, 0.08);
-      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-bg: rgba(16, 18, 20, 0.34);
+      --glass-bg-light: rgba(255, 255, 255, 0.12);
+      --glass-border: rgba(255, 255, 255, 0.18);
       --glass-border-glow: rgba(255, 255, 255, 0.3);
       --glass-blur: blur(30px) saturate(180%);
 
@@ -41,7 +44,7 @@
 
 
     /* === Console Header (Profile, Search & Status) === */
-    .console-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 3rem 4rem 1rem 4rem; z-index: 40; }
+    .console-header { display: grid; grid-template-columns: minmax(210px, 1fr) auto minmax(210px, 1fr); align-items: center; gap: 1rem; padding: 1.25rem 2rem .85rem; z-index: 40; }
     .profile-area { display: flex; align-items: center; gap: 1rem; }
     #sys-user-pfp { width: 64px; height: 64px; border-radius: 50%; background: #333; border: 2px solid var(--glass-border-glow); background-size: cover; background-position: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
     .user-info { display: flex; flex-direction: column; gap: 0.3rem; }
@@ -51,7 +54,8 @@
     .gamerscore { display: flex; align-items: center; gap: 6px; font-size: 0.95rem; color: var(--text-main); font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8);}
     .g-icon { display: inline-flex; justify-content: center; align-items: center; width: 18px; height: 18px; border: 1.5px solid var(--text-main); border-radius: 50%; font-size: 11px; font-weight: 800; }
 
-    .header-right { display: flex; align-items: center; gap: 1.5rem; }
+    .header-center { display: flex; align-items: center; justify-content: center; gap: .85rem; min-width: 0; }
+    .header-right { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
 
     /* Search Bar - Glassified */
     .search-bar { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 24px; padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 8px 24px rgba(0,0,0,0.2);}
@@ -62,17 +66,15 @@
 
     .status-icons { display: flex; align-items: center; gap: 0.55rem; color: #fff; }
     .status-bubble { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; font-weight: 750; font-size: 0.95rem; color: #fff; background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06)); padding: 0.58rem 0.88rem; border-radius: 999px; backdrop-filter: blur(18px) saturate(170%); -webkit-backdrop-filter: blur(18px) saturate(170%); border: 1px solid rgba(255,255,255,0.16); box-shadow: 0 8px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.12); }
-    .settings-gear { width: 42px; padding: 0; cursor: pointer; transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease; }
-    .settings-gear:hover, .settings-gear:focus, .settings-gear.focused { transform: translateY(-1px) scale(1.04); border-color: var(--focus-color); background: var(--glass-bg-light); box-shadow: 0 12px 30px rgba(0,0,0,0.28), 0 0 22px var(--brand-glow); outline: none; }
-    .settings-gear .svg-icon { width: 18px; height: 18px; fill: currentColor; }
+    
     .battery-icon { filter: drop-shadow(0 0 8px rgba(255,255,255,0.18)); }
 
     #sys-date-time { font-size: 1.3rem; font-weight: 600; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;}
     #sys-date { font-size: 0.85rem; color: var(--text-sub); font-weight: 500;}
 
     /* === Compact Icon Navigation === */
-    .top-nav { display: flex; gap: .65rem; width: max-content; align-self: center; margin: 0 auto 1.55rem; padding: .45rem; z-index: 50; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(10,10,10,.38); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); box-shadow: 0 18px 44px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08); }
-    .nav-btn { width: 48px; height: 48px; display: grid; place-items: center; color: var(--text-sub); cursor: pointer; transition: transform .22s ease, color .22s ease, background .22s ease, border-color .22s ease, box-shadow .22s ease; padding: 0; border-radius: 50%; border: 1px solid transparent;}
+    .top-nav { display: flex; gap: .45rem; width: max-content; margin: 0; padding: .36rem; z-index: 50; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(10,10,10,.38); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); box-shadow: 0 18px 44px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08); }
+    .nav-btn { width: 42px; height: 42px; display: grid; place-items: center; color: var(--text-sub); cursor: pointer; transition: transform .22s ease, color .22s ease, background .22s ease, border-color .22s ease, box-shadow .22s ease; padding: 0; border-radius: 50%; border: 1px solid transparent;}
     .nav-btn .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .nav-btn .svg-icon { width: 22px; height: 22px; }
     .nav-btn.active { color: #fff; background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(16,124,16,.24)); border-color: rgba(255,255,255,.24); box-shadow: 0 10px 26px rgba(0,0,0,.24), 0 0 24px var(--brand-glow);}
@@ -255,6 +257,22 @@
     .details-meta { display: grid; gap: 0.75rem; margin: 1rem 0; }
     .details-meta div { padding: 0.9rem; border-radius: 16px; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); overflow-wrap: anywhere; }
     .details-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.2rem; }
+    .library-tools { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+    .library-filter-btn { min-height: 36px; padding: .55rem .9rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.09); color: #fff; font-weight: 850; cursor: pointer; transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease; }
+    .library-filter-btn.active, .library-filter-btn:hover, .library-filter-btn:focus-visible { transform: translateY(-1px); border-color: var(--focus-color); background: linear-gradient(135deg, var(--brand-main), rgba(255,255,255,.12)); box-shadow: 0 10px 24px rgba(0,0,0,.28), 0 0 18px var(--brand-glow); outline: none; }
+    .custom-remove { position: absolute; left: 9px; top: 9px; z-index: 5; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,120,120,.45); background: rgba(80,0,0,.58); color: #fff; cursor: pointer; backdrop-filter: blur(14px); }
+    .custom-remove:hover, .custom-remove:focus-visible { background: rgba(190,30,30,.78); outline: 2px solid rgba(255,255,255,.4); }
+    .achievement-stack { position: fixed; left: 50%; bottom: 2rem; transform: translateX(-50%); display: grid; gap: .7rem; z-index: 10000; pointer-events: none; }
+    .achievement-toast { min-width: min(360px, calc(100vw - 2rem)); padding: .85rem 1rem; border-radius: 999px; display: flex; align-items: center; gap: .85rem; background: linear-gradient(135deg, rgba(20,22,24,.72), rgba(255,255,255,.12)); border: 1px solid rgba(255,255,255,.22); box-shadow: 0 18px 44px rgba(0,0,0,.38), 0 0 24px var(--brand-glow); backdrop-filter: blur(24px) saturate(180%); animation: achievementIn .32s cubic-bezier(.2,.8,.2,1) both; }
+    .achievement-toast.leaving { animation: achievementOut .25s ease both; }
+    .achievement-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(135deg, var(--brand-main), var(--brand-secondary)); box-shadow: inset 0 1px 0 rgba(255,255,255,.28); }
+    .achievement-toast strong { display: block; font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; }
+    .achievement-toast span { color: var(--text-sub); font-weight: 750; }
+    @keyframes achievementIn { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: none; } }
+    @keyframes achievementOut { to { opacity: 0; transform: translateY(12px) scale(.98); } }
+    .theme-grid, .wallpaper-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: .9rem; }
+    .theme-card, .wallpaper-card { min-height: 96px; padding: .9rem; border-radius: 18px; border: 1px solid var(--glass-border); color: #fff; cursor: pointer; text-align: left; background-size: cover; background-position: center; box-shadow: 0 10px 24px rgba(0,0,0,.24); }
+    .theme-card.active, .wallpaper-card.active { outline: 2px solid var(--focus-color); box-shadow: 0 0 24px var(--brand-glow); }
     @media (max-width: 1100px) {
       .content-grid,
       #games-container,
@@ -275,12 +293,12 @@
     body.compact-tiles .movie-letter-grid { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 1rem; }
     body.hide-hud .hud { display: none; }
     body.reduced-glass { --glass-bg: rgba(12, 12, 12, 0.82); --glass-bg-light: rgba(255,255,255,0.12); --glass-blur: blur(8px) saturate(130%); }
-    @media (max-width: 760px) { .details-card { grid-template-columns: 1fr; } .console-header { padding: 1.5rem; } .top-nav, .main-content { padding-left: 1.5rem; padding-right: 1.5rem; } .library-heading { align-items: flex-start; flex-direction: column; } .content-grid, #games-container, #apps-container, #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 0.9rem; padding: 0.35rem 0.35rem 5rem; } }
+    @media (max-width: 760px) { .details-card { grid-template-columns: 1fr; } .console-header { grid-template-columns: 1fr; padding: 1.1rem; } .header-center, .header-right { justify-content: flex-start; flex-wrap: wrap; } .top-nav { padding: .32rem; } .main-content { padding-left: 1.1rem; padding-right: 1.1rem; } .library-heading { align-items: flex-start; flex-direction: column; } .content-grid, #games-container, #apps-container, #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 0.9rem; padding: 0.35rem 0.35rem 5rem; } }
 
 
 
     /* === Premium McCrack-COS Upgrade === */
-    body::before { content: ''; position: fixed; inset: 0; z-index: -2; background: radial-gradient(circle at 15% 15%, rgba(16,124,16,.28), transparent 32%), radial-gradient(circle at 85% 8%, rgba(0,90,158,.18), transparent 30%), linear-gradient(140deg, rgba(0,0,0,.7), rgba(0,0,0,.92)); pointer-events: none; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: -2; background: radial-gradient(circle at 15% 12%, var(--brand-glow), transparent 30%), radial-gradient(circle at 85% 8%, rgba(255,255,255,.12), transparent 26%), linear-gradient(140deg, var(--surface-tint), rgba(0,0,0,.18)); pointer-events: none; }
     #boot-screen { position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center; background: radial-gradient(circle at center, #101d12 0%, #030403 55%, #000 100%); transition: opacity .85s cubic-bezier(.22,1,.36,1), visibility .85s; }
     #boot-screen.boot-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
     .boot-card { display: grid; justify-items: center; gap: 1.25rem; animation: bootRise 1.1s cubic-bezier(.22,1,.36,1) both; }
@@ -307,7 +325,7 @@
     .embed-load-card { display: grid; justify-items: center; gap: 1rem; min-width: min(420px, 82vw); padding: 2.2rem; border-radius: 28px; background: rgba(12,12,12,.48); border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(28px) saturate(180%); box-shadow: 0 28px 80px rgba(0,0,0,.55); text-align: center; }
     .embed-load-title { font-size: 1.7rem; font-weight: 950; letter-spacing: -.04em; } .embed-load-sub { color: var(--text-sub); font-weight: 750; }
 
-    .library-heading::after { content: 'A Open  •  Details  •  ♥ Favorite'; color: var(--text-sub); font-size: .78rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; padding: .55rem .8rem; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; background: rgba(0,0,0,.36); }
+    .library-heading::after { content: 'Select tile for details  •  ♥ Favorite'; color: var(--text-sub); font-size: .78rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; padding: .55rem .8rem; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; background: rgba(0,0,0,.36); }
     .recents-row { height: clamp(300px, 38vh, 430px); }
     .last-card { width: min(48%, 560px); min-width: 360px; padding: 2rem; }
     .last-card .kicker { z-index: 2; position: relative; color: var(--brand-main); text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; font-weight: 900; margin-bottom: .4rem; }
@@ -330,27 +348,60 @@
 
   <div id="setup-wizard">
     <div class="wizard-box">
-      <h1>Welcome to Console OS</h1>
-      <p>Let's get you set up quickly.</p>
+      <h1>Welcome to McCrack-COS</h1>
+      <p id="wizard-copy">A polished glass console for games, movies, apps, profiles, themes, and your own embeds.</p>
 
       <div id="wizard-step-1">
+        <h3 style="margin-bottom:1rem;">Step 1 — Welcome</h3>
+        <p>Use search, libraries, favorites, and the Guide Menu from anywhere. Let's personalize the essentials.</p>
+        <div class="small-btn focusable" onclick="nextWizard(2)" style="background: var(--brand-main); color: #fff; margin-top: 1rem; border: none;">Begin Setup</div>
+      </div>
+
+      <div id="wizard-step-2" style="display: none;">
+        <h3 style="margin-bottom:1rem;">Step 2 — Set Up Profile</h3>
         <div class="form-group" style="text-align: left;">
             <label>Choose a Gamertag</label>
             <input type="text" id="wiz-name" class="form-input focusable" placeholder="PlayerOne" value="New Player">
         </div>
-        <div class="small-btn focusable" onclick="nextWizard(2)" style="background: var(--brand-main); color: #fff; margin-top: 1rem; border: none;">Next</div>
+        <div class="form-group" style="text-align: left;">
+            <label>Gamerpic URL (Optional)</label>
+            <input type="text" id="wiz-pfp" class="form-input focusable" placeholder="https://...">
+        </div>
+        <div class="small-btn focusable" onclick="nextWizard(3)" style="background: var(--brand-main); color: #fff; margin-top: 1rem; border: none;">Next</div>
       </div>
 
-      <div id="wizard-step-2" style="display: none;">
-        <h3 style="margin-bottom: 1rem; font-weight: 600;">Pick a Theme Color</h3>
-        <div class="color-picker-grid" style="margin-bottom: 2rem; justify-content: center;">
-            <div class="color-btn focusable" style="background: #107C10;" onclick="setWizColor('#107C10')"></div>
-            <div class="color-btn focusable" style="background: #005A9E;" onclick="setWizColor('#005A9E')"></div>
-            <div class="color-btn focusable" style="background: #D13438;" onclick="setWizColor('#D13438')"></div>
-            <div class="color-btn focusable" style="background: #FFB900;" onclick="setWizColor('#FFB900')"></div>
-            <div class="color-btn focusable" style="background: #881798;" onclick="setWizColor('#881798')"></div>
+      <div id="wizard-step-3" style="display: none;">
+        <h3 style="margin-bottom: 1rem; font-weight: 700;">Step 3 — Choose Appearance</h3>
+        <div class="wallpaper-grid">
+          <button class="wallpaper-card focusable" style="background-image:url('https://i.imgur.com/mRkcSg6.png')" onclick="setWizBg('none')">Default</button>
+          <button class="wallpaper-card focusable" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900')" onclick="setWizBg('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1900')">Nature</button>
+          <button class="wallpaper-card focusable" style="background-image:url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900')" onclick="setWizBg('https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1900')">Night</button>
         </div>
-        <div class="small-btn focusable" onclick="finishWizard()" style="background: var(--brand-main); color: #fff; border: none;">Finish Setup</div>
+        <div class="small-btn focusable" onclick="nextWizard(4)" style="background: var(--brand-main); color: #fff; margin-top: 1.5rem; border: none;">Next</div>
+      </div>
+
+      <div id="wizard-step-4" style="display: none;">
+        <h3 style="margin-bottom: 1rem; font-weight: 700;">Step 4 — Choose a Color Theme</h3>
+        <div class="theme-grid">
+          <button class="theme-card focusable" style="background:linear-gradient(135deg,#107C10,#163a23)" onclick="setWizTheme('default')">Emerald Glass</button>
+          <button class="theme-card focusable" style="background:linear-gradient(135deg,#0078d4,#0b2447)" onclick="setWizTheme('ocean')">Ocean Blue</button>
+          <button class="theme-card focusable" style="background:linear-gradient(135deg,#ff7a18,#5c1737)" onclick="setWizTheme('sunset')">Sunset</button>
+          <button class="theme-card focusable" style="background:linear-gradient(135deg,#8b5cf6,#21113d)" onclick="setWizTheme('violet')">Violet Pro</button>
+        </div>
+        <div class="small-btn focusable" onclick="nextWizard(5)" style="background: var(--brand-main); color: #fff; margin-top: 1.5rem; border: none;">Next</div>
+      </div>
+
+      <div id="wizard-step-5" style="display: none;">
+        <h3 style="margin-bottom: 1rem; font-weight: 700;">Step 5 — Preferences</h3>
+        <div class="control-row"><div><h3>Compact Library Tiles</h3><p style="color:var(--text-sub)">Show more items per row.</p></div><button class="small-btn focusable" onclick="prefs.compact=!prefs.compact; this.textContent=prefs.compact?'On':'Off'">Off</button></div>
+        <div class="control-row" style="margin-top:1rem;"><div><h3>24-Hour Clock</h3><p style="color:var(--text-sub)">Use a precise system clock.</p></div><button class="small-btn focusable" onclick="prefs.clock24=!prefs.clock24; this.textContent=prefs.clock24?'On':'Off'">Off</button></div>
+        <div class="small-btn focusable" onclick="nextWizard(6)" style="background: var(--brand-main); color: #fff; margin-top: 1.5rem; border: none;">Next</div>
+      </div>
+
+      <div id="wizard-step-6" style="display: none;">
+        <h3 style="margin-bottom: 1rem; font-weight: 800;">Step 6 — Ready to Go</h3>
+        <p>Your console is ready. You can update profile, wallpaper, and themes later in Settings.</p>
+        <div class="small-btn focusable" onclick="finishWizard()" style="background: var(--brand-main); color: #fff; border: none;">Enter McCrack-COS</div>
       </div>
     </div>
   </div>
@@ -383,14 +434,21 @@
         <span class="gamerscore"><span class="g-icon">G</span> <span id="g-score">0</span></span>
       </div>
     </div>
-    <div class="header-right">
+    <div class="header-center">
       <div class="search-bar focusable" tabindex="0" id="btn-open-search" data-action="open-search">
           <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
           <input type="text" placeholder="Search" readonly style="pointer-events: none;">
       </div>
+      <nav class="top-nav" aria-label="Primary navigation">
+    <div class="nav-btn focusable active" tabindex="0" data-target="page-home" aria-label="Home" title="Home"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 10.6V21h6v-6h6v6h6V10.6L12 3Z"/></svg><span class="nav-label">Home</span></div>
+    <div class="nav-btn focusable" tabindex="0" data-target="page-library" aria-label="Library" title="Library"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h4v18H6a2 2 0 0 1-2-2V5Zm8-2h3v18h-3V3Zm5 0h1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-1V3Z"/></svg><span class="nav-label">Library</span></div>
+    <div class="nav-btn focusable" tabindex="0" data-target="page-settings" aria-label="Settings" title="Settings"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2.1-1.6-2-3.5-2.5 1a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.4 2.9A7.7 7.7 0 0 0 7 6.4l-2.5-1-2 3.5 2.1 1.6A9.2 9.2 0 0 0 4.5 12c0 .5 0 1 .1 1.5l-2.1 1.6 2 3.5 2.5-1a7.7 7.7 0 0 0 2.6 1.5L10 22h4l.4-2.9a7.7 7.7 0 0 0 2.6-1.5l2.5 1 2-3.5-2.1-1.6ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg><span class="nav-label">Settings</span></div>
+  </nav>
+    </div>
+    <div class="header-right">
       <div class="status-icons">
         <span class="status-bubble battery-bubble" title="Device Battery"><span class="battery-icon" aria-hidden="true">🔋</span><span id="sys-battery">100%</span></span>
-        <button class="status-bubble settings-gear focusable" type="button" data-target="page-settings" aria-label="Open Settings" title="Settings"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2.1-1.6-2-3.5-2.5 1a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.4 2.9A7.7 7.7 0 0 0 7 6.4l-2.5-1-2 3.5 2.1 1.6A9.2 9.2 0 0 0 4.5 12c0 .5 0 1 .1 1.5l-2.1 1.6 2 3.5 2.5-1a7.7 7.7 0 0 0 2.6 1.5L10 22h4l.4-2.9a7.7 7.7 0 0 0 2.6-1.5l2.5 1 2-3.5-2.1-1.6ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg></button>
+        
       </div>
       <div id="sys-date-time">
           <span id="sys-time">04:55 PM</span>
@@ -399,11 +457,7 @@
     </div>
   </header>
 
-  <nav class="top-nav" aria-label="Primary navigation">
-    <div class="nav-btn focusable active" tabindex="0" data-target="page-home" aria-label="Home" title="Home"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 10.6V21h6v-6h6v6h6V10.6L12 3Z"/></svg><span class="nav-label">Home</span></div>
-    <div class="nav-btn focusable" tabindex="0" data-target="page-library" aria-label="Library" title="Library"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h4v18H6a2 2 0 0 1-2-2V5Zm8-2h3v18h-3V3Zm5 0h1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-1V3Z"/></svg><span class="nav-label">Library</span></div>
-    <div class="nav-btn focusable" tabindex="0" data-target="page-settings" aria-label="Settings" title="Settings"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2.1-1.6-2-3.5-2.5 1a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.4 2.9A7.7 7.7 0 0 0 7 6.4l-2.5-1-2 3.5 2.1 1.6A9.2 9.2 0 0 0 4.5 12c0 .5 0 1 .1 1.5l-2.1 1.6 2 3.5 2.5-1a7.7 7.7 0 0 0 2.6 1.5L10 22h4l.4-2.9a7.7 7.7 0 0 0 2.6-1.5l2.5 1 2-3.5-2.1-1.6ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg><span class="nav-label">Settings</span></div>
-  </nav>
+
 
   <div class="main-content">
 
@@ -446,9 +500,9 @@
           <div class="library-side-btn focusable" tabindex="0" data-library-tab="apps">Apps</div>
         </aside>
         <section class="library-main">
-          <div id="library-games" class="library-panel active" data-library-panel="games"><div class="library-heading"><h2>Games</h2><span class="content-count" id="games-count" aria-live="polite">Games • 0</span></div><div class="content-grid" id="games-container"></div></div>
-          <div id="library-movies" class="library-panel" data-library-panel="movies"><div class="library-heading"><h2>Movies</h2><span class="content-count" id="movies-count" aria-live="polite">Movies • 0</span></div><div class="content-grid" id="movies-container"></div></div>
-          <div id="library-apps" class="library-panel" data-library-panel="apps"><div class="library-heading"><h2>Apps</h2><span class="content-count" id="apps-count" aria-live="polite">Apps • 0</span></div><div class="content-grid" id="apps-container"></div></div>
+          <div id="library-games" class="library-panel active" data-library-panel="games"><div class="library-heading"><h2>Games</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="game">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="game">+ Add Your Own</button><span class="content-count" id="games-count" aria-live="polite">Games • 0</span></div></div><div class="content-grid" id="games-container"></div></div>
+          <div id="library-movies" class="library-panel" data-library-panel="movies"><div class="library-heading"><h2>Movies</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="movie">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="movie">+ Add Your Own</button><span class="content-count" id="movies-count" aria-live="polite">Movies • 0</span></div></div><div class="content-grid" id="movies-container"></div></div>
+          <div id="library-apps" class="library-panel" data-library-panel="apps"><div class="library-heading"><h2>Apps</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="app">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="app">+ Add Your Own</button><span class="content-count" id="apps-count" aria-live="polite">Apps • 0</span></div></div><div class="content-grid" id="apps-container"></div></div>
         </section>
       </div>
     </div>
@@ -490,6 +544,12 @@
 
           <div id="set-person" class="setting-view">
             <h2 class="settings-header">Theme Color</h2>
+            <div class="theme-grid" id="theme-grid" style="margin-bottom:1.2rem;">
+              <button class="theme-card focusable" data-action="set-theme" data-theme="default" style="background:linear-gradient(135deg,#107C10,#163a23)">Emerald Glass</button>
+              <button class="theme-card focusable" data-action="set-theme" data-theme="ocean" style="background:linear-gradient(135deg,#0078d4,#0b2447)">Ocean Blue</button>
+              <button class="theme-card focusable" data-action="set-theme" data-theme="sunset" style="background:linear-gradient(135deg,#ff7a18,#5c1737)">Sunset</button>
+              <button class="theme-card focusable" data-action="set-theme" data-theme="violet" style="background:linear-gradient(135deg,#8b5cf6,#21113d)">Violet Pro</button>
+            </div>
             <div class="color-picker-grid">
               <div class="color-btn focusable" style="background: #107C10;" data-action="set-color" data-val="#107C10"></div>
               <div class="color-btn focusable" style="background: #005A9E;" data-action="set-color" data-val="#005A9E"></div>
@@ -540,6 +600,8 @@
   </div>
 
 
+  <div id="achievement-stack" class="achievement-stack" aria-live="polite" aria-atomic="false"></div>
+
   <div id="details-modal" class="details-modal" aria-hidden="true">
     <div class="details-card" role="dialog" aria-modal="true" aria-labelledby="details-title">
       <img id="details-image" alt="">
@@ -548,13 +610,30 @@
         <h2 id="details-title"></h2>
         <p id="details-description"></p>
         <div class="details-meta">
-          <div><strong>Launch URL</strong><br><span id="details-link"></span></div>
           <div><strong>Library ID</strong><br><span id="details-id"></span></div>
         </div>
         <div class="details-actions">
           <button class="small-btn focusable" type="button" data-action="details-open" style="background:var(--brand-main); color:#fff; border:none;">Open</button>
           <button class="small-btn focusable" type="button" data-action="details-favorite">♡ Favorite</button>
           <button class="small-btn focusable" type="button" data-action="details-close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="custom-embed-modal" class="details-modal" aria-hidden="true">
+    <div class="details-card" role="dialog" aria-modal="true" aria-labelledby="custom-embed-title">
+      <div style="display:grid;place-items:center;min-height:260px;border-radius:22px;background:linear-gradient(135deg,var(--brand-glow),rgba(255,255,255,.08));border:1px solid var(--glass-border);font-size:4rem;">＋</div>
+      <div>
+        <div class="details-kicker">Custom Embed</div>
+        <h2 id="custom-embed-title">Add Your Own</h2>
+        <div class="form-group"><label>Name</label><input id="custom-name" class="form-input focusable" placeholder="My embed"></div>
+        <div class="form-group"><label>Link / URL</label><input id="custom-url" class="form-input focusable" placeholder="https://example.com"></div>
+        <div class="form-group"><label>Details / Description</label><input id="custom-desc" class="form-input focusable" placeholder="Optional"></div>
+        <div class="form-group"><label>Image URL</label><input id="custom-img" class="form-input focusable" placeholder="Optional; favicon used if blank"></div>
+        <div class="details-actions">
+          <button class="small-btn focusable" type="button" data-action="save-custom-embed" style="background:var(--brand-main); color:#fff; border:none;">Add Embed</button>
+          <button class="small-btn focusable" type="button" data-action="close-custom-embed">Cancel</button>
         </div>
       </div>
     </div>
@@ -4771,11 +4850,26 @@
       }
 ];
 
+    const CUSTOM_EMBEDS_KEY = 'mc_custom_embeds_v1';
     const sortByTitle = (items) => [...items].sort((a, b) => (a.title || '').localeCompare(b.title || '', undefined, { numeric: true, sensitivity: 'base' }));
-    const sortedGames = sortByTitle(myGames).filter(item => !isPlaceholderItem(item));
-    const sortedMovies = sortByTitle(myMovies).filter(item => !isPlaceholderItem(item));
-    const sortedApps = sortByTitle(myApps).filter(item => !isPlaceholderItem(item));
-    const allContent = [...sortedGames, ...sortedMovies, ...sortedApps];
+    function removeExactDuplicates(items) {
+      const seen = new Set();
+      return items.filter(item => {
+        const key = JSON.stringify([item.title || '', item.link || item.nativeapp || item.target || '', item.img || '']);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+    const builtinGames = sortByTitle(removeExactDuplicates(myGames)).filter(item => !isPlaceholderItem(item));
+    const builtinMovies = sortByTitle(removeExactDuplicates(myMovies)).filter(item => !isPlaceholderItem(item));
+    const builtinApps = sortByTitle(removeExactDuplicates(myApps)).filter(item => !isPlaceholderItem(item));
+    let sortedGames = [];
+    let sortedMovies = [];
+    let sortedApps = [];
+    let allContent = [];
+    let libraryFilters = { game: 'all', movie: 'all', app: 'all' };
+    let customEmbedKind = 'game';
 
     function updateLibraryCounters() {
       const counters = [
@@ -4809,6 +4903,42 @@
     function itemKey(item) { return `${itemKind(item)}:${itemFavoriteId(item)}`; }
     function readFavorites(kind) { try { return JSON.parse(localStorage.getItem(favoritesKey(kind)) || '[]'); } catch { return []; } }
     function saveFavorites(favorites, kind) { localStorage.setItem(favoritesKey(kind), JSON.stringify(favorites)); }
+    function readCustomEmbeds() { try { return JSON.parse(localStorage.getItem(CUSTOM_EMBEDS_KEY) || '{"game":[],"movie":[],"app":[]}'); } catch { return { game: [], movie: [], app: [] }; } }
+    function saveCustomEmbeds(data) { localStorage.setItem(CUSTOM_EMBEDS_KEY, JSON.stringify(data)); }
+    function normalizeUrl(url) {
+      const value = String(url || '').trim();
+      if (!value) return '';
+      try { return new URL(value.match(/^https?:\/\//i) ? value : `https://${value}`).href; } catch { return ''; }
+    }
+    function faviconFor(url) {
+      try { return `https://www.google.com/s2/favicons?sz=128&domain_url=${encodeURIComponent(new URL(url).origin)}`; } catch { return ''; }
+    }
+    function getCombinedLibrary(kind) {
+      const custom = readCustomEmbeds()[kind] || [];
+      const base = kind === 'movie' ? builtinMovies : (kind === 'app' ? builtinApps : builtinGames);
+      return sortByTitle(removeExactDuplicates([...base, ...custom]));
+    }
+    function getCurrentLibrary(kind) {
+      const combined = getCombinedLibrary(kind);
+      if (libraryFilters[kind] !== 'favorites') return combined;
+      const favIds = new Set(readFavorites(kind).map(f => f.id));
+      return combined.filter(item => favIds.has(itemFavoriteId(item)));
+    }
+    function refreshLibraries() {
+      sortedGames = getCombinedLibrary('game');
+      sortedMovies = getCombinedLibrary('movie');
+      sortedApps = getCombinedLibrary('app');
+      allContent = [...sortedGames, ...sortedMovies, ...sortedApps];
+      updateLibraryCounters();
+      populateGrid(getCurrentLibrary('game'), 'games-container');
+      populateMovieSections(getCurrentLibrary('movie'), 'movies-container');
+      populateGrid(getCurrentLibrary('app'), 'apps-container');
+      document.querySelectorAll('[data-action="toggle-library-favorites"]').forEach(btn => {
+        const active = libraryFilters[btn.dataset.kind] === 'favorites';
+        btn.classList.toggle('active', active);
+        btn.textContent = active ? 'All Items' : '♡ Favorites';
+      });
+    }
     function readGScore() {
       const savedScore = Number(localStorage.getItem(G_SCORE_KEY));
       return Number.isFinite(savedScore) && savedScore > 0 ? Math.floor(savedScore) : 0;
@@ -4816,10 +4946,41 @@
     function renderGScore() {
       const score = document.getElementById('g-score');
       if (score) score.textContent = readGScore().toLocaleString();
+      checkGScoreAchievements();
     }
     function addGScore(points = G_SCORE_POINTS_PER_MINUTE) {
       localStorage.setItem(G_SCORE_KEY, String(readGScore() + points));
       renderGScore();
+    }
+    const ACHIEVEMENTS_KEY = 'mc_gscore_achievements_v1';
+    function readUnlockedAchievements() { try { return JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY) || '[]'); } catch { return []; } }
+    function saveUnlockedAchievements(list) { localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(list)); }
+    function getGScoreMilestones(score) {
+      const fixed = [500, 1000, 5000, 10000, 15000];
+      const extra = [];
+      for (let m = 20000; m <= score; m += 5000) extra.push(m);
+      return [...fixed, ...extra].filter(m => score >= m);
+    }
+    function showAchievementToast(milestone, delay = 0) {
+      setTimeout(() => {
+        const stack = document.getElementById('achievement-stack');
+        if (!stack) return;
+        const toast = document.createElement('div');
+        toast.className = 'achievement-toast';
+        toast.innerHTML = `<div class="achievement-icon">🏆</div><div><strong>Achievement Completed</strong><span>${milestone.toLocaleString()} G-Score Achieved</span></div>`;
+        stack.appendChild(toast);
+        setTimeout(() => toast.classList.add('leaving'), 3600);
+        setTimeout(() => toast.remove(), 3900);
+      }, delay);
+    }
+    function checkGScoreAchievements() {
+      const score = readGScore();
+      const unlocked = readUnlockedAchievements();
+      const unlockedSet = new Set(unlocked);
+      const newly = getGScoreMilestones(score).filter(m => !unlockedSet.has(m));
+      if (!newly.length) return;
+      saveUnlockedAchievements([...unlocked, ...newly]);
+      newly.forEach((m, i) => showAchievementToast(m, i * 900));
     }
     function startGScoreTimer() {
       stopGScoreTimer();
@@ -4886,7 +5047,8 @@
       if (item.target) div.dataset.target = item.target;
       if (item.type) div.dataset.type = item.type;
       if (isPlaceholderItem(item)) div.classList.add('hidden-placeholder');
-      div.innerHTML = `${item.img ? `<img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.title)} artwork" loading="lazy">` : ''}<span class="card-title media-title">${escapeHtml(item.title)}</span><div class="card-actions quick-actions"><button class="card-action focusable details" type="button" data-action="show-details">Details</button><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}" data-favorite-kind="${escapeHtml(itemKind(item))}" data-favorite-id="${escapeHtml(itemFavoriteId(item))}" aria-pressed="false">♡</button></div>`;
+      const img = item.img || faviconFor(item.link || '') || '';
+      div.innerHTML = `${img ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(item.title)} artwork" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('fallback-icon');">` : ''}${item.custom ? `<button class="custom-remove focusable" type="button" data-action="remove-custom-embed" aria-label="Remove custom embed">×</button>` : ''}<span class="card-title media-title">${escapeHtml(item.title)}</span><div class="card-actions quick-actions"><button class="card-action focusable favorite" type="button" data-action="toggle-favorite" data-favorite-key="${escapeHtml(itemKey(item))}" data-favorite-kind="${escapeHtml(itemKind(item))}" data-favorite-id="${escapeHtml(itemFavoriteId(item))}" aria-pressed="false">♡</button></div>`;
       return div;
     }
 
@@ -4934,7 +5096,6 @@
       document.getElementById('details-type').textContent = `${item.type || 'item'} Details`;
       document.getElementById('details-title').textContent = item.title || 'Untitled';
       document.getElementById('details-description').textContent = item.description || 'No extra details are available.';
-      document.getElementById('details-link').textContent = item.link || item.target || item.nativeapp || 'Local OS action';
       document.getElementById('details-id').textContent = item.id || itemKey(item);
       document.getElementById('details-modal').classList.add('active');
       document.getElementById('details-modal').setAttribute('aria-hidden', 'false');
@@ -4950,10 +5111,7 @@
     }
 
     // Initialize grids with the existing library content parsed from games.html, movies.html, and apps.html.
-    updateLibraryCounters();
-    populateGrid(sortedGames, 'games-container');
-    populateMovieSections(sortedMovies, 'movies-container');
-    populateGrid(sortedApps, 'apps-container');
+    refreshLibraries();
     updateRecentCards();
 
     /* ==========================================
@@ -4963,6 +5121,7 @@
 
     const prefs = {
       color: localStorage.getItem('os_color') || '#107C10',
+      theme: localStorage.getItem('os_theme') || 'default',
       bg: localStorage.getItem('os_bg') || "none",
       clock24: localStorage.getItem('os_clock24') === 'true',
       anim: localStorage.getItem('os_anim') !== 'false',
@@ -4979,19 +5138,31 @@
     };
 
     let osState = 'dashboard';
+    const THEMES = {
+      default: { color: '#107C10', secondary: '#4be26b', tint: 'rgba(8,16,12,.24)', strong: 'rgba(8,14,12,.42)' },
+      ocean: { color: '#0078D4', secondary: '#4cc9f0', tint: 'rgba(6,18,34,.24)', strong: 'rgba(6,18,34,.46)' },
+      sunset: { color: '#FF7A18', secondary: '#ff4f8b', tint: 'rgba(44,18,12,.24)', strong: 'rgba(44,18,12,.46)' },
+      violet: { color: '#8B5CF6', secondary: '#22d3ee', tint: 'rgba(22,12,44,.24)', strong: 'rgba(22,12,44,.46)' }
+    };
 
     function applyPrefs() {
-      document.documentElement.style.setProperty('--brand-main', prefs.color);
-      document.documentElement.style.setProperty('--focus-color', prefs.color);
+      const theme = THEMES[prefs.theme] || THEMES.default;
+      const themeColor = prefs.color || theme.color;
+      document.documentElement.style.setProperty('--brand-main', themeColor);
+      document.documentElement.style.setProperty('--brand-secondary', theme.secondary);
+      document.documentElement.style.setProperty('--focus-color', themeColor);
+      document.documentElement.style.setProperty('--surface-tint', theme.tint);
+      document.documentElement.style.setProperty('--surface-tint-strong', theme.strong);
 
       // Update glow to follow main color
       let r = 255, g = 255, b = 255;
-      if(prefs.color.startsWith('#') && prefs.color.length === 7) {
-          r = parseInt(prefs.color.slice(1,3), 16);
-          g = parseInt(prefs.color.slice(3,5), 16);
-          b = parseInt(prefs.color.slice(5,7), 16);
+      if(themeColor.startsWith('#') && themeColor.length === 7) {
+          r = parseInt(themeColor.slice(1,3), 16);
+          g = parseInt(themeColor.slice(3,5), 16);
+          b = parseInt(themeColor.slice(5,7), 16);
       }
-      document.documentElement.style.setProperty('--brand-glow', `rgba(${r}, ${g}, ${b}, 0.5)`);
+      document.documentElement.style.setProperty('--brand-glow', `rgba(${r}, ${g}, ${b}, 0.42)`);
+      document.querySelectorAll('.theme-card').forEach(card => card.classList.toggle('active', card.dataset.theme === prefs.theme));
 
       if(prefs.bg !== 'none') {
         document.body.style.backgroundImage = `url('${prefs.bg}')`;
@@ -5042,8 +5213,10 @@
 
     // Setup Wizard Logic
     let tempWizColor = '#107C10';
+    let tempWizTheme = 'default';
+    let tempWizBg = 'none';
     function nextWizard(step) {
-        document.getElementById('wizard-step-1').style.display = 'none';
+        document.querySelectorAll('[id^="wizard-step-"]').forEach(stepEl => stepEl.style.display = 'none');
         document.getElementById(`wizard-step-${step}`).style.display = 'block';
         playSound('select');
         setFocus(0); // refocus on new step
@@ -5054,11 +5227,33 @@
         document.documentElement.style.setProperty('--focus-color', color);
         playSound('select');
     }
+    function setWizTheme(theme) {
+        tempWizTheme = theme;
+        prefs.theme = theme;
+        prefs.color = THEMES[theme]?.color || tempWizColor;
+        tempWizColor = prefs.color;
+        applyPrefs();
+        playSound('select');
+    }
+    function setWizBg(bg) {
+        tempWizBg = bg;
+        prefs.bg = bg;
+        applyPrefs();
+        playSound('select');
+    }
     function finishWizard() {
         account.user = document.getElementById('wiz-name').value || 'PlayerOne';
+        account.pfp = document.getElementById('wiz-pfp').value || account.pfp;
+        prefs.bg = tempWizBg;
+        prefs.theme = tempWizTheme;
         prefs.color = tempWizColor;
         localStorage.setItem('acc_user', account.user);
+        localStorage.setItem('acc_pfp', account.pfp);
+        localStorage.setItem('os_bg', prefs.bg);
+        localStorage.setItem('os_theme', prefs.theme);
         localStorage.setItem('os_color', prefs.color);
+        localStorage.setItem('os_clock24', prefs.clock24);
+        localStorage.setItem('os_compact', prefs.compact);
         localStorage.setItem('os_setup_complete', 'true');
         document.getElementById('setup-wizard').classList.remove('active');
         playSound('select');
@@ -5155,6 +5350,7 @@
       if (osState === 'guide') return Array.from(document.querySelectorAll('#guide-overlay .focusable'));
       if (osState === 'search') return Array.from(document.querySelectorAll('#search-overlay .focusable'));
       if (osState === 'details') return Array.from(document.querySelectorAll('#details-modal .focusable'));
+      if (osState === 'custom') return Array.from(document.querySelectorAll('#custom-embed-modal .focusable')).filter(el => el.offsetParent !== null);
 
       const headerBtns = Array.from(document.querySelectorAll('.console-header .focusable'));
       const topTabs = Array.from(document.querySelectorAll('.top-nav .focusable'));
@@ -5352,6 +5548,17 @@
         if (el.dataset.action === 'details-favorite' && activeDetailsItem) { playSound('select'); toggleFavorite(activeDetailsItem); return; }
       }
 
+      if (el.dataset.action === 'close-custom-embed') { closeCustomEmbedModal(); return; }
+      if (el.dataset.action === 'save-custom-embed') { saveCustomEmbed(); return; }
+      if (el.dataset.action === 'open-custom-embed') { openCustomEmbedModal(el.dataset.kind); return; }
+      if (el.dataset.action === 'toggle-library-favorites') {
+        const kind = el.dataset.kind;
+        libraryFilters[kind] = libraryFilters[kind] === 'favorites' ? 'all' : 'favorites';
+        refreshLibraries();
+        playSound('select');
+        return;
+      }
+      if (el.dataset.action === 'remove-custom-embed') { removeCustomEmbed(getItemFromElement(el)); return; }
       if (el.dataset.action === 'show-details') { playSound('select'); openDetails(getItemFromElement(el)); return; }
       if (el.dataset.action === 'toggle-favorite') { playSound('select'); toggleFavorite(getItemFromElement(el)); return; }
       if (el.dataset.action === 'open-item') { launchItem(getItemFromElement(el)); return; }
@@ -5363,7 +5570,7 @@
           osState = 'dashboard';
       }
 
-      if (el.classList?.contains('poster-tile')) { launchItem(getItemFromElement(el)); return; }
+      if (el.classList?.contains('poster-tile')) { playSound('select'); openDetails(getItemFromElement(el)); return; }
 
       if (el.dataset.target) { playSound('select'); switchPage(el.dataset.target); return; }
 
@@ -5388,6 +5595,7 @@
       }
 
       // Custom Actions
+      if (el.dataset.action === 'set-theme') { playSound('select'); prefs.theme = el.dataset.theme; prefs.color = THEMES[prefs.theme]?.color || prefs.color; localStorage.setItem('os_theme', prefs.theme); localStorage.setItem('os_color', prefs.color); applyPrefs(); return; }
       if (el.dataset.action === 'set-color') { playSound('select'); prefs.color = el.dataset.val; localStorage.setItem('os_color', prefs.color); applyPrefs(); return; }
       if (el.dataset.action === 'set-bg') { playSound('select'); prefs.bg = el.dataset.val; localStorage.setItem('os_bg', prefs.bg); applyPrefs(); return; }
       if (el.dataset.action === 'set-custom-bg') { playSound('select'); prefs.bg = document.getElementById('wp-url').value; localStorage.setItem('os_bg', prefs.bg); applyPrefs(); return; }
@@ -5417,6 +5625,53 @@
         applyPrefs();
         alert('Account Saved!');
       }
+    }
+
+    function openCustomEmbedModal(kind = 'game') {
+      customEmbedKind = kind === 'movie' ? 'movie' : (kind === 'app' ? 'app' : 'game');
+      ['custom-name', 'custom-url', 'custom-desc', 'custom-img'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      document.getElementById('custom-embed-title').textContent = `Add Your Own ${customEmbedKind[0].toUpperCase()}${customEmbedKind.slice(1)}`;
+      document.getElementById('custom-embed-modal').classList.add('active');
+      document.getElementById('custom-embed-modal').setAttribute('aria-hidden', 'false');
+      osState = 'custom';
+      setTimeout(() => setFocus(0), 50);
+      playSound('select');
+    }
+    function closeCustomEmbedModal() {
+      document.getElementById('custom-embed-modal').classList.remove('active');
+      document.getElementById('custom-embed-modal').setAttribute('aria-hidden', 'true');
+      osState = 'dashboard';
+      setFocus(0);
+      playSound('back');
+    }
+    function saveCustomEmbed() {
+      const title = document.getElementById('custom-name').value.trim();
+      const link = normalizeUrl(document.getElementById('custom-url').value);
+      if (!title || !link) { alert('Name and a valid URL are required.'); return; }
+      const custom = readCustomEmbeds();
+      const item = {
+        id: `custom-${customEmbedKind}-${Date.now()}`,
+        title,
+        link,
+        img: document.getElementById('custom-img').value.trim() || faviconFor(link),
+        type: customEmbedKind,
+        description: document.getElementById('custom-desc').value.trim() || 'Custom embed added by you.',
+        custom: true
+      };
+      custom[customEmbedKind] = [item, ...(custom[customEmbedKind] || [])].slice(0, 250);
+      saveCustomEmbeds(custom);
+      closeCustomEmbedModal();
+      refreshLibraries();
+    }
+    function removeCustomEmbed(item) {
+      if (!item?.custom) return;
+      if (!confirm(`Remove "${item.title}" from your custom embeds?`)) return;
+      const kind = itemKind(item);
+      const custom = readCustomEmbeds();
+      custom[kind] = (custom[kind] || []).filter(entry => entry.id !== item.id);
+      saveCustomEmbeds(custom);
+      refreshLibraries();
+      playSound('back');
     }
 
     /* ==========================================
@@ -5574,6 +5829,7 @@
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
           if(e.key === 'Escape') {
               if (osState === 'search') closeSearch();
+              if (osState === 'custom') closeCustomEmbedModal();
               document.activeElement.blur();
           }
           return;
@@ -5586,6 +5842,7 @@
 
       if (osState === 'search' && e.key === 'Escape') { closeSearch(); return; }
       if (osState === 'details' && e.key === 'Escape') { closeDetails(); return; }
+      if (osState === 'custom' && e.key === 'Escape') { closeCustomEmbedModal(); return; }
 
       currentFocusables = getActiveFocusables();
       if(currentFocusables.length === 0) return;
@@ -5613,6 +5870,7 @@
 
     function openGuideMenu() {
       if (osState === 'dashboard' || osState === 'setup') return;
+      if (osState === 'guide') return;
       document.getElementById('guide-overlay').classList.add('active');
       const meta = document.getElementById('guide-current-meta');
       if (meta) meta.textContent = currentLaunchedItem ? `${currentLaunchedItem.title} • ${currentLaunchedItem.type}` : 'Console overlay';
@@ -5623,6 +5881,7 @@
     }
     function closeGuideMenu() {
       document.getElementById('guide-overlay').classList.remove('active');
+      document.querySelectorAll('#guide-overlay .focused').forEach(el => el.classList.remove('focused'));
       if (document.getElementById('app-player').classList.contains('active') || document.getElementById('native-app-layer').classList.contains('active')) {
         enterEmbedMode();
       } else {
