@@ -1525,22 +1525,17 @@ applyCleanRouting();
 })();
 
 
-// Redirect into the console OS as soon as a controller is connected from any non-OS page.
-(function setupControllerOsRedirect() {
-  const isOsPage = /(^|\/)OS\.html$/i.test(window.location.pathname);
-  if (isOsPage || window.__mcControllerOsRedirectReady) return;
-  window.__mcControllerOsRedirectReady = true;
+// Legacy pages perform a guarded, one-time handoff into McCrack-COS.
+// OS.html is explicitly excluded, and controller events are not used for navigation.
+(function setupLegacyOsRedirect() {
+  const path = window.location.pathname;
+  const currentFile = path.split('/').pop() || 'index.html';
+  const normalizedFile = currentFile.includes('.') ? currentFile : `${currentFile}.html`;
+  const isOsPage = /^(OS|mccrackos)\.html$/i.test(normalizedFile) || /\/OS\/?$/i.test(path);
+  const legacyPages = new Set(['index.html', 'games.html', 'movies.html', 'apps.html', 'browser.html', 'chat.html', 'more.html', 'settings.html']);
+  if (isOsPage || !legacyPages.has(normalizedFile) || window.__mcLegacyOsRedirectReady || window.__mcLegacyOsRedirected) return;
+  window.__mcLegacyOsRedirectReady = true;
 
-  const goToOs = () => {
-    window.location.assign('/OS.html');
-  };
-
-  window.addEventListener('gamepadconnected', goToOs, { once: true });
-
-  const checkExistingPads = () => {
-    const pads = navigator.getGamepads ? Array.from(navigator.getGamepads()) : [];
-    if (pads.some(Boolean)) goToOs();
-  };
-
-  window.addEventListener('DOMContentLoaded', checkExistingPads, { once: true });
+  window.__mcLegacyOsRedirected = true;
+  window.location.replace('/OS.html');
 })();
