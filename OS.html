@@ -5143,7 +5143,35 @@
       pfp: localStorage.getItem('acc_pfp') || ''
     };
 
-    let osState = 'dashboard';
+    let osState = 'booting';
+    const startupState = { started: false, ready: false, bootMinimumElapsed: false, complete: false, bootTimer: null };
+    const bootScreen = document.getElementById('boot-screen');
+    function setTextIfPresent(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = text;
+    }
+    function setValueIfPresent(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.value = value;
+    }
+    function setBgIfPresent(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.style.backgroundImage = value;
+    }
+    function finishStartupFocus() {
+      if (startupState.complete && osState === 'dashboard') setFocus(0);
+    }
+    function hideStartupScreen() {
+      if (startupState.complete || !startupState.ready || !startupState.bootMinimumElapsed) return;
+      startupState.complete = true;
+      bootScreen?.classList.add('boot-hidden');
+      window.setTimeout(finishStartupFocus, 100);
+    }
+    function completeStartup() {
+      if (startupState.complete) return;
+      startupState.ready = true;
+      hideStartupScreen();
+    }
     const THEMES = {
       default: { color: '#107C10', secondary: '#4be26b', tint: 'rgba(8,16,12,.24)', strong: 'rgba(8,14,12,.42)' },
       ocean: { color: '#0078D4', secondary: '#4cc9f0', tint: 'rgba(6,18,34,.24)', strong: 'rgba(6,18,34,.46)' },
@@ -5176,46 +5204,60 @@
         document.body.style.backgroundImage = `url('https://i.imgur.com/mRkcSg6.png')`;
       }
 
-      document.getElementById('btn-clock').innerText = prefs.clock24 ? "24-Hour" : "12-Hour";
-      document.getElementById('btn-anim').innerText = prefs.anim ? "Enabled" : "Disabled";
-      document.getElementById('btn-compact').innerText = prefs.compact ? "On" : "Off";
-      document.getElementById('btn-hud').innerText = prefs.hud ? "Shown" : "Hidden";
-      document.getElementById('btn-glass').innerText = prefs.reducedGlass ? "On" : "Off";
-      document.getElementById('compact-summary').innerText = prefs.compact ? "Compact library is on" : "More items per row";
-      document.getElementById('hud-summary').innerText = prefs.hud ? "Button hints visible" : "Button hints hidden";
-      document.getElementById('glass-summary').innerText = prefs.reducedGlass ? "Reduced blur enabled" : "Full liquid glass";
+      setTextIfPresent('btn-clock', prefs.clock24 ? "24-Hour" : "12-Hour");
+      setTextIfPresent('btn-anim', prefs.anim ? "Enabled" : "Disabled");
+      setTextIfPresent('btn-compact', prefs.compact ? "On" : "Off");
+      setTextIfPresent('btn-hud', prefs.hud ? "Shown" : "Hidden");
+      setTextIfPresent('btn-glass', prefs.reducedGlass ? "On" : "Off");
+      setTextIfPresent('compact-summary', prefs.compact ? "Compact library is on" : "More items per row");
+      setTextIfPresent('hud-summary', prefs.hud ? "Button hints visible" : "Button hints hidden");
+      setTextIfPresent('glass-summary', prefs.reducedGlass ? "Reduced blur enabled" : "Full liquid glass");
       document.body.classList.toggle('no-anim', !prefs.anim);
       document.body.classList.toggle('compact-tiles', prefs.compact);
       document.body.classList.toggle('hide-hud', !prefs.hud);
       document.body.classList.toggle('reduced-glass', prefs.reducedGlass);
 
-      document.getElementById('sys-username').innerText = account.user;
+      setTextIfPresent('sys-username', account.user);
       renderGScore();
-      document.getElementById('acc-user').value = account.user !== 'PlayerOne' ? account.user : '';
-      document.getElementById('acc-name').value = account.name;
-      document.getElementById('acc-pass').value = account.pass;
-      document.getElementById('pfp-url').value = account.pfp.length < 200 ? account.pfp : '';
+      setValueIfPresent('acc-user', account.user !== 'PlayerOne' ? account.user : '');
+      setValueIfPresent('acc-name', account.name);
+      setValueIfPresent('acc-pass', account.pass);
+      setValueIfPresent('pfp-url', account.pfp.length < 200 ? account.pfp : '');
 
       if (account.pfp) {
          const pfpBg = `url('${account.pfp}')`;
-         document.getElementById('sys-user-pfp').style.backgroundImage = pfpBg;
-         document.getElementById('pfp-preview').style.backgroundImage = pfpBg;
-         document.getElementById('lock-pfp').style.backgroundImage = pfpBg;
+         setBgIfPresent('sys-user-pfp', pfpBg);
+         setBgIfPresent('pfp-preview', pfpBg);
+         setBgIfPresent('lock-pfp', pfpBg);
       }
-      document.getElementById('lock-name').innerText = account.user;
+      setTextIfPresent('lock-name', account.user);
     }
 
     // Boot sequence
-    if (isFirstTime) {
-        osState = 'setup';
-        document.getElementById('setup-wizard').classList.add('active');
-    } else {
-        applyPrefs();
-        if (account.pass !== '') {
-          osState = 'locked';
-          document.getElementById('lock-screen').classList.add('active');
+    function startMcCrackCOS() {
+        if (startupState.started) return;
+        startupState.started = true;
+        startupState.bootTimer = window.setTimeout(() => { startupState.bootMinimumElapsed = true; hideStartupScreen(); }, 1850);
+
+        try {
+          applyPrefs();
+        } catch (err) {
+          console.error('McCrack-COS startup preference load failed; continuing to main OS.', err);
         }
+
+        if (isFirstTime) {
+            osState = 'setup';
+            document.getElementById('setup-wizard')?.classList.add('active');
+        } else if (account.pass !== '') {
+            osState = 'locked';
+            document.getElementById('lock-screen')?.classList.add('active');
+        } else {
+            osState = 'dashboard';
+        }
+
+        completeStartup();
     }
+    startMcCrackCOS();
 
     // Setup Wizard Logic
     let tempWizColor = '#107C10';
@@ -5261,10 +5303,11 @@
         localStorage.setItem('os_clock24', prefs.clock24);
         localStorage.setItem('os_compact', prefs.compact);
         localStorage.setItem('os_setup_complete', 'true');
-        document.getElementById('setup-wizard').classList.remove('active');
+        document.getElementById('setup-wizard')?.classList.remove('active');
         playSound('select');
         osState = 'dashboard';
-        applyPrefs();
+        try { applyPrefs(); } catch (err) { console.error('McCrack-COS preference apply failed after setup.', err); }
+        completeStartup();
         setFocus(0);
     }
 
@@ -5326,8 +5369,10 @@
     }
 
     // Audio Engine
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const AudioEngine = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = AudioEngine ? new AudioEngine() : null;
     function playSound(type) {
+      if (!audioCtx) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
       osc.connect(gain); gain.connect(audioCtx.destination);
@@ -5828,8 +5873,14 @@
         }
         requestAnimationFrame(pollGamepad);
     }
-    // Start Controller Polling Loop
-    requestAnimationFrame(pollGamepad);
+    // Start Controller Polling Loop once; connecting controllers must not restart OS startup.
+    let gamepadPollingStarted = false;
+    function startGamepadPolling() {
+      if (gamepadPollingStarted) return;
+      gamepadPollingStarted = true;
+      requestAnimationFrame(pollGamepad);
+    }
+    startGamepadPolling();
 
     /* ==========================================
        Keyboard Navigation Engine
@@ -5923,9 +5974,7 @@
       if (focusable) triggerAction(focusable);
     });
 
-    setTimeout(() => document.getElementById('boot-screen')?.classList.add('boot-hidden'), 1850);
     showEmbedTip();
-    setTimeout(() => { if(osState === 'dashboard') setFocus(0); }, 100);
   </script>
 </body>
 </html>
