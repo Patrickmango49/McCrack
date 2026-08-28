@@ -6,6 +6,12 @@
   <title>McCrack-COS</title>
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
+  <meta name="theme-color" content="#107C10" />
+  <meta name="application-name" content="McCrack-COS" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="McCrack-COS" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href='data:application/manifest+json,{"name":"McCrack-COS","short_name":"McCrack-COS","description":"A polished web console for games, movies, apps, profiles, wallpapers, and achievements.","start_url":"./OS.html","scope":"./","display":"standalone","background_color":"#050505","theme_color":"#107C10","icons":[{"src":"favicon.png","sizes":"192x192","type":"image/png"},{"src":"favicon.png","sizes":"512x512","type":"image/png"}]}' />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
 
@@ -158,6 +164,26 @@
     .form-input { padding: 1.2rem; border-radius: 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff; font-size: 1.1rem; outline: none; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); font-family: inherit;}
     input[type="file"] { display: none; }
     .file-upload-btn { display: inline-block; background: var(--brand-main); color: #fff; padding: 1rem 1.5rem; border-radius: 14px; font-weight: 600; cursor: pointer; text-align: center; border: none; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3);}
+
+    /* === McCrack-COS 2026 Design Polish === */
+    :root { --ease-os: cubic-bezier(.2,.8,.2,1); --shadow-soft: 0 18px 44px rgba(0,0,0,.28); }
+    .console-header, .library-heading, .settings-title, .settings-section h3, .settings-section p, .empty-glass, .keyboard-hint, .search-panel-title { text-shadow: 0 2px 14px rgba(0,0,0,.58), 0 0 1px rgba(0,0,0,.75); }
+    .small-btn, .library-filter-btn, .guide-btn, .theme-card, .wallpaper-card { transition: transform .18s var(--ease-os), border-color .18s var(--ease-os), background .18s var(--ease-os), box-shadow .18s var(--ease-os); }
+    .small-btn:hover, .library-filter-btn:hover, .guide-btn:hover { transform: translateY(-1px); border-color: var(--focus-color); box-shadow: 0 12px 28px rgba(0,0,0,.26), 0 0 18px var(--brand-glow); }
+    .small-btn:active, .library-filter-btn:active, .guide-btn:active { transform: translateY(0) scale(.98); }
+    .tile:hover, .poster-tile:hover { transform: translateY(-4px) scale(1.012); box-shadow: 0 24px 52px rgba(0,0,0,.42), 0 0 26px var(--brand-glow); }
+    .details-modal.active, #search-overlay.active, #guide-overlay.active { animation: fadeIn .22s var(--ease-os) both; }
+    .details-card, .notice-card, .guide-menu { animation: popIn .22s var(--ease-os) both; }
+    .settings-layout { width: min(1240px, 100%); gap: 1.4rem; background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.045)); border: 1px solid rgba(255,255,255,.16); border-radius: 30px; padding: 1.2rem; backdrop-filter: blur(28px) saturate(165%); box-shadow: var(--shadow-soft); }
+    .settings-sidebar { width: 245px; flex-shrink: 0; gap: .55rem; }
+    .settings-title { padding: .4rem .55rem 1rem; } .settings-title h2 { font-size: 1.7rem; letter-spacing: -.04em; } .settings-title p { color: var(--text-sub); margin-top: .25rem; line-height: 1.35; }
+    .setting-tab { border-radius: 18px; padding: 1rem 1.05rem; background: transparent; box-shadow: none; display: flex; flex-direction: column; gap: .2rem; } .setting-tab span { font-size: .78rem; color: var(--text-sub); font-weight: 500; }
+    .setting-tab.active-tab { background: rgba(255,255,255,.13); border-color: var(--focus-color); box-shadow: inset 3px 0 0 var(--focus-color), 0 12px 26px rgba(0,0,0,.18); }
+    .settings-content-area { overflow:auto; padding: .35rem .45rem 2rem; } .setting-view { gap: 1rem; } .settings-header { border: 0; margin: 0 0 .35rem; padding: .25rem 0 .75rem; font-size: 2rem; }
+    .settings-section { display: grid; gap: .75rem; } .settings-section-title { color: var(--text-sub); text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 850; margin-top: .4rem; }
+    .control-row { padding: 1.1rem 1.2rem; border-radius: 20px; background: rgba(255,255,255,.075); box-shadow: none; gap: 1rem; } .control-row p { line-height: 1.4; } .form-input { padding: 1rem; border-radius: 16px; } .settings-actions { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+    @media (max-width: 860px) { .settings-layout { flex-direction: column; overflow:auto; } .settings-sidebar { width:100%; display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; } }
 
     /* === OOBE Setup Wizard === */
     #setup-wizard { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%); z-index: 5000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem;}
@@ -354,17 +380,6 @@
     .notice-actions { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
     .check-option { display:flex; align-items:center; gap:.55rem; color:#fff; font-weight:750; cursor:pointer; }
     .check-option input { width:18px; height:18px; accent-color:var(--brand-main); }
-    .store-shell { width:min(1180px,96vw); height:min(820px,90vh); display:flex; flex-direction:column; gap:1rem; padding:1.35rem; }
-    .store-header { display:flex; justify-content:space-between; gap:1rem; align-items:center; }
-    .store-search { flex:1; min-width:180px; padding:1rem 1.1rem; border-radius:16px; border:1px solid var(--glass-border); background:rgba(0,0,0,.28); color:#fff; font-size:1rem; outline:none; }
-    .store-tabs { display:flex; gap:.5rem; flex-wrap:wrap; }
-    .store-grid { flex:1; overflow:auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; padding:.2rem .2rem 1rem; }
-    .store-card { min-height:260px; padding:1rem; border-radius:22px; border:1px solid var(--glass-border); background:rgba(255,255,255,.08); backdrop-filter:var(--glass-blur); display:flex; flex-direction:column; gap:.7rem; transition:.2s ease; }
-    .store-card:hover,.store-card.focused,.store-card:focus-within { border-color:var(--focus-color); box-shadow:0 0 22px var(--brand-glow); transform:translateY(-2px); }
-    .store-card img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:16px; background:rgba(0,0,0,.3); }
-    .store-card h3 { font-size:1rem; line-height:1.2; }
-    .store-card p { color:var(--text-sub); font-size:.82rem; line-height:1.35; flex:1; }
-    .store-badge { width:max-content; padding:.25rem .55rem; border-radius:999px; background:rgba(16,124,16,.25); border:1px solid rgba(255,255,255,.14); font-size:.72rem; font-weight:850; text-transform:uppercase; }
   </style>
 </head>
 <body>
@@ -426,8 +441,8 @@
 
       <div id="wizard-step-6" style="display: none;">
         <h3 style="margin-bottom: 1rem; font-weight: 800;">Step 6 — Ready to explore?</h3>
-        <p>Would you like to open the McCrack Store now and start adding Games, Movies, and Apps?</p>
-        <div class="details-actions" style="justify-content:center;"><div class="small-btn focusable" onclick="finishWizard(true)" style="background: var(--brand-main); color: #fff; border: none;">Open McCrack Store</div><div class="small-btn focusable" onclick="finishWizard(false); showToast('No problem! You can find the McCrack Store anytime in your Apps library.')">Skip for Now</div></div>
+        <p>Your full Games, Movies, and Apps libraries are ready now. No downloads or store setup required.</p>
+        <div class="details-actions" style="justify-content:center;"><div class="small-btn focusable" onclick="finishWizard()" style="background: var(--brand-main); color: #fff; border: none;">Enter McCrack-COS</div></div>
       </div>
     </div>
   </div>
@@ -539,96 +554,23 @@
 
     <div id="page-settings" class="page">
       <div class="settings-layout">
-        <div class="settings-sidebar">
-          <div class="setting-tab focusable active-tab" tabindex="0" data-sub="set-main">General</div>
-          <div class="setting-tab focusable" tabindex="0" data-sub="set-account">Account Profile</div>
-          <div class="setting-tab focusable" tabindex="0" data-sub="set-person">Personalization</div>
-          <div class="setting-tab focusable" tabindex="0" data-sub="set-system">System Info</div>
-        </div>
-
+        <aside class="settings-sidebar" aria-label="Settings categories">
+          <div class="settings-title"><h2>Settings</h2><p>Personalize your console, profile, controls, and data.</p></div>
+          <div class="setting-tab focusable active-tab" tabindex="0" data-sub="set-person">Appearance<span>Wallpaper, theme, motion</span></div>
+          <div class="setting-tab focusable" tabindex="0" data-sub="set-account">Profile<span>Name, PIN, avatar</span></div>
+          <div class="setting-tab focusable" tabindex="0" data-sub="set-controls">Accessibility & Controls<span>HUD, focus, clock</span></div>
+          <div class="setting-tab focusable" tabindex="0" data-sub="set-system">System<span>Reset and maintenance</span></div>
+          <div class="setting-tab focusable" tabindex="0" data-sub="set-about">About<span>Version and PWA status</span></div>
+        </aside>
         <div class="settings-content-area">
-          <div id="set-main" class="setting-view active settings-grid">
-            <div class="tile focusable" tabindex="0" data-sub="set-account" style="background: var(--glass-bg);"><h2>Profile</h2><p>Name & Security</p></div>
-            <div class="tile focusable" tabindex="0" data-sub="set-person" style="background: var(--glass-bg);"><h2>Appearance</h2><p>Colors & Backgrounds</p></div>
-            <div class="tile focusable" tabindex="0" data-sub="set-system" style="background: var(--glass-bg);"><h2>System</h2><p>Reset & Display</p></div>
-            <div class="tile focusable" tabindex="0" data-action="toggle-compact" style="background: var(--glass-bg);"><h2>Compact Tiles</h2><p id="compact-summary">More items per row</p></div>
-            <div class="tile focusable" tabindex="0" data-action="toggle-hud" style="background: var(--glass-bg);"><h2>Controller HUD</h2><p id="hud-summary">Show button hints</p></div>
-            <div class="tile focusable" tabindex="0" data-action="toggle-glass" style="background: var(--glass-bg);"><h2>Glass Strength</h2><p id="glass-summary">Reduce blur for speed</p></div>
-          </div>
-
-          <div id="set-account" class="setting-view">
-            <h2 class="settings-header">Account Profile <div class="small-btn focusable" data-action="save-account" style="background: var(--brand-main); border: none; color: #fff;">Save Changes</div></h2>
-            <div style="display:flex; gap:3rem; align-items:flex-start;">
-              <div style="flex:1;">
-                <div class="form-group"><label>Gamertag</label><input type="text" id="acc-user" class="form-input focusable" placeholder="e.g. PlayerOne"></div>
-                <div class="form-group"><label>Real Name</label><input type="text" id="acc-name" class="form-input focusable" placeholder="Your Name"></div>
-                <div class="form-group"><label>Console PIN (Leave blank for none)</label><input type="password" id="acc-pass" class="form-input focusable" placeholder="Secret PIN"></div>
-              </div>
-              <div style="flex:1; background:var(--glass-bg); padding:2rem; border-radius:24px; border:1px solid var(--glass-border); text-align: center; backdrop-filter: var(--glass-blur);">
-                <h3 style="margin-bottom: 1.5rem; font-weight: 700;">Gamerpic</h3>
-                <div id="pfp-preview" style="width:150px; height:150px; border-radius:50%; background:rgba(0,0,0,0.3); margin:0 auto 2rem auto; border:3px solid var(--glass-border-glow); background-size:cover; background-position:center; box-shadow: 0 10px 25px rgba(0,0,0,0.4);"></div>
-                <div class="form-group" style="text-align: left;"><label>Image URL</label><input type="text" id="pfp-url" class="form-input focusable" placeholder="https://..." oninput="updatePreview('pfp-preview', this.value)"></div>
-              </div>
-            </div>
-          </div>
-
-          <div id="set-person" class="setting-view">
-            <h2 class="settings-header">Theme Color</h2>
-            <div class="theme-grid" id="theme-grid" style="margin-bottom:1.2rem;">
-              <button class="theme-card focusable" data-action="set-theme" data-theme="default" style="background:linear-gradient(135deg,#107C10,#163a23)">Emerald Glass</button>
-              <button class="theme-card focusable" data-action="set-theme" data-theme="ocean" style="background:linear-gradient(135deg,#0078d4,#0b2447)">Ocean Blue</button>
-              <button class="theme-card focusable" data-action="set-theme" data-theme="sunset" style="background:linear-gradient(135deg,#ff7a18,#5c1737)">Sunset</button>
-              <button class="theme-card focusable" data-action="set-theme" data-theme="violet" style="background:linear-gradient(135deg,#8b5cf6,#21113d)">Violet Pro</button>
-            </div>
-            <div class="color-picker-grid">
-              <div class="color-btn focusable" style="background: #107C10;" data-action="set-color" data-val="#107C10"></div>
-              <div class="color-btn focusable" style="background: #005A9E;" data-action="set-color" data-val="#005A9E"></div>
-              <div class="color-btn focusable" style="background: #D13438;" data-action="set-color" data-val="#D13438"></div>
-              <div class="color-btn focusable" style="background: #FFB900;" data-action="set-color" data-val="#FFB900"></div>
-              <div class="color-btn focusable" style="background: #881798;" data-action="set-color" data-val="#881798"></div>
-              <div class="color-btn focusable" style="background: #E81123;" data-action="set-color" data-val="#E81123"></div>
-            </div>
-
-            <h2 class="settings-header" style="margin-top: 2rem;">Custom Background</h2>
-            <div class="control-row" style="flex-direction:column; gap:2rem; align-items:stretch;">
-              <div class="form-group" style="margin:0;">
-                <label>Option 1: Background Image URL</label>
-                <div style="display:flex; gap:1rem;">
-                  <input type="text" id="wp-url" class="form-input focusable" style="flex:1;" placeholder="Paste image URL here...">
-                  <div class="small-btn focusable" data-action="set-custom-bg" style="background:var(--brand-main); border: none; color: #fff;">Apply URL</div>
-                </div>
-              </div>
-              <div class="form-group" style="margin:0;">
-                 <label>Option 2: Upload from Device</label>
-                 <div style="display: flex; gap: 1.5rem; align-items: center;">
-                    <label class="file-upload-btn focusable" tabindex="0">
-                        Browse Files
-                        <input type="file" id="wp-upload" accept="image/*">
-                    </label>
-                    <span id="upload-status" style="color: var(--text-main); font-size: 0.95rem; font-weight: 500;">No file selected</span>
-                 </div>
-              </div>
-              <div style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem; margin-top: 0.5rem;">
-                 <div class="small-btn focusable" data-action="set-bg" data-val="none" style="display: inline-block; background: transparent; color: #fff;">Reset to Default Glass Theme</div>
-              </div>
-            </div>
-          </div>
-
-          <div id="set-system" class="setting-view">
-            <h2 class="settings-header">System Options</h2>
-            <div class="control-row"><div><h3>Clock Format</h3><p style="color: var(--text-sub);">Toggle 12-hour or 24-hour time display</p></div><div class="small-btn focusable" data-action="toggle-clock" id="btn-clock">12-Hour</div></div>
-            <div class="control-row"><div><h3>UI Animations</h3><p style="color: var(--text-sub);">Turn off for maximum performance</p></div><div class="small-btn focusable" data-action="toggle-anim" id="btn-anim">Enabled</div></div>
-            <div class="control-row"><div><h3>Compact Library Tiles</h3><p style="color: var(--text-sub);">Fit more games, movies, and apps on screen.</p></div><div class="small-btn focusable" data-action="toggle-compact" id="btn-compact">Off</div></div>
-            <div class="control-row"><div><h3>Controller HUD</h3><p style="color: var(--text-sub);">Show or hide on-screen controller button hints.</p></div><div class="small-btn focusable" data-action="toggle-hud" id="btn-hud">Shown</div></div>
-            <div class="control-row"><div><h3>Reduced Glass</h3><p style="color: var(--text-sub);">Lower blur and transparency for readability and performance.</p></div><div class="small-btn focusable" data-action="toggle-glass" id="btn-glass">Off</div></div>
-            <div class="control-row" style="border-color: rgba(255, 77, 77, 0.4); background: rgba(255, 77, 77, 0.1);"><div><h3 style="color: #ff4d4d;">Reset Console</h3><p style="color: var(--text-sub);">Wipes all saved profiles, apps, and preferences.</p></div><div class="small-btn focusable" data-action="clear-cache" style="border:1px solid #ff4d4d; color:#ff4d4d; background: rgba(255, 77, 77, 0.1);">Format OS</div></div>
-          </div>
-
+          <div id="set-person" class="setting-view active"><h2 class="settings-header">Appearance</h2><section class="settings-section"><div class="settings-section-title">Color theme</div><div class="theme-grid" id="theme-grid"><button class="theme-card focusable" data-action="set-theme" data-theme="default" style="background:linear-gradient(135deg,#107C10,#163a23)">Emerald Glass</button><button class="theme-card focusable" data-action="set-theme" data-theme="ocean" style="background:linear-gradient(135deg,#0078d4,#0b2447)">Ocean Blue</button><button class="theme-card focusable" data-action="set-theme" data-theme="sunset" style="background:linear-gradient(135deg,#ff7a18,#5c1737)">Sunset</button><button class="theme-card focusable" data-action="set-theme" data-theme="violet" style="background:linear-gradient(135deg,#8b5cf6,#21113d)">Violet Pro</button></div></section><section class="settings-section"><div class="settings-section-title">Accent override</div><div class="color-picker-grid"><div class="color-btn focusable" style="background:#107C10" data-action="set-color" data-val="#107C10"></div><div class="color-btn focusable" style="background:#005A9E" data-action="set-color" data-val="#005A9E"></div><div class="color-btn focusable" style="background:#D13438" data-action="set-color" data-val="#D13438"></div><div class="color-btn focusable" style="background:#FFB900" data-action="set-color" data-val="#FFB900"></div><div class="color-btn focusable" style="background:#881798" data-action="set-color" data-val="#881798"></div><div class="color-btn focusable" style="background:#E81123" data-action="set-color" data-val="#E81123"></div></div></section><section class="settings-section"><div class="settings-section-title">Wallpaper</div><div class="control-row" style="align-items:stretch; flex-direction:column;"><div><h3>Custom background</h3><p style="color:var(--text-sub)">Paste an image URL or upload from this device. Text readability is subtly improved without changing media cards.</p></div><div class="settings-actions"><input type="text" id="wp-url" class="form-input focusable" style="flex:1; min-width:240px" placeholder="Paste image URL here..."><div class="small-btn focusable" data-action="set-custom-bg" style="background:var(--brand-main); color:#fff; border:none;">Apply URL</div><label class="file-upload-btn focusable" tabindex="0">Browse Files<input type="file" id="wp-upload" accept="image/*"></label><span id="upload-status" style="color:var(--text-sub);">No file selected</span><div class="small-btn focusable" data-action="set-bg" data-val="none">Reset Wallpaper</div></div></div></section><section class="settings-section"><div class="settings-section-title">Visual behavior</div><div class="control-row"><div><h3>Reduced Glass</h3><p style="color:var(--text-sub)">Lower blur and transparency for readability and performance.</p></div><div class="small-btn focusable" data-action="toggle-glass" id="btn-glass">Off</div></div><div class="control-row"><div><h3>Compact Library Tiles</h3><p style="color:var(--text-sub)">Fit more Games, Movies, and Apps on screen.</p></div><div class="small-btn focusable" data-action="toggle-compact" id="btn-compact">Off</div></div><div class="control-row"><div><h3>UI Animations</h3><p style="color:var(--text-sub)">Disable nonessential motion. System reduced-motion is also respected.</p></div><div class="small-btn focusable" data-action="toggle-anim" id="btn-anim">Enabled</div></div></section></div>
+          <div id="set-account" class="setting-view"><h2 class="settings-header">Profile <div class="small-btn focusable" data-action="save-account" style="background:var(--brand-main); border:none; color:#fff;">Save Changes</div></h2><section class="settings-section"><div class="control-row" style="align-items:flex-start;"><div style="flex:1;"><div class="form-group"><label>Gamertag</label><input type="text" id="acc-user" class="form-input focusable" placeholder="e.g. PlayerOne"></div><div class="form-group"><label>Real Name</label><input type="text" id="acc-name" class="form-input focusable" placeholder="Your Name"></div><div class="form-group"><label>Console PIN (Leave blank for none)</label><input type="password" id="acc-pass" class="form-input focusable" placeholder="Secret PIN"></div></div><div style="flex:1; text-align:center;"><h3>Gamerpic</h3><div id="pfp-preview" style="width:150px; height:150px; border-radius:50%; background:rgba(0,0,0,.3); margin:1rem auto; border:3px solid var(--glass-border-glow); background-size:cover; background-position:center;"></div><div class="form-group" style="text-align:left"><label>Image URL</label><input type="text" id="pfp-url" class="form-input focusable" placeholder="https://..." oninput="updatePreview('pfp-preview', this.value)"></div></div></div></section></div>
+          <div id="set-controls" class="setting-view"><h2 class="settings-header">Accessibility & Controls</h2><section class="settings-section"><div class="control-row"><div><h3>Controller HUD</h3><p style="color:var(--text-sub)">Show or hide on-screen controller button hints.</p></div><div class="small-btn focusable" data-action="toggle-hud" id="btn-hud">Shown</div></div><div class="control-row"><div><h3>Clock Format</h3><p style="color:var(--text-sub)">Toggle 12-hour or 24-hour time display.</p></div><div class="small-btn focusable" data-action="toggle-clock" id="btn-clock">12-Hour</div></div><div class="control-row"><div><h3>Focus Indicator</h3><p style="color:var(--text-sub)">Keyboard and controller focus rings stay enabled for accessible navigation.</p></div><div class="small-btn" aria-disabled="true">Always On</div></div></section></div>
+          <div id="set-system" class="setting-view"><h2 class="settings-header">System</h2><section class="settings-section"><div class="control-row"><div><h3>Reset Onboarding</h3><p style="color:var(--text-sub)">Show the setup wizard on the next launch without deleting your library.</p></div><div class="small-btn focusable" data-action="reset-onboarding">Reset Wizard</div></div><div class="control-row"><div><h3>Clear Activity History</h3><p style="color:var(--text-sub)">Remove continue cards and recent play/movie history.</p></div><div class="small-btn focusable" data-action="clear-history">Clear History</div></div><div class="control-row" style="border-color:rgba(255,77,77,.4); background:rgba(255,77,77,.1);"><div><h3 style="color:#ff6b6b;">Reset Console</h3><p style="color:var(--text-sub)">Wipes saved profiles, favorites, pins, custom embeds, achievements, and preferences.</p></div><div class="small-btn focusable" data-action="clear-cache" style="border:1px solid #ff6b6b; color:#ff6b6b; background:rgba(255,77,77,.1);">Format OS</div></div></section></div>
+          <div id="set-about" class="setting-view"><h2 class="settings-header">About</h2><section class="settings-section"><div class="control-row"><div><h3>McCrack-COS</h3><p style="color:var(--text-sub)">Premium web console experience for launching your full built-in Games, Movies, and Apps libraries.</p></div><strong>2026.08</strong></div><div class="control-row"><div><h3>PWA Support</h3><p style="color:var(--text-sub)">This page includes installable web app metadata and standalone display hints. Offline launch caching would require a separate service worker file, which was not added because this update is scoped to OS.html.</p></div><strong>Manifest Ready</strong></div></section></div>
         </div>
       </div>
     </div>
-  </div>
-
 
   <div id="achievement-stack" class="achievement-stack" aria-live="polite" aria-atomic="false"></div>
 
@@ -646,7 +588,6 @@
           <button class="small-btn focusable" type="button" data-action="details-open" style="background:var(--brand-main); color:#fff; border:none;">Open</button>
           <button class="small-btn focusable" type="button" data-action="details-favorite">♡ Favorite</button>
           <button class="small-btn focusable" type="button" data-action="details-pin">Pin to Home</button>
-          <button class="small-btn focusable" type="button" data-action="details-uninstall">Uninstall</button>
           <button class="small-btn focusable" type="button" data-action="details-close">Close</button>
         </div>
       </div>
@@ -676,14 +617,6 @@
       <h2 id="embed-tip-title">Quick Tip</h2>
       <p>Some Games and Apps may occasionally load another page instead of the intended content because of current school blocking systems. If that happens, try pressing the refresh button in the top-left corner a few times until the correct Game or App loads.</p>
       <div class="notice-actions"><label class="check-option"><input id="embed-tip-never" type="checkbox"> ✓ Don't remind me again</label><button class="small-btn focusable" type="button" data-action="dismiss-embed-tip">Got it</button></div>
-    </div>
-  </div>
-
-  <div id="store-modal" class="details-modal" aria-hidden="true">
-    <div class="details-card store-shell" role="dialog" aria-modal="true" aria-labelledby="store-title">
-      <div class="store-header"><div><div class="details-kicker">Content Store</div><h2 id="store-title">McCrack Store</h2></div><button class="small-btn focusable" type="button" data-action="close-store">Close</button></div>
-      <div class="store-header"><input id="store-search" class="store-search focusable" placeholder="Search games, movies, and apps..."><div class="store-tabs"><button class="library-filter-btn focusable active" data-store-filter="all">All</button><button class="library-filter-btn focusable" data-store-filter="game">Games</button><button class="library-filter-btn focusable" data-store-filter="movie">Movies</button><button class="library-filter-btn focusable" data-store-filter="app">Apps</button></div></div>
-      <div id="store-grid" class="store-grid" aria-live="polite"></div>
     </div>
   </div>
 
@@ -4911,34 +4844,14 @@
     }
     const builtinGames = sortByTitle(removeExactDuplicates(myGames)).filter(item => !isPlaceholderItem(item));
     const builtinMovies = sortByTitle(removeExactDuplicates(myMovies)).filter(item => !isPlaceholderItem(item));
-    const STORE_APP = { id: 'mc-store', title: 'McCrack Store', nativeapp: 'mc-store', img: 'favicon.png', type: 'app', description: 'Browse, search, install, and remove Games, Movies, and Apps for McCrack-COS.' };
-    const builtinApps = sortByTitle(removeExactDuplicates([STORE_APP, ...myApps])).filter(item => !isPlaceholderItem(item));
-    const storeCatalog = { game: builtinGames, movie: builtinMovies, app: builtinApps };
-    const INSTALLED_KEY = 'mc_installed_content_v1';
+    const builtinApps = sortByTitle(removeExactDuplicates(myApps)).filter(item => !isPlaceholderItem(item));
     const PINNED_KEY = 'mc_home_pins_v1';
     const EMBED_TIP_KEY = 'mc_embed_tip_dismissed_v1';
-    let storeFilter = 'all';
-    let storeInstalling = new Set();
-    function readInstalled() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(INSTALLED_KEY) || 'null');
-        if (saved && typeof saved === 'object') return { game: saved.game || [], movie: saved.movie || [], app: Array.from(new Set(['mc-store', ...(saved.app || [])])) };
-      } catch {}
-      if (localStorage.getItem('os_setup_complete') === 'true') return { game: builtinGames.map(itemFavoriteId), movie: builtinMovies.map(itemFavoriteId), app: builtinApps.map(itemFavoriteId) };
-      return { game: [], movie: [], app: ['mc-store'] };
-    }
-    function saveInstalled(data) { data.app = Array.from(new Set(['mc-store', ...(data.app || [])])); localStorage.setItem(INSTALLED_KEY, JSON.stringify(data)); }
-    function ensureInstalledState() { const data = readInstalled(); saveInstalled(data); return data; }
-    function isInstalled(item) { const data = readInstalled(); return (data[itemKind(item)] || []).includes(itemFavoriteId(item)); }
-    function installItem(item) { const kind = itemKind(item), id = itemFavoriteId(item), data = readInstalled(); data[kind] = Array.from(new Set([...(data[kind] || []), id])); saveInstalled(data); refreshLibraries(); renderStore(); showToast(`${item.title} installed`); }
-    function uninstallItem(item) { const kind = itemKind(item), id = itemFavoriteId(item); if (id === 'mc-store') { showToast('McCrack Store cannot be removed.'); return; } const data = readInstalled(); data[kind] = (data[kind] || []).filter(x => x !== id); saveInstalled(data); unpinItem(item, false); refreshLibraries(); renderStore(); showToast(`${item.title} uninstalled`); }
     function readPins() { try { return JSON.parse(localStorage.getItem(PINNED_KEY) || '[]'); } catch { return []; } }
     function savePins(pins) { localStorage.setItem(PINNED_KEY, JSON.stringify(pins.slice(0, 24))); }
     function isPinned(item) { return readPins().some(pin => pin.key === itemKey(item)); }
     function pinItem(item) { const pins = readPins().filter(pin => pin.key !== itemKey(item)); pins.unshift({ key: itemKey(item), item }); savePins(pins); renderPinnedHome(); refreshFavoriteButtons(); showToast(`${item.title} pinned to Home`); }
     function unpinItem(item, notify = true) { savePins(readPins().filter(pin => pin.key !== itemKey(item))); renderPinnedHome(); refreshFavoriteButtons(); if (notify) showToast(`${item.title} unpinned`); }
-    function getStoreCatalog(kind = 'all') { const all = [...storeCatalog.game, ...storeCatalog.movie, ...storeCatalog.app]; return kind === 'all' ? all : storeCatalog[kind] || []; }
-    ensureInstalledState();
     let sortedGames = [];
     let sortedMovies = [];
     let sortedApps = [];
@@ -4990,8 +4903,7 @@
     }
     function getCombinedLibrary(kind) {
       const custom = readCustomEmbeds()[kind] || [];
-      const installedIds = new Set(readInstalled()[kind] || []);
-      const base = (storeCatalog[kind] || []).filter(item => installedIds.has(itemFavoriteId(item)));
+      const base = kind === 'movie' ? builtinMovies : (kind === 'app' ? builtinApps : builtinGames);
       return sortByTitle(removeExactDuplicates([...base, ...custom]));
     }
     function getCurrentLibrary(kind) {
@@ -5028,27 +4940,6 @@
       if (!container.children.length) container.innerHTML = '<p class="empty-glass">Pin Games, Movies, and Apps from Details to keep favorites here.</p>';
       refreshFavoriteButtons();
     }
-    function renderStore() {
-      const grid = document.getElementById('store-grid');
-      if (!grid) return;
-      const query = (document.getElementById('store-search')?.value || '').toLowerCase().trim();
-      grid.innerHTML = '<p class="empty-glass">Loading McCrack Store catalog…</p>';
-      window.setTimeout(() => {
-        const items = getStoreCatalog(storeFilter).filter(item => !query || `${item.title} ${item.description} ${item.type}`.toLowerCase().includes(query));
-        grid.innerHTML = '';
-        items.forEach(item => {
-          const installed = isInstalled(item), id = itemFavoriteId(item);
-          const card = document.createElement('div');
-          card.className = 'store-card focusable'; card.tabIndex = 0; card.dataset.item = JSON.stringify(item); card.dataset.action = 'store-card';
-          card.innerHTML = `<img src="${escapeHtml(item.img || faviconFor(item.link || '') || 'favicon.png')}" alt="${escapeHtml(item.title)} artwork"><span class="store-badge">${escapeHtml(item.type || 'item')}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description || 'Ready to install from the McCrack Store catalog.')}</p><button class="small-btn focusable" type="button" data-action="${installed ? 'store-uninstall' : 'store-install'}" ${id === 'mc-store' ? 'disabled' : ''}>${id === 'mc-store' ? 'Installed' : installed ? 'Uninstall' : 'Download'}</button>`;
-          grid.appendChild(card);
-        });
-        if (!grid.children.length) grid.innerHTML = '<p class="empty-glass">No catalog items match your search.</p>';
-        currentFocusables = getActiveFocusables();
-      }, 180);
-    }
-    function openStore() { showEmbedLoading({ title: 'McCrack Store' }); window.setTimeout(() => { hideEmbedLoading(); document.getElementById('store-modal').classList.add('active'); document.getElementById('store-modal').setAttribute('aria-hidden','false'); osState = 'store'; renderStore(); setTimeout(() => setFocus(0), 50); }, 380); }
-    function closeStore() { document.getElementById('store-modal').classList.remove('active'); document.getElementById('store-modal').setAttribute('aria-hidden','true'); osState = 'dashboard'; setFocus(0); }
     function showEmbedTip() { if (localStorage.getItem(EMBED_TIP_KEY) === 'true') return; setTimeout(() => { const modal = document.getElementById('embed-tip-modal'); modal?.classList.add('active'); modal?.setAttribute('aria-hidden','false'); }, 2200); }
     function dismissEmbedTip() { if (document.getElementById('embed-tip-never')?.checked) localStorage.setItem(EMBED_TIP_KEY, 'true'); document.getElementById('embed-tip-modal')?.classList.remove('active'); document.getElementById('embed-tip-modal')?.setAttribute('aria-hidden','true'); }
 
@@ -5069,7 +4960,7 @@
     function readUnlockedAchievements() { try { return JSON.parse(localStorage.getItem(ACHIEVEMENTS_KEY) || '[]'); } catch { return []; } }
     function saveUnlockedAchievements(list) { localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(list)); }
     function getGScoreMilestones(score) {
-      const fixed = [500, 1000, 5000, 10000, 15000];
+      const fixed = [50, 100, 500, 1000, 5000, 10000, 15000];
       const extra = [];
       for (let m = 20000; m <= score; m += 5000) extra.push(m);
       return [...fixed, ...extra].filter(m => score >= m);
@@ -5145,8 +5036,6 @@
       if (detailFav && activeDetailsItem) detailFav.textContent = isFavorite(activeDetailsItem) ? '♥ Favorited' : '♡ Favorite';
       const detailPin = document.querySelector('[data-action="details-pin"]');
       if (detailPin && activeDetailsItem) detailPin.textContent = isPinned(activeDetailsItem) ? 'Unpin from Home' : 'Pin to Home';
-      const uninstall = document.querySelector('[data-action="details-uninstall"]');
-      if (uninstall && activeDetailsItem) uninstall.style.display = (activeDetailsItem.custom || itemFavoriteId(activeDetailsItem) === 'mc-store') ? 'none' : '';
     }
 
     function isPlaceholderItem(item) {
@@ -5203,7 +5092,7 @@
     }
 
     function getItemFromElement(el) {
-      const tile = el.closest?.('.poster-tile, .store-card') || el;
+      const tile = el.closest?.('.poster-tile') || el;
       try { return JSON.parse(tile.dataset.item || '{}'); } catch { return { title: tile.textContent.trim(), link: tile.dataset.link, type: 'item' }; }
     }
     function openDetails(item) {
@@ -5358,7 +5247,7 @@
         applyPrefs();
         playSound('select');
     }
-    function finishWizard(openStoreAfter = false) {
+    function finishWizard() {
         account.user = document.getElementById('wiz-name').value || 'PlayerOne';
         account.pfp = document.getElementById('wiz-pfp').value || account.pfp;
         prefs.bg = tempWizBg;
@@ -5377,7 +5266,6 @@
         osState = 'dashboard';
         applyPrefs();
         setFocus(0);
-        if (openStoreAfter) setTimeout(openStore, 450);
     }
 
     // Lock Screen Enter Key
@@ -5468,7 +5356,6 @@
       if (osState === 'guide') return Array.from(document.querySelectorAll('#guide-overlay .focusable'));
       if (osState === 'search') return Array.from(document.querySelectorAll('#search-overlay .focusable'));
       if (osState === 'details') return Array.from(document.querySelectorAll('#details-modal .focusable'));
-      if (osState === 'store') return Array.from(document.querySelectorAll('#store-modal .focusable')).filter(el => el.offsetParent !== null && !el.disabled);
       if (osState === 'custom') return Array.from(document.querySelectorAll('#custom-embed-modal .focusable')).filter(el => el.offsetParent !== null);
 
       const headerBtns = Array.from(document.querySelectorAll('.console-header .focusable'));
@@ -5615,7 +5502,6 @@
         startGScoreTimer();
         return;
       }
-      if (item.nativeapp === 'mc-store') { playSound('select'); openStore(); return; }
       if (item.nativeapp) {
         playSound('select');
         osState = 'playing_native';
@@ -5667,13 +5553,6 @@
         if (el.dataset.action === 'details-open' && activeDetailsItem) { closeDetails(); launchItem(activeDetailsItem); return; }
         if (el.dataset.action === 'details-favorite' && activeDetailsItem) { playSound('select'); toggleFavorite(activeDetailsItem); return; }
         if (el.dataset.action === 'details-pin' && activeDetailsItem) { playSound('select'); isPinned(activeDetailsItem) ? unpinItem(activeDetailsItem) : pinItem(activeDetailsItem); return; }
-        if (el.dataset.action === 'details-uninstall' && activeDetailsItem) { playSound('select'); const item = activeDetailsItem; closeDetails(); uninstallItem(item); return; }
-      }
-      if (osState === 'store') {
-        if (el.dataset.action === 'close-store') { closeStore(); return; }
-        if (el.dataset.storeFilter) { storeFilter = el.dataset.storeFilter; document.querySelectorAll('[data-store-filter]').forEach(b => b.classList.toggle('active', b.dataset.storeFilter === storeFilter)); renderStore(); return; }
-        if (el.dataset.action === 'store-install' || el.dataset.action === 'store-uninstall') { const item = getItemFromElement(el); el.textContent = 'Working…'; setTimeout(() => el.dataset.action === 'store-install' ? installItem(item) : uninstallItem(item), 350); return; }
-        if (el.dataset.action === 'store-card') { openDetails(getItemFromElement(el)); return; }
       }
       if (el.dataset.action === 'dismiss-embed-tip') { dismissEmbedTip(); return; }
 
@@ -5733,6 +5612,9 @@
       if (el.dataset.action === 'toggle-compact') { playSound('select'); prefs.compact = !prefs.compact; localStorage.setItem('os_compact', prefs.compact); applyPrefs(); return; }
       if (el.dataset.action === 'toggle-hud') { playSound('select'); prefs.hud = !prefs.hud; localStorage.setItem('os_hud', prefs.hud); applyPrefs(); return; }
       if (el.dataset.action === 'toggle-glass') { playSound('select'); prefs.reducedGlass = !prefs.reducedGlass; localStorage.setItem('os_reduced_glass', prefs.reducedGlass); applyPrefs(); return; }
+
+      if (el.dataset.action === 'reset-onboarding') { localStorage.removeItem('os_setup_complete'); showToast('Setup wizard will show on next launch.'); playSound('select'); return; }
+      if (el.dataset.action === 'clear-history') { localStorage.removeItem(LAST_GAME_KEY); localStorage.removeItem(LAST_MOVIE_KEY); updateRecentCards(); showToast('Activity history cleared.'); playSound('select'); return; }
 
       if (el.dataset.action === 'clear-cache') {
         playSound('select');
@@ -5812,14 +5694,14 @@
 
     function getGridPeers() {
       const active = currentFocusables[currentIndex];
-      const grid = active?.closest?.('.content-grid, .movie-letter-grid, .settings-grid, .recents-row, .bottom-row, .pinned-grid, .store-grid, .store-tabs, .store-header, .top-nav, .library-side-nav, .settings-sidebar, .details-actions, .guide-menu');
+      const grid = active?.closest?.('.content-grid, .movie-letter-grid, .settings-grid, .recents-row, .bottom-row, .pinned-grid, .top-nav, .library-side-nav, .settings-sidebar, .details-actions, .guide-menu');
       if (!grid) return null;
       return Array.from(grid.querySelectorAll('.focusable')).filter(el => el.offsetParent !== null);
     }
 
     function getGridColumns() {
       const active = currentFocusables[currentIndex];
-      const grid = active?.closest?.('.content-grid, .movie-letter-grid, .settings-grid, .recents-row, .bottom-row, .pinned-grid, .store-grid');
+      const grid = active?.closest?.('.content-grid, .movie-letter-grid, .settings-grid, .recents-row, .bottom-row, .pinned-grid');
       if (!grid) return 3;
       const columns = getComputedStyle(grid).gridTemplateColumns;
       if (columns && columns !== 'none') return Math.max(1, columns.split(' ').length);
@@ -5892,7 +5774,6 @@
                 const guideBtn = isGuideButtonPressed(gp);
 
                 if (isEmbedControllerMode()) {
-                    if (gp.buttons[1]?.pressed) { quitGame(); lastGamepadInput = now + 250; requestAnimationFrame(pollGamepad); return; }
                     if (guideBtn) {
                         openGuideMenu();
                         lastGamepadInput = now + 200;
@@ -5935,7 +5816,6 @@
                     if (osState === 'search') closeSearch();
                     else if (osState === 'guide') closeGuideMenu();
                     else if (osState === 'details') closeDetails();
-                    else if (osState === 'store') closeStore();
                     else if (document.getElementById('page-library')?.classList.contains('active')) switchPage('page-home');
                     else playSound('back'); // Visual/Audio feedback for back
                     lastGamepadInput = now + 100;
@@ -6032,14 +5912,12 @@
       playSound('back');
     }
 
-    document.getElementById('store-search')?.addEventListener('input', renderStore);
-
     // Mouse Interaction
     document.addEventListener('click', (e) => {
       // Exclude direct clicks on file inputs as they trigger via label
       if(e.target.tagName === 'INPUT' && e.target.type === 'file') return;
 
-      const actionControl = e.target.closest('button[data-action], .card-action, [data-store-filter], [data-action="details-favorite"], [data-action="details-open"], [data-action="details-close"], [data-action="details-pin"], [data-action="details-uninstall"]');
+      const actionControl = e.target.closest('button[data-action], .card-action, [data-action="details-favorite"], [data-action="details-open"], [data-action="details-close"], [data-action="details-pin"]');
       if (actionControl) { e.preventDefault(); e.stopPropagation(); }
       const focusable = e.target.closest('.focusable');
       if (focusable) triggerAction(focusable);
