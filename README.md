@@ -68,3 +68,7 @@ If you have any questions, suggestions, or issues, reach out through our [Discor
 Made with ❤️ By **Patrick_Mango**
 
 **McCrack** - Your one-stop hub for entertainment and social fun.
+
+## TMDB movie metadata
+
+Movie details can be enhanced with TMDB metadata without storing credentials in the repository. Use `config.example.js` as the deployment-only contents of `tmdb-config.js`, setting `tmdb.readAccessToken` to a TMDB **Read Access Token**. Keep the configured file out of source control if it contains a credential. For a deployed static site, use a server-side metadata proxy when the token must remain private.
