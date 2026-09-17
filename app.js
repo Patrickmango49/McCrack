@@ -1314,54 +1314,157 @@ applyCleanRouting();
     applyFilter('all');
   }
 
+  const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/';
+  const TMDB_ID_CACHE_KEY = 'mc_tmdb_movie_ids_v1';
+  const TMDB_DETAILS_CACHE_KEY = 'mc_tmdb_movie_details_v1';
+  const tmdbMemoryCache = new Map();
+
+  function tmdbConfig() {
+    const config = window.McCrackConfig?.tmdb || window.McCrackConfig || {};
+    return { token: config.readAccessToken || config.tmdbReadAccessToken || '', language: config.language || 'en-US' };
+  }
+
+  function readTmdbCache(key) {
+    try { return JSON.parse(sessionStorage.getItem(key) || '{}'); } catch { return {}; }
+  }
+
+  function writeTmdbCache(key, value) {
+    try { sessionStorage.setItem(key, JSON.stringify(value)); } catch { /* Session storage is optional. */ }
+  }
+
+  function tmdbImage(path, size = 'w780') { return path ? `${TMDB_IMAGE_BASE}${size}${path}` : ''; }
+  function movieYear(title) { return (String(title).match(/\((\d{4})\)/)?.[1]) || ''; }
+  function movieSearchTitle(title) { return String(title || '').replace(/\s*\(\d{4}\)\s*$/, '').trim(); }
+  function money(value) { return Number(value) > 0 ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value) : ''; }
+  function runtime(value) { return Number(value) ? `${Math.floor(value / 60)}h ${value % 60}m` : ''; }
+
+  async function tmdbRequest(path, params = {}) {
+    const { token, language } = tmdbConfig();
+    if (!token) throw new Error('TMDB metadata is not configured');
+    const url = new URL(`https://api.themoviedb.org/3${path}`);
+    Object.entries({ language, ...params }).forEach(([key, value]) => { if (value) url.searchParams.set(key, value); });
+    const response = await fetch(url, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } });
+    if (!response.ok) throw new Error(`TMDB request failed (${response.status})`);
+    return response.json();
+  }
+
+  async function resolveTmdbMovie(tile, title) {
+    const localId = tile.dataset.tmdbId || tile.dataset.tmdbMovieId;
+    if (localId) return localId;
+    const cache = readTmdbCache(TMDB_ID_CACHE_KEY);
+    const cacheKey = getTileId(tile);
+    if (cache[cacheKey]) return cache[cacheKey];
+    const results = await tmdbRequest('/search/movie', { query: movieSearchTitle(title), year: movieYear(title) });
+    const result = results.results?.[0];
+    if (!result?.id) return '';
+    cache[cacheKey] = result.id;
+    writeTmdbCache(TMDB_ID_CACHE_KEY, cache);
+    return result.id;
+  }
+
+  async function getTmdbMovie(tile, title) {
+    const tmdbId = await resolveTmdbMovie(tile, title);
+    if (!tmdbId) return null;
+    if (tmdbMemoryCache.has(tmdbId)) return tmdbMemoryCache.get(tmdbId);
+    const detailsCache = readTmdbCache(TMDB_DETAILS_CACHE_KEY);
+    if (detailsCache[tmdbId]) { tmdbMemoryCache.set(tmdbId, detailsCache[tmdbId]); return detailsCache[tmdbId]; }
+    const movie = await tmdbRequest(`/movie/${tmdbId}`, { append_to_response: 'credits,external_ids,release_dates,keywords,recommendations' });
+    tmdbMemoryCache.set(tmdbId, movie);
+    detailsCache[tmdbId] = movie;
+    writeTmdbCache(TMDB_DETAILS_CACHE_KEY, detailsCache);
+    return movie;
+  }
+
+  function certification(movie) {
+    const country = movie.release_dates?.results?.find((entry) => entry.iso_3166_1 === 'US') || movie.release_dates?.results?.[0];
+    return country?.release_dates?.find((entry) => entry.certification)?.certification || '';
+  }
+
+  function detailSkeleton(title, image) {
+    return `<div class="movie-details movie-details-loading" aria-busy="true">
+      <div class="movie-details-hero"><div class="movie-details-hero-art"></div><div class="movie-details-hero-shade"></div><div class="movie-details-hero-copy"><p class="details-kicker">Movie details</p><div class="details-skeleton details-skeleton-title"></div><div class="details-skeleton details-skeleton-line"></div><div class="details-skeleton details-skeleton-line short"></div></div></div>
+      <div class="movie-details-body"><img class="details-art" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" /><div><div class="details-skeleton details-skeleton-line"></div><div class="details-skeleton details-skeleton-line"></div><div class="details-skeleton details-skeleton-line short"></div></div></div>
+    </div>`;
+  }
+
+  function movieDetailMarkup(movie, local) {
+    const title = movie.title || local.title;
+    const poster = tmdbImage(movie.poster_path, 'w500') || local.image;
+    const backdrop = tmdbImage(movie.backdrop_path, 'w1280');
+    const cast = (movie.credits?.cast || []).slice(0, 10);
+    const crew = movie.credits?.crew || [];
+    const namesFor = (jobs) => [...new Map(crew.filter((person) => jobs.includes(person.job)).map((person) => [person.id, person.name])).values()].slice(0, 5);
+    const director = namesFor(['Director']);
+    const writers = namesFor(['Writer', 'Screenplay', 'Story']);
+    const cert = certification(movie);
+    const releaseYear = movie.release_date?.slice(0, 4);
+    const meta = [
+      ['Release date', movie.release_date], ['Runtime', runtime(movie.runtime)], ['Certification', cert], ['Original language', movie.original_language?.toUpperCase()],
+      ['Status', movie.status], ['Budget', money(movie.budget)], ['Revenue', money(movie.revenue)], ['Countries', movie.production_countries?.map((item) => item.name).join(', ')],
+      ['Production', movie.production_companies?.map((item) => item.name).join(', ')]
+    ].filter(([, value]) => value);
+    const recommendations = (movie.recommendations?.results || []).slice(0, 6);
+    return `<div class="movie-details">
+      <section class="movie-details-hero" ${backdrop ? `style="--movie-backdrop:url('${escapeHtml(backdrop)}')"` : ''}>
+        <div class="movie-details-hero-art"></div><div class="movie-details-hero-shade"></div>
+        <div class="movie-details-hero-copy"><p class="details-kicker">TMDB movie details</p><h2 id="detailsTitle">${escapeHtml(title)}</h2>
+          ${movie.tagline ? `<p class="movie-tagline">“${escapeHtml(movie.tagline)}”</p>` : ''}
+          <div class="movie-hero-meta"><span>${escapeHtml(releaseYear || 'Release date unavailable')}</span>${movie.runtime ? `<span>${escapeHtml(runtime(movie.runtime))}</span>` : ''}${movie.vote_average ? `<span>★ ${movie.vote_average.toFixed(1)} <small>(${Number(movie.vote_count || 0).toLocaleString()} votes)</small></span>` : ''}</div>
+          ${movie.genres?.length ? `<div class="movie-genre-list">${movie.genres.map((genre) => `<span>${escapeHtml(genre.name)}</span>`).join('')}</div>` : ''}
+          <div class="movie-detail-actions"><button type="button" class="movie-action movie-action-play" data-movie-action="play">▶ Watch movie</button><button type="button" class="movie-action" data-movie-action="favorite">♡ Favorite</button><button type="button" class="movie-action" data-movie-action="library">← Library</button>${movie.homepage ? `<a class="movie-action" href="${escapeHtml(movie.homepage)}" target="_blank" rel="noopener noreferrer">Official site ↗</a>` : ''}${movie.external_ids?.imdb_id ? `<a class="movie-action" href="https://www.imdb.com/title/${escapeHtml(movie.external_ids.imdb_id)}/" target="_blank" rel="noopener noreferrer">IMDb ↗</a>` : ''}<a class="movie-action" href="https://www.themoviedb.org/movie/${movie.id}" target="_blank" rel="noopener noreferrer">TMDB ↗</a></div>
+        </div>
+      </section>
+      <div class="movie-details-body"><img class="details-art movie-poster" src="${escapeHtml(poster)}" alt="${escapeHtml(title)} poster" />
+        <div class="movie-details-main"><section><h3>Overview</h3><p class="details-description">${escapeHtml(movie.overview || local.description || 'No synopsis is available yet.')}</p>${movie.original_title && movie.original_title !== title ? `<p class="movie-original-title">Original title: <strong>${escapeHtml(movie.original_title)}</strong></p>` : ''}</section>
+        ${meta.length ? `<dl class="details-meta">${meta.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}</dl>` : ''}
+        ${(director.length || writers.length) ? `<section class="movie-crew"><h3>Key crew</h3>${director.length ? `<p><strong>Director</strong><span>${escapeHtml(director.join(', '))}</span></p>` : ''}${writers.length ? `<p><strong>Writing</strong><span>${escapeHtml(writers.join(', '))}</span></p>` : ''}</section>` : ''}
+        ${movie.keywords?.keywords?.length ? `<section class="movie-keywords"><h3>Themes</h3><div class="movie-genre-list">${movie.keywords.keywords.slice(0, 8).map((keyword) => `<span>${escapeHtml(keyword.name)}</span>`).join('')}</div></section>` : ''}
+        </div></div>
+      ${cast.length ? `<section class="movie-cast"><div class="movie-section-heading"><div><p class="details-kicker">Cast</p><h3>Meet the cast</h3></div><button class="cast-more" type="button" data-cast-more>View all</button></div><div class="movie-cast-grid">${cast.map((person, index) => `<article class="cast-card ${index > 5 ? 'is-extra-cast' : ''}"><img src="${escapeHtml(tmdbImage(person.profile_path, 'w185') || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23252525%22/%3E%3Ccircle cx=%2232%22 cy=%2224%22 r=%2212%22 fill=%22%23757575%22/%3E%3Cpath d=%22M10 61c2-14 11-21 22-21s20 7 22 21%22 fill=%22%23757575%22/%3E%3C/svg%3E')}" alt="" ${person.profile_path ? '' : 'data-no-profile="true"'} /><div><strong>${escapeHtml(person.name)}</strong><span>${escapeHtml(person.character || 'Cast')}</span></div></article>`).join('')}</div></section>` : ''}
+      ${recommendations.length ? `<section class="movie-recommendations"><div class="movie-section-heading"><div><p class="details-kicker">More to explore</p><h3>You may also like</h3></div></div><div class="movie-recommendation-grid">${recommendations.map((item) => `<article class="movie-recommendation-card"><img src="${escapeHtml(tmdbImage(item.poster_path, 'w342'))}" alt="${escapeHtml(item.title)} poster" /><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.release_date?.slice(0, 4) || 'TMDB recommendation')}</span></article>`).join('')}</div></section>` : ''}
+    </div>`;
+  }
+
   function setupDetailsModal() {
-    if (!supportsLibraryFeatures()) return;
-    if (document.querySelector('.details-modal')) return;
+    if (!supportsLibraryFeatures() || document.querySelector('.details-modal')) return;
     const modal = document.createElement('div');
     modal.className = 'details-modal';
     modal.innerHTML = `<div class="details-card" role="dialog" aria-modal="true" aria-labelledby="detailsTitle"><button class="details-close" type="button" aria-label="Close details">×</button><div class="details-content"></div></div>`;
     document.body.appendChild(modal);
     const content = modal.querySelector('.details-content');
+    let activeTile = null;
     const close = () => { modal.classList.remove('is-open'); document.body.classList.remove('details-open'); };
-    const open = (tile) => {
+    const open = async (tile) => {
       if (!tile) return;
-      const kind = getTileKind(tile);
-      const title = textFromTile(tile);
-      const info = findContentInfo(kind, title);
-      const image = tile.querySelector('img')?.src || '';
-      const kindLabel = kind === 'movie' ? 'Movie' : kind === 'app' ? 'App' : 'Game';
-      const primaryLabel = kind === 'app' ? 'Name' : 'Title';
-      const descriptionLabel = kind === 'movie' ? 'Synopsis' : 'Description';
-      const usefulMeta = [
-        ['Launch Type', kind === 'movie' ? 'Embedded movie player' : kind === 'app' ? 'Embedded app launcher' : 'Browser game'],
-        ['Source', tile.dataset.src ? 'Available' : 'Unavailable']
-      ];
-      content.innerHTML = `
-        <img class="details-art" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" />
-        <div class="details-copy">
-          <p class="details-kicker">${kindLabel} Details</p>
-          <h2 id="detailsTitle">${escapeHtml(info.title || title)}</h2>
-          <p class="details-description">${escapeHtml(tile.dataset.description || info.description || 'No extra description is available yet.')}</p>
-          <dl class="details-meta">
-            <div><dt>${primaryLabel}</dt><dd>${escapeHtml(info.title || title)}</dd></div>
-            <div><dt>${descriptionLabel}</dt><dd>${escapeHtml(tile.dataset.description || info.description || 'No extra description is available yet.')}</dd></div>
-            ${usefulMeta.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}
-          </dl>
-        </div>`;
-      modal.classList.add('is-open');
-      document.body.classList.add('details-open');
+      activeTile = tile;
+      const kind = getTileKind(tile), title = textFromTile(tile), info = findContentInfo(kind, title);
+      const local = { title: info.title || title, description: tile.dataset.description || info.description || 'No extra description is available yet.', image: tile.querySelector('img')?.src || '' };
+      modal.classList.add('is-open'); document.body.classList.add('details-open');
+      if (kind !== 'movie') {
+        content.innerHTML = `<img class="details-art" src="${escapeHtml(local.image)}" alt="${escapeHtml(local.title)}" /><div class="details-copy"><p class="details-kicker">${kind} details</p><h2 id="detailsTitle">${escapeHtml(local.title)}</h2><p class="details-description">${escapeHtml(local.description)}</p></div>`;
+        return;
+      }
+      content.innerHTML = detailSkeleton(local.title, local.image);
+      try {
+        const movie = await getTmdbMovie(tile, local.title);
+        if (activeTile !== tile || !modal.classList.contains('is-open')) return;
+        content.innerHTML = movie ? movieDetailMarkup(movie, local) : `<div class="movie-fallback"><img class="details-art" src="${escapeHtml(local.image)}" alt="${escapeHtml(local.title)}" /><div><p class="details-kicker">Movie details</p><h2 id="detailsTitle">${escapeHtml(local.title)}</h2><p class="details-description">${escapeHtml(local.description)}</p><p class="movie-data-note">More metadata is not available for this title yet.</p></div></div>`;
+      } catch (error) {
+        if (activeTile !== tile) return;
+        content.innerHTML = `<div class="movie-fallback"><img class="details-art" src="${escapeHtml(local.image)}" alt="${escapeHtml(local.title)}" /><div><p class="details-kicker">Movie details</p><h2 id="detailsTitle">${escapeHtml(local.title)}</h2><p class="details-description">${escapeHtml(local.description)}</p><p class="movie-data-note">Showing your library details while movie metadata is temporarily unavailable.</p></div></div>`;
+      }
     };
-    document.addEventListener('mc:open-details', (event) => {
-      open(event.detail?.tile);
-    });
+    document.addEventListener('mc:open-details', (event) => open(event.detail?.tile));
     document.addEventListener('click', (event) => {
       const action = event.target.closest('.quick-actions [data-quick-action="details"]');
-      if (!action) return;
-      const quick = action.closest('.quick-actions');
-      const tile = quick.closest('.media-tile[data-src]');
-      if (!tile) return;
-      event.preventDefault(); event.stopPropagation(); open(tile);
+      if (action) { event.preventDefault(); event.stopPropagation(); open(action.closest('.media-tile[data-src]')); }
     }, true);
+    content.addEventListener('click', (event) => {
+      const action = event.target.closest('[data-movie-action]');
+      if (action && activeTile) { const type = action.dataset.movieAction; if (type === 'play') { close(); activeTile.click(); } if (type === 'favorite') { activeTile.querySelector('.favorite-toggle')?.click(); action.textContent = activeTile.querySelector('.favorite-toggle')?.classList.contains('is-favorite') ? '♥ Favorited' : '♡ Favorite'; } if (type === 'library') close(); }
+      const more = event.target.closest('[data-cast-more]');
+      if (more) { content.querySelectorAll('.is-extra-cast').forEach((card) => card.classList.toggle('is-visible-cast')); more.textContent = more.textContent === 'Show less' ? 'View all' : 'Show less'; }
+    });
     modal.querySelector('.details-close').addEventListener('click', close);
     modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
     document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.classList.contains('is-open')) close(); });
