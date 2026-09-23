@@ -185,6 +185,27 @@
     @media (max-width: 860px) { .settings-layout { flex-direction: column; overflow:auto; } .settings-sidebar { width:100%; display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; } }
 
+
+    /* === Community, visitor & presence panels === */
+    .live-users-bubble { display:inline-flex; align-items:center; gap:.5rem; min-height:36px; padding:.42rem .72rem; border:1px solid rgba(255,255,255,.17); border-radius:999px; background:linear-gradient(135deg, rgba(16,124,16,.32), rgba(255,255,255,.08)); color:#fff; font-size:.82rem; font-weight:850; letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 8px 20px rgba(0,0,0,.22); white-space:nowrap; }
+    .live-users-dot { width:8px; height:8px; border-radius:50%; background:#77f28b; box-shadow:0 0 0 4px rgba(119,242,139,.12), 0 0 14px #77f28b; animation:presencePulse 1.7s ease-in-out infinite; }
+    @keyframes presencePulse { 50% { transform:scale(.72); opacity:.65; } }
+    .community-footer { width:min(980px, 100%); margin:3rem auto 1.2rem; padding:clamp(1rem, 3vw, 1.7rem); border:1px solid rgba(255,255,255,.15); border-radius:24px; background:linear-gradient(135deg, rgba(10,10,10,.88), rgba(16,124,16,.16)); box-shadow:0 20px 46px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08); }
+    .community-footer-header { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,.11); }
+    .community-footer h2 { margin:0; color:#fff; font-size:clamp(1.25rem, 2.5vw, 1.65rem); letter-spacing:-.025em; }
+    .community-footer p { margin:.3rem 0 0; color:var(--text-sub); line-height:1.5; }
+    .visitor-slot { display:flex; align-items:center; justify-content:flex-end; min-height:38px; }
+    .visitor-counter { display:flex; align-items:center; gap:.55rem; padding:.42rem .7rem; border:1px solid rgba(255,255,255,.13); border-radius:999px; background:rgba(0,0,0,.28); color:var(--text-sub); font-size:.78rem; font-weight:800; white-space:nowrap; }
+    .visitor-counter-label { color:#fff; }
+    .visitor-counter-widget { display:flex; align-items:center; min-height:18px; }
+    .visitor-counter-widget img { display:block; max-height:18px; border-radius:4px; }
+    .comments-slot { min-height:112px; margin-top:1.2rem; }
+    .comments-slot #HCB_comment_box { color:#fff; }
+    .comments-slot #HCB_comment_box a { color:#a8f5b0; }
+    .comments-placeholder { display:flex; align-items:center; gap:.7rem; min-height:90px; padding:1rem; border:1px dashed rgba(255,255,255,.16); border-radius:16px; color:var(--text-sub); background:rgba(0,0,0,.16); }
+    .comments-placeholder::before { content:'✦'; display:grid; place-items:center; width:30px; height:30px; border-radius:50%; color:#fff; background:var(--brand-main); box-shadow:0 0 18px var(--brand-glow); }
+    @media (max-width:760px) { .header-right { gap:.65rem; } .live-users-bubble { font-size:.74rem; padding:.38rem .6rem; } .community-footer-header { flex-direction:column; } .visitor-slot { justify-content:flex-start; } }
+
     /* === OOBE Setup Wizard === */
     #setup-wizard { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%); z-index: 5000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem;}
     #setup-wizard.active { display: flex; animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -489,6 +510,7 @@
     <div class="header-right">
       <div class="status-icons">
         <span class="status-bubble battery-bubble" title="Device Battery"><span class="battery-icon" aria-hidden="true">🔋</span><span id="sys-battery">100%</span></span>
+        <span class="live-users-bubble" role="status" aria-live="polite" title="Live users online"><span class="live-users-dot" aria-hidden="true"></span><span id="live-user-count">0</span> online</span>
         
       </div>
       <div id="sys-date-time">
@@ -534,6 +556,10 @@
           <div class="section-title-row"><h2>Pinned</h2><span class="content-count">Home shortcuts</span></div>
           <div id="pinned-container" class="pinned-grid"></div>
         </section>
+        <section class="community-footer" data-community-scope="home" aria-label="Community">
+          <div class="community-footer-header"><div><h2>McCrack Community</h2><p>Share a thought, find out who is visiting, and keep the conversation going.</p></div><div class="visitor-slot" data-visitor-slot="home"></div></div>
+          <div class="comments-slot" data-comments-slot="home"><div class="comments-placeholder">Loading the community discussion…</div></div>
+        </section>
       </div>
     </div>
 
@@ -545,9 +571,18 @@
           <div class="library-side-btn focusable" tabindex="0" data-library-tab="apps">Apps</div>
         </aside>
         <section class="library-main">
-          <div id="library-games" class="library-panel active" data-library-panel="games"><div class="library-heading"><h2>Games</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="game">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="game">+ Add Your Own</button><span class="content-count" id="games-count" aria-live="polite">Games • 0</span></div></div><div class="content-grid" id="games-container"></div></div>
-          <div id="library-movies" class="library-panel" data-library-panel="movies"><div class="library-heading"><h2>Movies</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="movie">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="movie">+ Add Your Own</button><span class="content-count" id="movies-count" aria-live="polite">Movies • 0</span></div></div><div class="content-grid" id="movies-container"></div></div>
-          <div id="library-apps" class="library-panel" data-library-panel="apps"><div class="library-heading"><h2>Apps</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="app">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="app">+ Add Your Own</button><span class="content-count" id="apps-count" aria-live="polite">Apps • 0</span></div></div><div class="content-grid" id="apps-container"></div></div>
+          <div id="library-games" class="library-panel active" data-library-panel="games"><div class="library-heading"><h2>Games</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="game">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="game">+ Add Your Own</button><span class="content-count" id="games-count" aria-live="polite">Games • 0</span></div></div><div class="content-grid" id="games-container"></div><section class="community-footer" data-community-scope="games" aria-label="Community">
+          <div class="community-footer-header"><div><h2>McCrack Community</h2><p>Share a thought, find out who is visiting, and keep the conversation going.</p></div><div class="visitor-slot" data-visitor-slot="games"></div></div>
+          <div class="comments-slot" data-comments-slot="games"><div class="comments-placeholder">Loading the community discussion…</div></div>
+        </section></div>
+          <div id="library-movies" class="library-panel" data-library-panel="movies"><div class="library-heading"><h2>Movies</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="movie">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="movie">+ Add Your Own</button><span class="content-count" id="movies-count" aria-live="polite">Movies • 0</span></div></div><div class="content-grid" id="movies-container"></div><section class="community-footer" data-community-scope="movies" aria-label="Community">
+          <div class="community-footer-header"><div><h2>McCrack Community</h2><p>Share a thought, find out who is visiting, and keep the conversation going.</p></div><div class="visitor-slot" data-visitor-slot="movies"></div></div>
+          <div class="comments-slot" data-comments-slot="movies"><div class="comments-placeholder">Loading the community discussion…</div></div>
+        </section></div>
+          <div id="library-apps" class="library-panel" data-library-panel="apps"><div class="library-heading"><h2>Apps</h2><div class="library-tools"><button class="library-filter-btn focusable" data-action="toggle-library-favorites" data-kind="app">♡ Favorites</button><button class="library-filter-btn focusable" data-action="open-custom-embed" data-kind="app">+ Add Your Own</button><span class="content-count" id="apps-count" aria-live="polite">Apps • 0</span></div></div><div class="content-grid" id="apps-container"></div><section class="community-footer" data-community-scope="apps" aria-label="Community">
+          <div class="community-footer-header"><div><h2>McCrack Community</h2><p>Share a thought, find out who is visiting, and keep the conversation going.</p></div><div class="visitor-slot" data-visitor-slot="apps"></div></div>
+          <div class="comments-slot" data-comments-slot="apps"><div class="comments-placeholder">Loading the community discussion…</div></div>
+        </section></div>
         </section>
       </div>
     </div>
@@ -5423,6 +5458,94 @@
         });
     }
 
+    /* ==========================================
+       Community widgets & live presence
+       ========================================== */
+    const COMMUNITY_COUNTER_IMAGE = 'https://www.counter12.com/img-8Zdb8CWzZ97WZ79B-63.gif';
+    function mountCommunityWidgets(scope) {
+      const visitorSlot = document.querySelector(`[data-visitor-slot="${scope}"]`);
+      const commentsSlot = document.querySelector(`[data-comments-slot="${scope}"]`);
+      const counter = document.getElementById('os-visitor-counter');
+      const comments = document.getElementById('HCB_comment_box');
+      if (visitorSlot && counter) visitorSlot.appendChild(counter);
+      if (commentsSlot && comments) {
+        commentsSlot.replaceChildren(comments);
+      }
+    }
+
+    function setupCommunityWidgets() {
+      const homeComments = document.querySelector('[data-comments-slot="home"]');
+      const homeVisitor = document.querySelector('[data-visitor-slot="home"]');
+      if (!homeComments || !homeVisitor) return;
+
+      const counter = document.createElement('div');
+      counter.id = 'os-visitor-counter';
+      counter.className = 'visitor-counter';
+      counter.innerHTML = `<span class="visitor-counter-label">Visitors</span><span class="visitor-counter-widget"><a href="https://www.counter12.com" rel="noopener"><img src="${COMMUNITY_COUNTER_IMAGE}" alt="Visitor count"></a></span>`;
+      homeVisitor.appendChild(counter);
+
+      const comments = document.createElement('div');
+      comments.id = 'HCB_comment_box';
+      comments.innerHTML = '<a href="https://www.htmlcommentbox.com">Comment Form</a> is loading comments…';
+      homeComments.replaceChildren(comments);
+
+      const commentCss = document.createElement('link');
+      commentCss.rel = 'stylesheet';
+      commentCss.href = 'https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0';
+      document.head.appendChild(commentCss);
+
+      const commentScript = document.createElement('script');
+      commentScript.src = `https://www.htmlcommentbox.com/jread?page=${encodeURIComponent(window.location.href)}&mod=%241%24wq1rdBcg%24I3r2GT%2Fx7THiMqvTNrVqO.&opts=16798&num=10`;
+      commentScript.async = true;
+      commentScript.onerror = () => { if (!comments.children.length) comments.textContent = 'Comments are temporarily unavailable.'; };
+      document.head.appendChild(commentScript);
+
+      const counterScript = document.createElement('script');
+      counterScript.src = 'https://www.counter12.com/ad.js?id=8Zdb8CWzZ97WZ79B';
+      counterScript.async = true;
+      counter.querySelector('.visitor-counter-widget').appendChild(counterScript);
+    }
+
+    function setupLiveUsersCounter() {
+      const countElement = document.getElementById('live-user-count');
+      const badge = document.querySelector('.live-users-bubble');
+      if (!countElement || !badge) return;
+      const SUPABASE_URL = 'https://ptzkldvdqekcvkvrhlqc.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emtsZHZkcWVrY3ZrdnJobHFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzI5MTEsImV4cCI6MjA5MzY0ODkxMX0.ENSTtqcl2rJoz4E9JPT5CozlKO1mWH4bCUJnB-EYnQo';
+      const tabKey = 'mc_presence_tab_uuid';
+      let currentCount = 0;
+      let channel;
+      const updateCount = () => {
+        const state = channel?.presenceState?.() || {};
+        const count = Object.values(state).reduce((total, sessions) => total + (Array.isArray(sessions) ? sessions.length : 0), 0);
+        const nextCount = Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0;
+        countElement.textContent = String(nextCount);
+        if (nextCount !== currentCount) { badge.classList.remove('count-bump'); void badge.offsetWidth; badge.classList.add('count-bump'); currentCount = nextCount; }
+      };
+      const loadSdk = () => new Promise((resolve, reject) => {
+        if (window.supabase?.createClient) return resolve(window.supabase);
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js';
+        script.async = true;
+        script.onload = () => resolve(window.supabase);
+        script.onerror = () => reject(new Error('Supabase SDK unavailable'));
+        document.head.appendChild(script);
+      });
+      loadSdk().then((sdk) => {
+        if (!sdk?.createClient) return;
+        let tabId = sessionStorage.getItem(tabKey);
+        if (!tabId) { tabId = crypto.randomUUID?.() || `user_${Math.random().toString(36).slice(2)}`; sessionStorage.setItem(tabKey, tabId); }
+        channel = sdk.createClient(SUPABASE_URL, SUPABASE_ANON_KEY).channel('online-users', { config: { presence: { key: tabId } } });
+        channel.on('presence', { event: 'sync' }, updateCount).on('presence', { event: 'join' }, updateCount).on('presence', { event: 'leave' }, updateCount).subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') { await channel.track({ online_at: new Date().toISOString() }); updateCount(); }
+        });
+        window.addEventListener('beforeunload', () => channel?.untrack());
+      }).catch(() => { countElement.textContent = '0'; });
+    }
+
+    setupCommunityWidgets();
+    setupLiveUsersCounter();
+
     // Audio Engine
     const AudioEngine = window.AudioContext || window.webkitAudioContext;
     const audioCtx = AudioEngine ? new AudioEngine() : null;
@@ -5447,6 +5570,7 @@
       document.querySelectorAll('.library-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.libraryPanel === tab));
       const panel = document.querySelector(`.library-panel[data-library-panel="${tab}"]`);
       if (panel) panel.scrollTop = 0;
+      mountCommunityWidgets(tab);
       setTimeout(() => { currentFocusables = getActiveFocusables(); const first = panel?.querySelector('.poster-tile.focusable:not(.hidden-placeholder)') || document.querySelector(`.library-side-btn[data-library-tab="${tab}"]`); setFocus(Math.max(0, currentFocusables.indexOf(first))); }, 50);
     }
 
@@ -5526,6 +5650,8 @@
 
       // Reset scroll
       if(newPage) newPage.scrollTop = 0;
+      if (pageId === 'page-home') mountCommunityWidgets('home');
+      else if (pageId === 'page-library') mountCommunityWidgets(document.querySelector('.library-side-btn.active')?.dataset.libraryTab || 'games');
 
       // Focus first item on new page
       setTimeout(() => { currentFocusables = getActiveFocusables(); const firstPageItem = newPage?.querySelector('.focusable:not(.hidden-placeholder)'); const idx = currentFocusables.indexOf(firstPageItem || targetNav); setFocus(idx >= 0 ? idx : 0); }, 50);
