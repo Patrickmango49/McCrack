@@ -1626,19 +1626,3 @@ applyCleanRouting();
   setupVisitorCounter();
   registerServiceWorker();
 })();
-
-
-// Legacy pages perform a guarded, one-time handoff into McCrack-COS.
-// OS.html is explicitly excluded, and controller events are not used for navigation.
-(function setupLegacyOsRedirect() {
-  const path = window.location.pathname;
-  const currentFile = path.split('/').pop() || 'index.html';
-  const normalizedFile = currentFile.includes('.') ? currentFile : `${currentFile}.html`;
-  const isOsPage = /^(OS|mccrackos)\.html$/i.test(normalizedFile) || /\/OS\/?$/i.test(path);
-  const legacyPages = new Set(['index.html', 'games.html', 'movies.html', 'apps.html', 'browser.html', 'chat.html', 'more.html', 'settings.html']);
-  if (isOsPage || !legacyPages.has(normalizedFile) || window.__mcLegacyOsRedirectReady || window.__mcLegacyOsRedirected) return;
-  window.__mcLegacyOsRedirectReady = true;
-
-  window.__mcLegacyOsRedirected = true;
-  window.location.replace('/OS.html');
-})();
