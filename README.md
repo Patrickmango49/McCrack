@@ -31,7 +31,7 @@ Stay updated, follow, and connect with McCrack on all your favorite platforms:
 - **YouTube**: [McCrack YouTube Channel](https://www.youtube.com/@patrickmango49?sub_confirmation=1)
 - **TikTok**: [My TikTok](https://www.tiktok.com/@whodatpatrickmango)
 - **Instagram**: [McCrack Instagram](https://www.instagram.com)
-- **McCrackOS**: [McCrackOS Page](https://mccrack.oops.wtf/mccrackos.html)
+- **McCrackOS**: [McCrackOS Page](https://mccrack.oops.wtf/OS.html)
 - **McCrack on Google Sites**: [Google Sites Version](https://sites.google.com/view/mccrack12)
 - **Discord Server**: [Join McCrack Discord](https://discord.gg/7kHXucXWfM)
 - **Linktree**: [McCrack Linktree](https://linktr.ee/parick_mango)
