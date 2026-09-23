@@ -6,7 +6,7 @@ const ROUTE_MAP = {
   '/chat': 'chat.html',
   '/apps': 'apps.html',
   '/browser': 'browser.html',
-  '/mccrackos': 'mccrackos.html',
+  '/os': 'OS.html',
   '/more': 'more.html',
   '/settings': 'settings.html'
 };

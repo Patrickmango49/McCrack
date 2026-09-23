@@ -1,7 +1,8 @@
-const CACHE_NAME = 'mccrack-cache-v1';
+const CACHE_NAME = 'mccrack-cache-v2';
 const OFFLINE_URLS = [
   './',
   'index.html',
+  'OS.html',
   'styles.css',
   'app.js',
   'favicon.png',
