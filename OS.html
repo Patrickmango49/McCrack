@@ -565,7 +565,7 @@
         <div class="settings-content-area">
           <div id="set-person" class="setting-view active"><h2 class="settings-header">Appearance</h2><section class="settings-section"><div class="settings-section-title">Color theme</div><div class="theme-grid" id="theme-grid"><button class="theme-card focusable" data-action="set-theme" data-theme="default" style="background:linear-gradient(135deg,#107C10,#163a23)">Emerald Glass</button><button class="theme-card focusable" data-action="set-theme" data-theme="ocean" style="background:linear-gradient(135deg,#0078d4,#0b2447)">Ocean Blue</button><button class="theme-card focusable" data-action="set-theme" data-theme="sunset" style="background:linear-gradient(135deg,#ff7a18,#5c1737)">Sunset</button><button class="theme-card focusable" data-action="set-theme" data-theme="violet" style="background:linear-gradient(135deg,#8b5cf6,#21113d)">Violet Pro</button></div></section><section class="settings-section"><div class="settings-section-title">Accent override</div><div class="color-picker-grid"><div class="color-btn focusable" style="background:#107C10" data-action="set-color" data-val="#107C10"></div><div class="color-btn focusable" style="background:#005A9E" data-action="set-color" data-val="#005A9E"></div><div class="color-btn focusable" style="background:#D13438" data-action="set-color" data-val="#D13438"></div><div class="color-btn focusable" style="background:#FFB900" data-action="set-color" data-val="#FFB900"></div><div class="color-btn focusable" style="background:#881798" data-action="set-color" data-val="#881798"></div><div class="color-btn focusable" style="background:#E81123" data-action="set-color" data-val="#E81123"></div></div></section><section class="settings-section"><div class="settings-section-title">Wallpaper</div><div class="control-row" style="align-items:stretch; flex-direction:column;"><div><h3>Custom background</h3><p style="color:var(--text-sub)">Paste an image URL or upload from this device. Text readability is subtly improved without changing media cards.</p></div><div class="settings-actions"><input type="text" id="wp-url" class="form-input focusable" style="flex:1; min-width:240px" placeholder="Paste image URL here..."><div class="small-btn focusable" data-action="set-custom-bg" style="background:var(--brand-main); color:#fff; border:none;">Apply URL</div><label class="file-upload-btn focusable" tabindex="0">Browse Files<input type="file" id="wp-upload" accept="image/*"></label><span id="upload-status" style="color:var(--text-sub);">No file selected</span><div class="small-btn focusable" data-action="set-bg" data-val="none">Reset Wallpaper</div></div></div></section><section class="settings-section"><div class="settings-section-title">Visual behavior</div><div class="control-row"><div><h3>Reduced Glass</h3><p style="color:var(--text-sub)">Lower blur and transparency for readability and performance.</p></div><div class="small-btn focusable" data-action="toggle-glass" id="btn-glass">Off</div></div><div class="control-row"><div><h3>Compact Library Tiles</h3><p style="color:var(--text-sub)">Fit more Games, Movies, and Apps on screen.</p></div><div class="small-btn focusable" data-action="toggle-compact" id="btn-compact">Off</div></div><div class="control-row"><div><h3>UI Animations</h3><p style="color:var(--text-sub)">Disable nonessential motion. System reduced-motion is also respected.</p></div><div class="small-btn focusable" data-action="toggle-anim" id="btn-anim">Enabled</div></div></section></div>
           <div id="set-account" class="setting-view"><h2 class="settings-header">Profile <div class="small-btn focusable" data-action="save-account" style="background:var(--brand-main); border:none; color:#fff;">Save Changes</div></h2><section class="settings-section"><div class="control-row" style="align-items:flex-start;"><div style="flex:1;"><div class="form-group"><label>Gamertag</label><input type="text" id="acc-user" class="form-input focusable" placeholder="e.g. PlayerOne"></div><div class="form-group"><label>Real Name</label><input type="text" id="acc-name" class="form-input focusable" placeholder="Your Name"></div><div class="form-group"><label>Console PIN (Leave blank for none)</label><input type="password" id="acc-pass" class="form-input focusable" placeholder="Secret PIN"></div></div><div style="flex:1; text-align:center;"><h3>Gamerpic</h3><div id="pfp-preview" style="width:150px; height:150px; border-radius:50%; background:rgba(0,0,0,.3); margin:1rem auto; border:3px solid var(--glass-border-glow); background-size:cover; background-position:center;"></div><div class="form-group" style="text-align:left"><label>Image URL</label><input type="text" id="pfp-url" class="form-input focusable" placeholder="https://..." oninput="updatePreview('pfp-preview', this.value)"></div></div></div></section></div>
-          <div id="set-controls" class="setting-view"><h2 class="settings-header">Accessibility & Controls</h2><section class="settings-section"><div class="control-row"><div><h3>Controller HUD</h3><p style="color:var(--text-sub)">Show or hide on-screen controller button hints.</p></div><div class="small-btn focusable" data-action="toggle-hud" id="btn-hud">Shown</div></div><div class="control-row"><div><h3>Clock Format</h3><p style="color:var(--text-sub)">Toggle 12-hour or 24-hour time display.</p></div><div class="small-btn focusable" data-action="toggle-clock" id="btn-clock">12-Hour</div></div><div class="control-row"><div><h3>Focus Indicator</h3><p style="color:var(--text-sub)">Keyboard and controller focus rings stay enabled for accessible navigation.</p></div><div class="small-btn" aria-disabled="true">Always On</div></div></section></div>
+          <div id="set-controls" class="setting-view"><h2 class="settings-header">Accessibility & Controls</h2><section class="settings-section"><div class="control-row"><div><h3>Controller HUD</h3><p style="color:var(--text-sub)">Show or hide on-screen controller button hints.</p></div><div class="small-btn focusable" data-action="toggle-hud" id="btn-hud">Shown</div></div><div class="control-row"><div><h3>Clock Format</h3><p style="color:var(--text-sub)">Toggle 12-hour or 24-hour time display.</p></div><div class="small-btn focusable" data-action="toggle-clock" id="btn-clock">12-Hour</div></div><div class="control-row"><div><h3>Focus Indicator</h3><p style="color:var(--text-sub)">Keyboard and controller focus rings stay enabled for accessible navigation.</p></div><div class="small-btn" aria-disabled="true">Always On</div></div></section><section class="settings-section"><div class="settings-section-title">Movie discovery</div><div class="control-row" style="align-items:stretch;flex-direction:column"><div><h3>TMDB movie feed</h3><p style="color:var(--text-sub)">Load current popular movies, posters, and summaries from The Movie Database. A deployment token in <code>tmdb-config.js</code> is preferred; this optional browser setting stays only on this device.</p></div><div class="form-group"><label for="tmdb-token">TMDB Read Access Token</label><input id="tmdb-token" class="form-input focusable" type="password" autocomplete="off" placeholder="Paste a TMDB v4 read access token"></div><div class="form-group"><label for="tmdb-language">Results language</label><input id="tmdb-language" class="form-input focusable" type="text" maxlength="12" placeholder="en-US"></div><div class="settings-actions"><button class="small-btn focusable" data-action="save-tmdb-settings" style="background:var(--brand-main);color:#fff;border:none">Save & Refresh</button><button class="small-btn focusable" data-action="refresh-tmdb">Refresh movies</button><button class="small-btn focusable" data-action="clear-tmdb-settings">Use deployment token</button><span id="tmdb-status" role="status" style="color:var(--text-sub)">Using local library.</span></div></div></section></div>
           <div id="set-system" class="setting-view"><h2 class="settings-header">System</h2><section class="settings-section"><div class="control-row"><div><h3>Reset Onboarding</h3><p style="color:var(--text-sub)">Show the setup wizard on the next launch without deleting your library.</p></div><div class="small-btn focusable" data-action="reset-onboarding">Reset Wizard</div></div><div class="control-row"><div><h3>Clear Activity History</h3><p style="color:var(--text-sub)">Remove continue cards and recent play/movie history.</p></div><div class="small-btn focusable" data-action="clear-history">Clear History</div></div><div class="control-row" style="border-color:rgba(255,77,77,.4); background:rgba(255,77,77,.1);"><div><h3 style="color:#ff6b6b;">Reset Console</h3><p style="color:var(--text-sub)">Wipes saved profiles, favorites, pins, custom embeds, achievements, and preferences.</p></div><div class="small-btn focusable" data-action="clear-cache" style="border:1px solid #ff6b6b; color:#ff6b6b; background:rgba(255,77,77,.1);">Format OS</div></div></section></div>
           <div id="set-about" class="setting-view"><h2 class="settings-header">About</h2><section class="settings-section"><div class="control-row"><div><h3>McCrack-COS</h3><p style="color:var(--text-sub)">Premium web console experience for launching your full built-in Games, Movies, and Apps libraries.</p></div><strong>2026.08</strong></div><div class="control-row"><div><h3>PWA Support</h3><p style="color:var(--text-sub)">This page includes installable web app metadata and standalone display hints. Offline launch caching would require a separate service worker file, which was not added because this update is scoped to OS.html.</p></div><strong>Manifest Ready</strong></div></section></div>
         </div>
@@ -650,6 +650,7 @@
     <div class="hud-item"><span class="btn-icon btn-start">☰</span> Menu</div>
   </div>
 
+  <script src="tmdb-config.js?v=1.0.0"></script>
   <script>
     /* ==========================================
        Data Arrays (Universal DB for grids & search)
@@ -4858,6 +4859,57 @@
     let allContent = [];
     let libraryFilters = { game: 'all', movie: 'all', app: 'all' };
     let customEmbedKind = 'game';
+    let tmdbMovies = [];
+    const TMDB_MOVIES_CACHE_KEY = 'mc_os_tmdb_popular_movies_v1';
+    const TMDB_MOVIES_CACHE_TTL = 1000 * 60 * 60 * 6;
+    const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+
+    function getTmdbSettings() {
+      const deployment = window.McCrackConfig?.tmdb || window.McCrackConfig || {};
+      return {
+        token: localStorage.getItem('os_tmdb_token') || deployment.readAccessToken || deployment.tmdbReadAccessToken || '',
+        language: localStorage.getItem('os_tmdb_language') || deployment.language || 'en-US'
+      };
+    }
+    function setTmdbStatus(message) { const status = document.getElementById('tmdb-status'); if (status) status.textContent = message; }
+    function mapTmdbMovie(movie) {
+      return {
+        id: `tmdb-${movie.id}`,
+        title: movie.title || movie.original_title || 'Untitled movie',
+        link: `https://www.themoviedb.org/movie/${movie.id}`,
+        img: movie.poster_path ? `${TMDB_IMAGE_BASE}${movie.poster_path}` : '',
+        type: 'movie',
+        tmdbId: movie.id,
+        description: movie.overview || 'No overview is available from TMDB yet.',
+        releaseDate: movie.release_date || '',
+        rating: movie.vote_average
+      };
+    }
+    async function loadTmdbMovies(force = false) {
+      const { token, language } = getTmdbSettings();
+      if (!token) { setTmdbStatus('Add a TMDB read token to load the live movie feed.'); return false; }
+      let cached = null;
+      try { cached = JSON.parse(localStorage.getItem(TMDB_MOVIES_CACHE_KEY) || 'null'); } catch { localStorage.removeItem(TMDB_MOVIES_CACHE_KEY); }
+      if (!force && cached?.savedAt && Date.now() - cached.savedAt < TMDB_MOVIES_CACHE_TTL && Array.isArray(cached.movies)) {
+        tmdbMovies = cached.movies; refreshLibraries(); setTmdbStatus(`Showing ${tmdbMovies.length} cached TMDB movies.`); return true;
+      }
+      setTmdbStatus('Loading popular movies from TMDB…');
+      try {
+        const query = new URLSearchParams({ language, page: '1' });
+        const response = await fetch(`https://api.themoviedb.org/3/movie/popular?${query}`, { headers: { Authorization: `Bearer ${token}`, accept: 'application/json' } });
+        if (!response.ok) throw new Error(`TMDB returned ${response.status}`);
+        const data = await response.json();
+        tmdbMovies = (data.results || []).map(mapTmdbMovie).filter(movie => movie.title);
+        localStorage.setItem(TMDB_MOVIES_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), movies: tmdbMovies }));
+        refreshLibraries();
+        setTmdbStatus(`Showing ${tmdbMovies.length} popular movies from TMDB.`);
+        return true;
+      } catch (error) {
+        console.error('TMDB movie feed failed', error);
+        setTmdbStatus(`TMDB could not load (${error.message}). Your local library is still available.`);
+        return false;
+      }
+    }
 
     function updateLibraryCounters() {
       const counters = [
@@ -4903,7 +4955,7 @@
     }
     function getCombinedLibrary(kind) {
       const custom = readCustomEmbeds()[kind] || [];
-      const base = kind === 'movie' ? builtinMovies : (kind === 'app' ? builtinApps : builtinGames);
+      const base = kind === 'movie' ? (tmdbMovies.length ? tmdbMovies : builtinMovies) : (kind === 'app' ? builtinApps : builtinGames);
       return sortByTitle(removeExactDuplicates([...base, ...custom]));
     }
     function getCurrentLibrary(kind) {
@@ -5119,6 +5171,9 @@
     // Initialize grids with the existing library content parsed from games.html, movies.html, and apps.html.
     refreshLibraries();
     updateRecentCards();
+    const tmdbSettings = getTmdbSettings();
+    setValueIfPresent('tmdb-language', tmdbSettings.language);
+    loadTmdbMovies();
 
     /* ==========================================
        OS Settings & Preferences Engine
@@ -5657,6 +5712,20 @@
       if (el.dataset.action === 'toggle-compact') { playSound('select'); prefs.compact = !prefs.compact; localStorage.setItem('os_compact', prefs.compact); applyPrefs(); return; }
       if (el.dataset.action === 'toggle-hud') { playSound('select'); prefs.hud = !prefs.hud; localStorage.setItem('os_hud', prefs.hud); applyPrefs(); return; }
       if (el.dataset.action === 'toggle-glass') { playSound('select'); prefs.reducedGlass = !prefs.reducedGlass; localStorage.setItem('os_reduced_glass', prefs.reducedGlass); applyPrefs(); return; }
+      if (el.dataset.action === 'save-tmdb-settings') {
+        const token = document.getElementById('tmdb-token').value.trim();
+        const language = document.getElementById('tmdb-language').value.trim() || 'en-US';
+        if (token) localStorage.setItem('os_tmdb_token', token);
+        localStorage.setItem('os_tmdb_language', language);
+        loadTmdbMovies(true); playSound('select'); return;
+      }
+      if (el.dataset.action === 'refresh-tmdb') { loadTmdbMovies(true); playSound('select'); return; }
+      if (el.dataset.action === 'clear-tmdb-settings') {
+        localStorage.removeItem('os_tmdb_token'); localStorage.removeItem('os_tmdb_language'); localStorage.removeItem(TMDB_MOVIES_CACHE_KEY);
+        tmdbMovies = []; refreshLibraries();
+        const settings = getTmdbSettings(); setValueIfPresent('tmdb-language', settings.language); document.getElementById('tmdb-token').value = '';
+        loadTmdbMovies(true); playSound('back'); return;
+      }
 
       if (el.dataset.action === 'reset-onboarding') { localStorage.removeItem('os_setup_complete'); showToast('Setup wizard will show on next launch.'); playSound('select'); return; }
       if (el.dataset.action === 'clear-history') { localStorage.removeItem(LAST_GAME_KEY); localStorage.removeItem(LAST_MOVIE_KEY); updateRecentCards(); showToast('Activity history cleared.'); playSound('select'); return; }
