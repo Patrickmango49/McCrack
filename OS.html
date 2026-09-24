@@ -401,11 +401,75 @@
     .notice-actions { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
     .check-option { display:flex; align-items:center; gap:.55rem; color:#fff; font-weight:750; cursor:pointer; }
     .check-option input { width:18px; height:18px; accent-color:var(--brand-main); }
+
+    /* === Final design-system refinement: calm glass, compact controls, resilient layouts === */
+    :root { --radius-panel: 20px; --radius-control: 12px; --ease-premium: cubic-bezier(.22, 1, .36, 1); --shadow-panel: 0 18px 50px rgba(0,0,0,.30); }
+    body { background-color: #080a0b; letter-spacing: -.01em; }
+    body::before { background: linear-gradient(115deg, rgba(4,8,7,.16), rgba(2,4,4,.06)), radial-gradient(circle at 18% 10%, rgba(255,255,255,.08), transparent 28%), radial-gradient(circle at 82% 16%, var(--brand-glow), transparent 34%); }
+    button, input { font: inherit; }
+    button:disabled, [aria-disabled="true"] { cursor: not-allowed; opacity: .52; }
+    :focus-visible { outline: 2px solid rgba(255,255,255,.94); outline-offset: 3px; }
+    .console-header { padding: clamp(.85rem, 2vw, 1.35rem) clamp(1rem, 3vw, 2.5rem) .7rem; }
+    .search-bar, .top-nav, .library-side-nav, .settings-layout { border-color: rgba(255,255,255,.12); box-shadow: var(--shadow-panel); }
+    .search-bar { min-height: 42px; padding: .5rem .9rem; border-radius: var(--radius-control); background: rgba(10,13,14,.46); }
+    .search-bar:focus-within { border-color: rgba(255,255,255,.38); box-shadow: 0 14px 34px rgba(0,0,0,.35); }
+    .status-bubble { min-height: 38px; padding: .45rem .7rem; font-size: .82rem; background: rgba(10,13,14,.42); box-shadow: none; }
+    .top-nav { padding: .3rem; gap: .25rem; border-radius: 14px; }
+    .nav-btn { width: 38px; height: 38px; border-radius: 10px; }
+    .nav-btn.active { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
+    .nav-btn:hover, .nav-btn:focus-visible, .nav-btn.focused { transform: translateY(-1px); box-shadow: none; }
+    .main-content { padding: 0 clamp(1rem, 3vw, 2.5rem); }
+    .page { padding-bottom: 4rem; scrollbar-gutter: stable; }
+    .content-grid, #games-container, #apps-container, #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: clamp(.8rem, 1.6vw, 1.25rem); padding: .35rem 0 5rem; }
+    #movies-container { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .poster-tile { border-radius: 14px; border-color: rgba(255,255,255,.10); box-shadow: 0 10px 24px rgba(0,0,0,.28); }
+    .poster-tile:hover { transform: translateY(-3px) scale(1.01); border-color: rgba(255,255,255,.28); box-shadow: 0 18px 32px rgba(0,0,0,.40); }
+    .poster-tile .card-title { padding: 2.7rem .7rem .72rem; font-size: .82rem; font-weight: 700; }
+    .poster-tile .card-actions { background: rgba(0,0,0,.16); }
+    .card-action, .small-btn, .library-filter-btn { min-height: 36px; border-radius: var(--radius-control); font-weight: 650; }
+    .card-action.favorite { border-radius: 50%; }
+    .card-action.favorite.is-favorite { background: rgba(255,79,125,.84); border-color: rgba(255,208,219,.72); box-shadow: 0 8px 18px rgba(255,63,125,.22); }
+    .library-shell { grid-template-columns: 142px minmax(0, 1fr); gap: 1rem; }
+    .library-side-nav { border-radius: var(--radius-panel); }
+    .library-side-btn { border-radius: var(--radius-control); font-weight: 700; }
+    .library-side-btn.active { background: rgba(255,255,255,.13); box-shadow: inset 3px 0 0 var(--brand-main); }
+    .library-heading::after { display: none; }
+    .library-heading h2 { font-weight: 750; }
+    .content-count { font-variant-numeric: tabular-nums; }
+    .settings-layout { border-radius: var(--radius-panel); background: rgba(10,13,14,.45); backdrop-filter: blur(20px) saturate(135%); }
+    .control-row { border-radius: 16px; background: rgba(255,255,255,.065); border-color: rgba(255,255,255,.11); }
+    .details-modal { padding: clamp(1rem, 4vw, 3rem); background: rgba(0,0,0,.68); }
+    .details-card { border-radius: var(--radius-panel); background: rgba(15,18,19,.78); backdrop-filter: blur(22px) saturate(135%); gap: clamp(1rem, 3vw, 2rem); }
+    #guide-overlay { padding: clamp(1rem, 4vw, 3rem); }
+    .guide-menu, .notice-card { border-radius: var(--radius-panel); }
+    #boot-screen { background: radial-gradient(circle at 50% 42%, rgba(26,47,31,.92), #050706 54%, #020303 100%); }
+    .boot-card { gap: .45rem; }
+    .boot-logo { width: 92px; height: 92px; border-radius: 24px; filter: drop-shadow(0 14px 26px rgba(0,0,0,.42)); }
+    .boot-title { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; text-shadow: 0 3px 18px rgba(0,0,0,.42); }
+    .boot-byline { font-size: .95rem; font-weight: 600; color: rgba(255,255,255,.82); }
+    .boot-name { font-size: .72rem; color: rgba(255,255,255,.52); }
+    .boot-progress { width: min(230px, 64vw); height: 3px; margin-top: .75rem; }
+    .boot-progress span { background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), #fff); }
+    @media (max-width: 760px) {
+      body { min-height: 100dvh; height: 100dvh; }
+      .console-header { gap: .7rem; }
+      .profile-area { gap: .7rem; } #sys-user-pfp { width: 46px; height: 46px; }
+      #sys-username { font-size: 1.05rem; } .badge-ultimate { font-size: .56rem; }
+      .header-right { width: 100%; justify-content: space-between; } #sys-date-time { font-size: 1rem; }
+      .search-bar { flex: 1; } .search-bar input, .search-bar:focus-within input { width: 100%; }
+      .library-shell { grid-template-columns: 1fr; } .library-side-nav { position: static; flex-direction: row; overflow-x: auto; padding: .45rem; }
+      .library-side-btn { white-space: nowrap; flex: 1; text-align: center; }
+      .content-grid, #games-container, #apps-container, #movies-container, .search-results { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: .75rem; }
+      .details-card { max-height: calc(100dvh - 2rem); padding: 1rem; } .details-card img { max-height: 34vh; width: auto; margin: auto; }
+      #search-overlay { padding: 1.25rem; } #search-input-big { font-size: clamp(1.5rem, 8vw, 2.4rem); border-radius: 18px; }
+      .hud { right: 1rem; bottom: 1rem; gap: .75rem; padding: .65rem .8rem; border-radius: 16px; } .hud-item { gap: .4rem; font-size: .75rem; }
+    }
+
   </style>
 </head>
 <body>
 
-  <div id="boot-screen" aria-label="McCrack-COS loading screen"><div class="boot-card"><img class="boot-logo" src="favicon.png" alt="McCrack logo"><div class="boot-title">McCrack-COS</div><div class="boot-progress"><span></span></div></div></div>
+  <div id="boot-screen" aria-label="McCrack-COS loading screen" role="status"><div class="boot-card"><img class="boot-logo" src="favicon.png" alt="McCrack logo"><div class="boot-title">McCrack-COS</div><div class="boot-byline">Made by Patrick_Mango</div><div class="boot-name">(Patrick Molina)</div><div class="boot-progress" aria-label="Starting McCrack-COS"><span></span></div></div></div>
 
 
   <div id="setup-wizard">
@@ -4750,7 +4814,7 @@
       {
             "id": "TikTok",
             "title": "TikTok",
-            "link": "https://uv-on-vercel-two-pi.vercel.app/uv/service/hvtrs8%2F-wuw%2Ctkkvoi.aoo%2Fgxrlmrg",
+            "link": "https://bee-z.b-cdn.net/scramjet/https%3A%2F%2Fwww.tiktok.com%2F",
             "img": "https://www.logo.wine/a/logo/TikTok/TikTok-Icon-White-Dark-Background-Logo.wine.svg",
             "type": "app",
             "description": "Short-form video social network driven by the For You page algorithm."
@@ -4758,7 +4822,7 @@
       {
             "id": "Discord",
             "title": "Discord",
-            "link": "https://uv-on-vercel-two-pi.vercel.app/uv/service/hvtrs8%2F-dksaopd%2Ccmm",
+            "link": "https://bee-z.b-cdn.net/scramjet/https%3A%2F%2Fdiscord.com%2F",
             "img": "https://static.vecteezy.com/system/resources/previews/006/892/625/non_2x/discord-logo-icon-editorial-free-vector.jpg",
             "type": "app",
             "description": "Voice, video, and text chat platform built for communities, friends, and gaming."
@@ -4766,7 +4830,7 @@
       {
             "id": "Instagram",
             "title": "Instagram",
-            "link": "https://uv-on-vercel-two-pi.vercel.app/uv/service/hvtrs8%2F-wuw%2Cilsvaercm%2Ccmm-",
+            "link": "https://bee-z.b-cdn.net/scramjet/https%3A%2F%2Fwww.instagram.com%2F",
             "img": "https://unblast.com/wp-content/uploads/2025/07/instagram-logo-colored.jpg",
             "type": "app",
             "description": "Photo and video sharing social network with Stories, Reels, and messaging."
@@ -4804,28 +4868,12 @@
             "description": "Cloud gaming service that lets you stream PC games to almost any device."
       },
       {
-            "id": "app-008",
-            "title": "Senshi",
-            "link": "https://cine-browser-2.b-cdn.net/embed.html?url=https://senshi.live",
-            "img": "https://senshi.live/assets/Senshi_Logo-DRQDIkgF.png",
+            "id": "CineJoy",
+            "title": "CineJoy",
+            "link": "https://bee-z.b-cdn.net/scramjet/https%3A%2F%2Fcinejoy.pk%2F",
+            "img": "https://www.google.com/s2/favicons?sz=256&domain=cinejoy.pk",
             "type": "app",
-            "description": "Niche or specialized app (often related to anime, gaming, or community features depending on exact product)."
-      },
-      {
-            "id": "app-009",
-            "title": "StreamX",
-            "link": "https://cine-browser-1.b-cdn.net/embed.html?url=http://streamex.sh",
-            "img": "https://play-lh.googleusercontent.com/38T2yTp2GRBg_wYlTI0zw4A7OzW_4K6Mt-_uBf8SvV7h_m-hLcPSp5ATw0R3ppVAiN9Aa0WcMNY60ZJBaW1GaA",
-            "type": "app",
-            "description": "Streaming-focused app for video or live content."
-      },
-      {
-            "id": "app-010",
-            "title": "Vidbox (All Streaming Providers For Free)",
-            "link": "https://vidbox.dev/providers",
-            "img": "https://play-lh.googleusercontent.com/ZxTX7lG3jxvbuXQzFlKXPTmASmmvf5eafOlbpxrZDtzRSFO3riJ72hERqfYVhWaeD0Q6sd7lh6z-Lr14_nwH=w240-h480-rw",
-            "type": "app",
-            "description": "App that aggregates or provides access to multiple streaming services."
+            "description": "CineJoy streaming shortcut imported into the Apps library."
       },
       {
             "id": "app-011",
@@ -4834,14 +4882,6 @@
             "img": "https://cryptoslate.com/wp-content/uploads/2025/12/stake-us-logo-400.png",
             "type": "app",
             "description": "Social casino and gaming platform (sweepstakes-style)."
-      },
-      {
-            "id": "Dulo",
-            "title": "Dulo",
-            "link": "https://dulo.cx/",
-            "img": "https://www.google.com/s2/favicons?sz=256&domain=dulo.cx",
-            "type": "app",
-            "description": "Dulo is a fast web app shortcut added to the McCrack Apps library."
       },
       {
             "id": "app-013",

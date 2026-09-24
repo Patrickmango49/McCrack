@@ -100,5 +100,13 @@
 
   <script src="app.js?v=1.1.0"></script>
   <script src="tester-invite.js?v=1.0.0"></script>
+  <script>
+    // The version chooser is created by tester-invite.js; keep its COS route clean.
+    const useCleanCosRoute = () => {
+      document.querySelector('#mccrack-home-choice .mccrack-choice__option--cos')?.setAttribute('href', 'OS');
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', useCleanCosRoute, { once: true });
+    else useCleanCosRoute();
+  </script>
 </body>
 </html>
