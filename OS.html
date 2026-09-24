@@ -403,7 +403,7 @@
     .check-option input { width:18px; height:18px; accent-color:var(--brand-main); }
 
     /* === Final design-system refinement: calm glass, compact controls, resilient layouts === */
-    :root { --radius-panel: 20px; --radius-control: 12px; --ease-premium: cubic-bezier(.22, 1, .36, 1); --shadow-panel: 0 18px 50px rgba(0,0,0,.30); }
+    :root { --radius-panel: 20px; --radius-control: 999px; --ease-premium: cubic-bezier(.22, 1, .36, 1); --shadow-panel: 0 18px 50px rgba(0,0,0,.30); }
     body { background-color: #080a0b; letter-spacing: -.01em; }
     body::before { background: linear-gradient(115deg, rgba(4,8,7,.16), rgba(2,4,4,.06)), radial-gradient(circle at 18% 10%, rgba(255,255,255,.08), transparent 28%), radial-gradient(circle at 82% 16%, var(--brand-glow), transparent 34%); }
     button, input { font: inherit; }
@@ -414,8 +414,8 @@
     .search-bar { min-height: 42px; padding: .5rem .9rem; border-radius: var(--radius-control); background: rgba(10,13,14,.46); }
     .search-bar:focus-within { border-color: rgba(255,255,255,.38); box-shadow: 0 14px 34px rgba(0,0,0,.35); }
     .status-bubble { min-height: 38px; padding: .45rem .7rem; font-size: .82rem; background: rgba(10,13,14,.42); box-shadow: none; }
-    .top-nav { padding: .3rem; gap: .25rem; border-radius: 14px; }
-    .nav-btn { width: 38px; height: 38px; border-radius: 10px; }
+    .top-nav { padding: .3rem; gap: .25rem; border-radius: 999px; }
+    .nav-btn { width: 38px; height: 38px; border-radius: 50%; }
     .nav-btn.active { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
     .nav-btn:hover, .nav-btn:focus-visible, .nav-btn.focused { transform: translateY(-1px); box-shadow: none; }
     .main-content { padding: 0 clamp(1rem, 3vw, 2.5rem); }
@@ -432,6 +432,7 @@
     .library-shell { grid-template-columns: 142px minmax(0, 1fr); gap: 1rem; }
     .library-side-nav { border-radius: var(--radius-panel); }
     .library-side-btn { border-radius: var(--radius-control); font-weight: 700; }
+    .guide-btn, .file-upload-btn { border-radius: var(--radius-control); }
     .library-side-btn.active { background: rgba(255,255,255,.13); box-shadow: inset 3px 0 0 var(--brand-main); }
     .library-heading::after { display: none; }
     .library-heading h2 { font-weight: 750; }
