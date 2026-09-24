@@ -3183,3 +3183,24 @@ html[data-accent="bright"] { --border: rgba(255,255,255,.26); --border-2: rgba(2
 .movie-details-loading { min-height: 500px; }.movie-details-loading .movie-details-body { grid-template-columns: 200px 1fr; }.details-skeleton { border-radius: 8px; background: linear-gradient(100deg, rgba(255,255,255,.07) 20%, rgba(255,255,255,.16) 40%, rgba(255,255,255,.07) 60%); background-size: 200% 100%; animation: details-shimmer 1.2s infinite; }.details-skeleton-title { width: min(430px, 75%); height: 58px; margin: 10px 0 15px; }.details-skeleton-line { width: 100%; height: 14px; margin: 10px 0; }.details-skeleton-line.short { width: 62%; }@keyframes details-shimmer { to { background-position: -200% 0; } }
 @media (max-width: 780px) { .details-card:has(.movie-details) { max-height: 100vh; border-radius: 0; }.movie-details-hero { min-height: 420px; padding: 78px 20px 24px; }.movie-details h2 { font-size: clamp(2.25rem, 13vw, 4rem); }.movie-details-body { grid-template-columns: 1fr; gap: 18px; padding: 20px; }.movie-poster { width: min(180px, 48%); margin-top: -85px; }.movie-cast, .movie-recommendations { padding: 0 20px 25px; }.movie-cast-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.movie-recommendation-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }.movie-fallback { grid-template-columns: 1fr; padding: 64px 20px 24px; }.movie-fallback .details-art { max-width: 190px; }.movie-details-loading .movie-details-body { grid-template-columns: 1fr; }.movie-crew p { grid-template-columns: 1fr; gap: 3px; } }
 @media (max-width: 420px) { .movie-detail-actions { gap: 6px; }.movie-action { padding: 8px 9px; font-size: .72rem; }.movie-cast-grid { grid-template-columns: 1fr; }.movie-hero-meta span + span::before { margin-right: 5px; } }
+
+
+/* ─── Rounded controls ──────────────────────────────────────── */
+/* Keep launch embeds and media-card actions unchanged so their compact controls
+   remain visually distinct from the site-wide navigation and actions. */
+.nav-search input,
+.nav a,
+.btn,
+.movie-action,
+.search-suggestion,
+.boot-continue-btn,
+.boot-sites-btn,
+.boot-get-started-btn,
+button:not(.media-tile):not(.favorite-toggle):not([class*="embed"]):not([class*="card"]),
+[role="button"]:not(.media-tile):not(.favorite-toggle):not([class*="embed"]):not([class*="card"]) {
+  border-radius: var(--radius-pill);
+}
+
+.settings-link {
+  border-radius: 50%;
+}
