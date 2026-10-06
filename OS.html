@@ -6031,6 +6031,7 @@
         if (el.dataset.action === 'details-drive' && activeDetailsItem) { playSound('select'); openDetailsDrive(activeDetailsItem); return; }
         if (el.dataset.action === 'details-favorite' && activeDetailsItem) { playSound('select'); toggleFavorite(activeDetailsItem); return; }
         if (el.dataset.action === 'details-pin' && activeDetailsItem) { playSound('select'); isPinned(activeDetailsItem) ? unpinItem(activeDetailsItem) : pinItem(activeDetailsItem); return; }
+        if (el.dataset.action === 'details-dock-pin' && activeDetailsItem) { playSound('select'); isDockPinned(activeDetailsItem) ? unpinDockItem(activeDetailsItem) : pinDockItem(activeDetailsItem); const btn=document.querySelector('[data-action="details-dock-pin"]'); if(btn) btn.textContent=isDockPinned(activeDetailsItem)?'Unpin from Desktop Dock':'Pin to Desktop Dock'; return; }
       }
       if (el.dataset.action === 'dismiss-embed-tip') { dismissEmbedTip(); return; }
 
