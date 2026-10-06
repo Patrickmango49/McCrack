@@ -555,6 +555,61 @@
     .profile-activity-item span { display:block; color:var(--text-sub); font-size:.7rem; margin-top:2px; }
     .profile-summary { grid-template-columns:1.1fr .9fr; }
 
+    /* === Responsive horizontal setup wizard === */
+    #setup-wizard { overflow-y: auto; overflow-x: hidden; padding: clamp(.6rem, 2vw, 1.5rem); }
+    .wizard-box {
+      width: min(1080px, calc(100vw - 16px));
+      max-width: none;
+      max-height: min(92vh, 900px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: clamp(1rem, 3vw, 2.25rem);
+    }
+    .wizard-box h1 { font-size: clamp(1.75rem, 4vw, 2.8rem); }
+    .wizard-box p { font-size: clamp(.9rem, 1.45vw, 1.1rem); margin-bottom: 1.5rem; }
+    .wizard-box .form-group { margin-bottom: .9rem; }
+    .wizard-box .control-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(140px, 280px);
+      align-items: center;
+      gap: .9rem;
+      padding: .85rem 1rem;
+    }
+    .wizard-box .control-row + .control-row { margin-top: .7rem; }
+    .wizard-box .control-row > div { min-width: 0; }
+    .wizard-box .control-row h3 { font-size: .98rem; }
+    .wizard-box .control-row p { font-size: .78rem; line-height: 1.3; margin: .2rem 0 0; }
+    .wizard-box .form-input { min-width: 0; padding: .75rem .9rem; font-size: .9rem; }
+    .wizard-box .wizard-choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+    .wizard-box .wizard-choice { min-width: 0; min-height: 68px; padding: .8rem; }
+    .wizard-box .wizard-help { font-size: .74rem; line-height: 1.25; }
+    .wizard-box .wallpaper-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; }
+    .wizard-box .theme-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; }
+    .wizard-box .wizard-range { min-width: 120px; }
+    #setup-wizard [id^="wizard-step-5"],
+    #setup-wizard [id^="wizard-step-6"],
+    #setup-wizard [id^="wizard-step-7"] { min-width: 0; gap: .75rem; }
+    #setup-wizard [id^="wizard-step-5"] > h3,
+    #setup-wizard [id^="wizard-step-6"] > h3,
+    #setup-wizard [id^="wizard-step-7"] > h3,
+    #setup-wizard [id^="wizard-step-5"] > .small-btn,
+    #setup-wizard [id^="wizard-step-6"] > .small-btn,
+    #setup-wizard [id^="wizard-step-7"] > .small-btn { grid-column: 1 / -1; }
+    @media (max-width: 760px) {
+      .wizard-box { width: calc(100vw - 12px); max-height: 94vh; padding: .9rem; border-radius: 20px; }
+      .wizard-box .theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .wizard-box .control-row { grid-template-columns: minmax(0, 1fr) minmax(120px, 36%); padding: .72rem .8rem; }
+      .wizard-box .small-btn { padding: .8rem 1rem; font-size: .82rem; }
+    }
+    @media (max-width: 560px) {
+      .wizard-box .wizard-choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .wizard-box .wallpaper-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .wizard-box .control-row { grid-template-columns: minmax(0, 1fr) minmax(108px, 42%); gap: .65rem; }
+      .wizard-box .control-row h3 { font-size: .88rem; }
+      .wizard-box .control-row p { font-size: .7rem; }
+      .wizard-box .form-input { padding: .65rem .7rem; font-size: .82rem; }
+    }
+
   </style>
 </head>
 <body>
@@ -5448,7 +5503,8 @@
       anim: localStorage.getItem('os_anim') !== 'false',
       compact: localStorage.getItem('os_compact') === 'true',
       hud: localStorage.getItem('os_hud') !== 'false',
-      reducedGlass: localStorage.getItem('os_reduced_glass') === 'true'
+      reducedGlass: localStorage.getItem('os_reduced_glass') === 'true',
+      language: localStorage.getItem('os_language') || 'en'
     };
 
     const account = {
@@ -5580,7 +5636,8 @@
     let tempWizBg = 'none';
     function nextWizard(step) {
         document.querySelectorAll('[id^="wizard-step-"]').forEach(stepEl => stepEl.style.display = 'none');
-        document.getElementById(`wizard-step-${step}`).style.display = 'block';
+        const nextStep = document.getElementById(`wizard-step-${step}`);
+        if (nextStep) nextStep.style.display = [5, 6, 7].includes(Number(step)) ? 'grid' : 'block';
         playSound('select');
         setFocus(0); // refocus on new step
     }
@@ -6509,21 +6566,57 @@
   document.getElementById('sys-user-pfp')?.addEventListener('click',()=>showProfile());document.addEventListener('fullscreenchange',()=>document.body.classList.toggle('os-fullscreen',!!document.fullscreenElement));
   const custom=document.getElementById('set-custom');if(custom){const section=document.createElement('section');section.className='settings-section';section.innerHTML=`<div class="settings-section-title">Desktop & advanced interface</div><div class="advanced-grid"><label>Navigation style<select id="os-navigation" class="form-input"><option value="console">Console OS (default)</option><option value="desktop">Desktop OS dock</option></select></label><label>Dock position<select id="os-dockPosition" class="form-input"><option value="bottom">Bottom</option><option value="left">Left</option><option value="right">Right</option></select></label><label>Dock size<input id="os-dockSize" type="range" min="40" max="68"></label><label>Icon size<input id="os-iconSize" type="range" min="16" max="30"></label><label>Dock opacity<input id="os-dockOpacity" type="range" min=".3" max="1" step=".05"></label><label>Dock blur<input id="os-dockBlur" type="range" min="0" max="48"></label><label>Dock spacing<input id="os-dockSpacing" type="range" min="0" max="16"></label><label>Magnification<input id="os-dockMagnify" type="range" min="1" max="1.2" step=".02"></label><label>Dock glow<input id="os-dockGlow" type="range" min="0" max="1" step=".05"></label><label>Corner radius<input id="os-radius" type="range" min="0" max="32"></label><label>Glass transparency<input id="os-glass" type="range" min=".12" max=".8" step=".02"></label><label>Blur amount<input id="os-blur" type="range" min="0" max="48"></label></div><div class="control-row"><div><h3>Dock auto-hide</h3><p>Fade the dock until it is hovered or focused.</p></div><button id="os-dockAutohide" class="small-btn"></button></div><div class="control-row"><div><h3>Show labels on hover</h3><p>Show shortcut names on desktop hover and keyboard focus.</p></div><button id="os-dockLabels" class="small-btn"></button></div><div class="form-group"><label>Pinned dock items</label><div id="os-dockPins" class="profile-badges"></div></div><div class="control-row"><div><h3>Fullscreen mode</h3><p>Use the available browser fullscreen space.</p></div><button id="settings-fullscreen" class="small-btn">Toggle fullscreen</button></div><div class="settings-section-title">Notifications</div><div class="advanced-grid"><label>System notifications<select id="os-notify" class="form-input"><option value="true">On</option><option value="false">Off</option></select></label><label>Toast duration<select id="os-duration" class="form-input"><option value="2500">Short</option><option value="3600">Normal</option><option value="6000">Long</option></select></label></div>`;custom.append(section);const renderControls=()=>{['dockAutohide','dockLabels'].forEach(k=>document.getElementById('os-'+k).textContent=pref[k]?'On':'Off');document.getElementById('os-dockPins').innerHTML=dockItems.map(([,id,n])=>`<label class="profile-badge"><input type="checkbox" value="${id}" ${pref.dockPins.includes(id)?'checked':''}> ${n}</label>`).join('')};[['navigation','os-navigation'],['dockPosition','os-dockPosition'],['dockSize','os-dockSize'],['iconSize','os-iconSize'],['dockOpacity','os-dockOpacity'],['dockBlur','os-dockBlur'],['dockSpacing','os-dockSpacing'],['dockMagnify','os-dockMagnify'],['dockGlow','os-dockGlow'],['radius','os-radius'],['glass','os-glass'],['blur','os-blur'],['notifications','os-notify'],['duration','os-duration']].forEach(([k,id])=>{const el=document.getElementById(id);el.value=pref[k];el.addEventListener('input',()=>{pref[k]=el.type==='range'?Number(el.value):el.value==='true'?true:el.value==='false'?false:el.value;applyDesktop()})});['dockAutohide','dockLabels'].forEach(k=>document.getElementById('os-'+k).onclick=()=>{pref[k]=!pref[k];applyDesktop();renderControls()});document.getElementById('os-dockPins').addEventListener('change',()=>{pref.dockPins=[...document.querySelectorAll('#os-dockPins input:checked')].map(x=>x.value);applyDesktop()});document.getElementById('settings-fullscreen').onclick=toggleFullscreen;renderControls()}
   const oldSwitch=window.switchPage;window.switchPage=function(...a){const r=oldSwitch(...a);setTimeout(setDockActive,0);return r};applyDesktop();renderNotifications();
-})();
 
-</script>
-
-/* McCrack-COS localization layer */
-(() => {
+  /* McCrack-COS localization layer */
+  (() => {
   const T={
     es:{Home:'Inicio',Library:'Biblioteca',Achievements:'Logros',Profile:'Perfil',Search:'Buscar',Settings:'Configuración',Dashboard:'Panel',Play:'Jugar',Watch:'Ver',Launch:'Abrir',Open:'Abrir',Close:'Cerrar',Save:'Guardar','Save Changes':'Guardar cambios','Cancel':'Cancelar','Edit Profile':'Editar perfil','Pin to Home':'Fijar al inicio','Unpin from Home':'Quitar del inicio','Pin to Desktop Dock':'Fijar al dock','Unpin from Desktop Dock':'Quitar del dock','Add to Favorites':'Añadir a favoritos','Remove Favorite':'Quitar de favoritos','Add to Collection':'Añadir a colección','Open in New Tab':'Abrir en nueva pestaña','Copy Link':'Copiar enlace','Hide':'Ocultar','Games launched':'Juegos iniciados','Movies watched':'Películas vistas','Apps opened':'Aplicaciones abiertas','Favorites':'Favoritos','Collection items':'Elementos de colección','Interface':'Interfaz','Console OS':'COS de consola','Desktop OS':'COS de escritorio','RECENT ACTIVITY':'ACTIVIDAD RECIENTE','PLAYER STATISTICS':'ESTADÍSTICAS DEL JUGADOR','FEATURED BADGES':'INSIGNIAS DESTACADAS','PROFILE':'PERFIL','Search':'Buscar','English':'Inglés','Español':'Español','Français':'Francés','Deutsch':'Alemán','Português':'Portugués'},
     fr:{Home:'Accueil',Library:'Bibliothèque',Achievements:'Succès',Profile:'Profil',Search:'Rechercher',Settings:'Paramètres',Dashboard:'Tableau de bord',Play:'Jouer',Watch:'Regarder',Launch:'Lancer',Open:'Ouvrir',Close:'Fermer',Save:'Enregistrer','Save Changes':'Enregistrer les modifications','Cancel':'Annuler','Edit Profile':'Modifier le profil','Pin to Home':'Épingler à l’accueil','Unpin from Home':'Retirer de l’accueil','Pin to Desktop Dock':'Épingler au dock','Unpin from Desktop Dock':'Retirer du dock','Add to Favorites':'Ajouter aux favoris','Remove Favorite':'Retirer des favoris','Add to Collection':'Ajouter à la collection','Open in New Tab':'Ouvrir dans un nouvel onglet','Copy Link':'Copier le lien','Hide':'Masquer','Games launched':'Jeux lancés','Movies watched':'Films regardés','Apps opened':'Applications ouvertes','Favorites':'Favoris','Collection items':'Éléments de collection','Interface':'Interface','Console OS':'OS console','Desktop OS':'OS bureau','RECENT ACTIVITY':'ACTIVITÉ RÉCENTE','PLAYER STATISTICS':'STATISTIQUES DU JOUEUR','FEATURED BADGES':'BADGES EN VEDETTE','PROFILE':'PROFIL','English':'Anglais','Español':'Espagnol','Français':'Français','Deutsch':'Allemand','Português':'Portugais'},
     de:{Home:'Startseite',Library:'Bibliothek',Achievements:'Erfolge',Profile:'Profil',Search:'Suchen',Settings:'Einstellungen',Dashboard:'Dashboard',Play:'Spielen',Watch:'Ansehen',Launch:'Starten',Open:'Öffnen',Close:'Schließen',Save:'Speichern','Save Changes':'Änderungen speichern','Cancel':'Abbrechen','Edit Profile':'Profil bearbeiten','Pin to Home':'Auf Startseite anheften','Unpin from Home':'Von Startseite lösen','Pin to Desktop Dock':'An Dock anheften','Unpin from Desktop Dock':'Vom Dock lösen','Add to Favorites':'Zu Favoriten','Remove Favorite':'Favorit entfernen','Add to Collection':'Zur Sammlung hinzufügen','Open in New Tab':'In neuem Tab öffnen','Copy Link':'Link kopieren','Hide':'Ausblenden','Games launched':'Gestartete Spiele','Movies watched':'Gesehene Filme','Apps opened':'Geöffnete Apps','Favorites':'Favoriten','Collection items':'Sammlungselemente','Interface':'Oberfläche','Console OS':'Konsolen-OS','Desktop OS':'Desktop-OS','RECENT ACTIVITY':'LETZTE AKTIVITÄT','PLAYER STATISTICS':'SPIELERSTATISTIK','FEATURED BADGES':'AUSGEWÄHLTE ABZEICHEN','PROFILE':'PROFIL','English':'Englisch','Español':'Spanisch','Français':'Französisch','Deutsch':'Deutsch','Português':'Portugiesisch'},
     pt:{Home:'Início',Library:'Biblioteca',Achievements:'Conquistas',Profile:'Perfil',Search:'Pesquisar',Settings:'Configurações',Dashboard:'Painel',Play:'Jogar',Watch:'Assistir',Launch:'Abrir',Open:'Abrir',Close:'Fechar',Save:'Salvar','Save Changes':'Salvar alterações','Cancel':'Cancelar','Edit Profile':'Editar perfil','Pin to Home':'Fixar no início','Unpin from Home':'Desafixar do início','Pin to Desktop Dock':'Fixar no dock','Unpin from Desktop Dock':'Desafixar do dock','Add to Favorites':'Adicionar aos favoritos','Remove Favorite':'Remover favorito','Add to Collection':'Adicionar à coleção','Open in New Tab':'Abrir em nova aba','Copy Link':'Copiar link','Hide':'Ocultar','Games launched':'Jogos iniciados','Movies watched':'Filmes assistidos','Apps opened':'Apps abertos','Favorites':'Favoritos','Collection items':'Itens da coleção','Interface':'Interface','Console OS':'OS de console','Desktop OS':'OS desktop','RECENT ACTIVITY':'ATIVIDADE RECENTE','PLAYER STATISTICS':'ESTATÍSTICAS DO JOGADOR','FEATURED BADGES':'DISTINTIVOS EM DESTAQUE','PROFILE':'PERFIL','English':'Inglês','Español':'Espanhol','Français':'Francês','Deutsch':'Alemão','Português':'Português'}
   };
-  const localize=()=>{const lang=prefs.language||'en', map=T[lang]||{};document.documentElement.lang=lang;const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode()){if(!n.nodeValue.trim()||n.parentElement?.closest('script,style'))continue;const p=n.parentElement,key=p.dataset.mcI18n||n.nodeValue.trim();if(p.dataset.mcI18n||map[key]||lang==='en'){p.dataset.mcI18n=key;n.nodeValue=n.nodeValue.replace(n.nodeValue.trim(),lang==='en'?key:(map[key]||key));}}document.querySelectorAll('input[placeholder], [aria-label], [title]').forEach(el=>{const attr=el.placeholder?'placeholder':el.hasAttribute('aria-label')?'aria-label':'title';const key=el.dataset['mc'+attr]||el.getAttribute(attr);if(!el.dataset['mc'+attr])el.dataset['mc'+attr]=key;if(lang==='en')el.setAttribute(attr,key);else if(map[key])el.setAttribute(attr,map[key]);});};
+  
+  const EXTRA = {
+    es: {"Begin Setup":"Comenzar configuración","Next":"Siguiente","Skip Setup":"Omitir configuración","Enter McCrack-COS":"Entrar en McCrack-COS","Language":"Idioma","Welcome to McCrack-COS":"Bienvenido a McCrack-COS","Compact Library Tiles":"Mosaicos compactos de biblioteca","24-Hour Clock":"Reloj de 24 horas","Interface Font":"Fuente de interfaz","Dock position":"Posición del dock","Glow intensity":"Intensidad del brillo","Glass opacity":"Opacidad del cristal","Choose a Gamertag":"Elige un gamertag","Gamerpic URL (Optional)":"URL del gamerpic (opcional)"},
+    fr: {"Begin Setup":"Commencer la configuration","Next":"Suivant","Skip Setup":"Ignorer la configuration","Enter McCrack-COS":"Entrer dans McCrack-COS","Language":"Langue","Welcome to McCrack-COS":"Bienvenue sur McCrack-COS","Compact Library Tiles":"Tuiles de bibliothèque compactes","24-Hour Clock":"Horloge 24 heures","Interface Font":"Police de l’interface","Dock position":"Position du dock","Glow intensity":"Intensité de la lueur","Glass opacity":"Opacité du verre","Choose a Gamertag":"Choisissez un gamertag","Gamerpic URL (Optional)":"URL du gamerpic (facultatif)"},
+    de: {"Begin Setup":"Setup starten","Next":"Weiter","Skip Setup":"Setup überspringen","Enter McCrack-COS":"McCrack-COS öffnen","Language":"Sprache","Welcome to McCrack-COS":"Willkommen bei McCrack-COS","Compact Library Tiles":"Kompakte Bibliothekskacheln","24-Hour Clock":"24-Stunden-Uhr","Interface Font":"Oberflächenschrift","Dock position":"Dock-Position","Glow intensity":"Leuchtintensität","Glass opacity":"Glas-Deckkraft","Choose a Gamertag":"Gamertag wählen","Gamerpic URL (Optional)":"Gamerpic-URL (optional)"},
+    pt: {"Begin Setup":"Começar configuração","Next":"Próximo","Skip Setup":"Pular configuração","Enter McCrack-COS":"Entrar no McCrack-COS","Language":"Idioma","Welcome to McCrack-COS":"Bem-vindo ao McCrack-COS","Compact Library Tiles":"Blocos compactos da biblioteca","24-Hour Clock":"Relógio de 24 horas","Interface Font":"Fonte da interface","Dock position":"Posição do dock","Glow intensity":"Intensidade do brilho","Glass opacity":"Opacidade do vidro","Choose a Gamertag":"Escolha um gamertag","Gamerpic URL (Optional)":"URL do gamerpic (opcional)"}
+  };
+  const sourceText = new WeakMap();
+  const sourceAttr = new WeakMap();
+  const localize = () => {
+    const lang = prefs.language || 'en';
+    const map = Object.assign({}, T[lang] || {}, EXTRA[lang] || {});
+    document.documentElement.lang = lang;
+
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+    while (node = walker.nextNode()) {
+      const parent = node.parentElement;
+      const trimmed = node.nodeValue.trim();
+      if (!parent || !trimmed || parent.closest('script,style,noscript')) continue;
+      if (!sourceText.has(node)) sourceText.set(node, trimmed);
+      const source = sourceText.get(node);
+      const translated = lang === 'en' ? source : (map[source] || source);
+      if (trimmed !== translated) node.nodeValue = node.nodeValue.replace(trimmed, translated);
+    }
+
+    document.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el => {
+      let attrs = sourceAttr.get(el);
+      if (!attrs) { attrs = {}; sourceAttr.set(el, attrs); }
+      ['placeholder','aria-label','title'].forEach(attr => {
+        if (!el.hasAttribute(attr)) return;
+        if (attrs[attr] === undefined) attrs[attr] = el.getAttribute(attr);
+        const source = attrs[attr];
+        el.setAttribute(attr, lang === 'en' ? source : (map[source] || source));
+      });
+    });
+  };
   const oldApplyLocalization=applyPrefs; applyPrefs=function(){oldApplyLocalization();localize()}; window.mcLocalize=localize; setTimeout(localize,0);
 })();
+})();
+
+</script>
 
 </body>
 </html>
