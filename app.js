@@ -859,7 +859,7 @@ applyCleanRouting();
     const normalized = normalizeTitle(title);
     const sharedItems = window.McCrackLibrary?.[kind === 'movie' ? 'movies' : kind === 'app' ? 'apps' : 'games'] || [];
     const shared = sharedItems.find((item) => normalizeTitle(item.title) === normalized);
-    if (shared) return { ...shared, tags: String(shared.title || '').split(/\\s*\\/\\s*|\\s+/).filter(Boolean) };
+    if (shared) return { ...shared, tags: String(shared.title || '').split(/\s*\/\s*|\s+/).filter(Boolean) };
     const items = CONTENT_LOOKUP[kind] || [];
     return items.find((item) => normalizeTitle(item.title) === normalized)
       || items.find((item) => normalizeTitle(item.title).split(' ').includes(normalized) || normalized.split(' ').includes(normalizeTitle(item.title)))
@@ -878,7 +878,7 @@ applyCleanRouting();
     const seen = new Set();
     const items = records.filter((item) => {
       const title = String(item.title || '').trim(), url = String(item.link || item.nativeapp || item.target || '').trim();
-      if (!title || /^(?:game|movie|app)\\s+\\d+$/i.test(title) || !url) return false;
+      if (!title || /^(?:game|movie|app)\s+\\d+$/i.test(title) || !url) return false;
       const key = JSON.stringify([title, url, item.img || '']);
       if (seen.has(key)) return false;
       seen.add(key); return true;
