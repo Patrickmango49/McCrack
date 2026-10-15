@@ -2191,7 +2191,7 @@
             "id": "game-262",
             "title": "The Simpsons: Hit & Run",
             "link": "https://shar-wasm.cjoseph.workers.dev/?skipmovie",
-            "img": "https://cdn2.steamgriddb.com/grid/090e09f6efa6202aa9f9d5f450aa8177.png",
+            "img": "https://psxdatacenter.com/psx2/images2/covers/SLES-51897/SLES-51897-F-F.jpg",
             "type": "game",
             "description": "An action-adventure set in Springfield where you explore familiar locations, complete missions, and drive vehicles as characters from The Simpsons. This entry links to a browser-hosted version."
       },
