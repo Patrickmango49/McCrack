@@ -1342,6 +1342,10 @@ applyCleanRouting();
   }
 
   function setupDetailsModal() {
+    if (!document.getElementById('mc-source-picker-styles')) document.head.insertAdjacentHTML('beforeend', `<style id="mc-source-picker-styles">
+.mc-source-picker{margin-top:12px;padding:14px;border:1px solid var(--glass-border,rgba(255,255,255,.18));border-radius:14px;background:rgba(8,10,14,.72);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mc-source-picker[hidden]{display:none!important}.mc-source-heading{width:100%;margin:0 0 3px;font-weight:800;color:var(--text-main,#fff)}.mc-source-status{width:100%;margin:2px 0 0;font-size:12px;opacity:.75}.mc-source-unavailable{font-size:12px;opacity:.7}.mc-source-picker .movie-action[hidden]{display:none!important}
+</style>`);
     if (!supportsLibraryFeatures() || document.querySelector('.details-modal')) return;
     const modal = document.createElement('div');
     modal.className = 'details-modal';
@@ -1356,14 +1360,42 @@ applyCleanRouting();
       const kind = getTileKind(tile), title = textFromTile(tile), info = findContentInfo(kind, title);
       const local = { title: info.title || title, description: tile.dataset.description || info.description || 'A short description for this title is not available yet.', image: tile.querySelector('img')?.currentSrc || tile.querySelector('img')?.src || '' };
       const image = escapeHtml(local.image || 'favicon.png'), safeTitle = escapeHtml(local.title), safeDescription = escapeHtml(local.description);
-      const sourceUrl = 'https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(local.title);
+      const sourceUrl = kind === 'game'
+        ? 'https://www.google.com/search?q=' + encodeURIComponent(local.title + ' official game')
+        : 'https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(local.title);
+      const originalUrl = tile.dataset.src || tile.dataset.sourceUrl || '';
+      const slug = String(local.title || title).toLowerCase().normalize('NFKD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
+      const localUrl = tile.dataset.localSrc || ('games/' + slug + '/index.html');
       modal.classList.add('is-open'); document.body.classList.add('details-open');
       content.innerHTML = `<article class="movie-details movie-details-local">
         <section class="movie-details-hero" style="--movie-backdrop:url('${image}')"><div class="movie-details-hero-art"></div><div class="movie-details-hero-shade"></div>
           <div class="movie-details-hero-copy"><p class="details-kicker">${kind === 'movie' ? 'Movie details' : kind === 'game' ? 'Game details' : 'App details'}</p><h2 id="detailsTitle">${safeTitle}</h2><p class="movie-tagline">From the McCrack library</p>
-          <div class="movie-detail-actions">${kind === 'movie' ? '<button type="button" class="movie-action movie-action-play" data-movie-action="play">▶ Watch</button>' : '<button type="button" class="movie-action movie-action-play" data-movie-action="play">▶ Open</button>'}<button type="button" class="movie-action" data-movie-action="favorite">♡ Favorite</button><a class="movie-action" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Learn more ↗</a></div></div>
-        </section><div class="movie-details-body"><img class="details-art movie-poster" src="${image}" alt="${safeTitle}" loading="lazy" onerror="this.onerror=null;this.src='favicon.png';" /><div class="movie-details-main"><section><h3>About this title</h3><p class="details-description">${safeDescription}</p></section></div></div>
+          <div class="movie-detail-actions">${kind === 'movie' ? '<button type="button" class="movie-action movie-action-play" data-movie-action="play">▶ Watch</button>' : '<button type="button" class="movie-action movie-action-play" data-movie-action="play">▶ Open</button>'}<button type="button" class="movie-action" data-movie-action="favorite">♡ Favorite</button><button type="button" class="movie-action" data-movie-action="sources" aria-expanded="false">↗ Sources</button><a class="movie-action" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">Learn more ↗</a></div>
+          <div class="mc-source-picker" hidden>
+            <p class="mc-source-heading">Choose a source</p>
+            ${originalUrl ? '<a class="movie-action mc-source-original" href="' + escapeHtml(originalUrl) + '" target="_blank" rel="noopener noreferrer">Original link ↗</a>' : '<span class="mc-source-unavailable">No original link is attached to this item.</span>'}
+            <a class="movie-action mc-source-local" href="${escapeHtml(localUrl)}" data-local-source-link>McCrack self-hosted file ↗</a>
+            <p class="mc-source-status" aria-live="polite">Checking whether a local copy exists…</p>
+          </div>
+        </div></section><div class="movie-details-body"><img class="details-art movie-poster" src="${image}" alt="${safeTitle}" loading="lazy" onerror="this.onerror=null;this.src='favicon.png';" /><div class="movie-details-main"><section><h3>About this title</h3><p class="details-description">${safeDescription}</p></section></div></div>
       </article>`;
+      const sourcePicker = content.querySelector('.mc-source-picker');
+      const sourceButton = content.querySelector('[data-movie-action="sources"]');
+      const localLink = content.querySelector('[data-local-source-link]');
+      const sourceStatus = content.querySelector('.mc-source-status');
+      if (localLink && sourceStatus) {
+        localLink.hidden = true;
+        fetch(localUrl, { method: 'HEAD', cache: 'no-store' }).then(response => {
+          if (response.ok) {
+            localLink.hidden = false;
+            sourceStatus.textContent = 'A self-hosted copy is available in McCrack.';
+          } else {
+            sourceStatus.textContent = 'A local copy has not been added to McCrack/games yet.';
+          }
+        }).catch(() => {
+          sourceStatus.textContent = 'Could not verify a local copy. The original link remains available.';
+        });
+      }
     };
     document.addEventListener('mc:open-details', (event) => open(event.detail?.tile));
     document.addEventListener('click', (event) => { const action = event.target.closest('.quick-actions [data-quick-action="details"]'); if (action) { event.preventDefault(); event.stopPropagation(); open(action.closest('.media-tile[data-src]')); } }, true);
@@ -1372,6 +1404,14 @@ applyCleanRouting();
       if (!action || !activeTile) return;
       if (action.dataset.movieAction === 'play') { close(); activeTile.click(); }
       if (action.dataset.movieAction === 'favorite') { activeTile.querySelector('.favorite-toggle')?.click(); action.textContent = activeTile.querySelector('.favorite-toggle')?.classList.contains('is-favorite') ? '♥ Favorited' : '♡ Favorite'; }
+      if (action.dataset.movieAction === 'sources') {
+        const picker = content.querySelector('.mc-source-picker');
+        if (picker) {
+          const opening = picker.hidden;
+          picker.hidden = !opening;
+          action.setAttribute('aria-expanded', String(opening));
+        }
+      }
     });
     modal.querySelector('.details-close').addEventListener('click', close);
     modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
