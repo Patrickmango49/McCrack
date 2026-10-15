@@ -29,6 +29,7 @@
       : '';
     return '<button type="button" class="media-tile repo-game-tile" id="' + escapeHtml(id) +
       '" data-src="' + escapeHtml(url) + '" data-source-url="' + escapeHtml(url) +
+      '" data-local-src="' + escapeHtml('games/' + folder.path.split('/').map(encodeURIComponent).join('/') + '/index.html') +
       '" data-description="' + escapeHtml(desc) + '" data-repo-path="' + escapeHtml(folder.path) +
       '" aria-label="Play ' + escapeHtml(name) + '">' +
       imageMarkup + '<span>' + escapeHtml(name) + '</span></button>';
