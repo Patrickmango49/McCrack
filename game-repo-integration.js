@@ -79,10 +79,15 @@
 
   async function load() {
     try {
-      const response = await fetch(API_ROOT + '/contents/?ref=' + encodeURIComponent(BRANCH) + '&per_page=100', { cache: 'no-store' });
-      if (!response.ok) throw new Error('GitHub returned ' + response.status);
-      const root = await response.json();
-      if (!Array.isArray(root)) throw new Error('Unexpected repository response');
+      const root = [];
+      for (let page = 1; page <= 10; page += 1) {
+        const response = await fetch(API_ROOT + '/contents/?ref=' + encodeURIComponent(BRANCH) + '&per_page=100&page=' + page, { cache: 'no-store' });
+        if (!response.ok) throw new Error('GitHub returned ' + response.status);
+        const entries = await response.json();
+        if (!Array.isArray(entries)) throw new Error('Unexpected repository response');
+        root.push(...entries);
+        if (entries.length < 100) break;
+      }
       const folders = root.filter(item => item.type === 'dir' && !ignored.has(String(item.name).toLowerCase()));
       const cards = [];
       let cursor = 0;
