@@ -1,0 +1,121 @@
+name: Sync games from game repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_size_mb:
+        description: "Maximum total size of copied games (keep below GitHub Pages' 1 GB limit)"
+        required: true
+        default: "600"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-games
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out McCrack
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Prepare game source
+        run: |
+          git clone --depth 1 --filter=blob:none --no-checkout https://github.com/Patrickmango49/game.git source
+          git -C source sparse-checkout init --cone
+
+      - name: Select game folders that fit the size limit
+        id: select
+        env:
+          MAX_SIZE_MB: ${{ inputs.max_size_mb }}
+        run: |
+          python3 - <<'PY'
+          import os, subprocess
+          from pathlib import Path
+
+          max_mb = int(os.environ.get("MAX_SIZE_MB", "600"))
+          if max_mb < 1 or max_mb > 700:
+              raise SystemExit("Choose a limit from 1 to 700 MB so the published site stays under its 1 GB limit.")
+          max_bytes = max_mb * 1_000_000
+          games_dir = Path("games")
+          games_dir.mkdir(exist_ok=True)
+          existing_bytes = sum(p.stat().st_size for p in games_dir.rglob("*") if p.is_file())
+          budget = max(0, max_bytes - existing_bytes)
+          ignored = {".git", ".github", ".vscode", "assets", "images", "img", "css", "js", "fonts", "audio", "video", "build", "dist", "node_modules"}
+          root = subprocess.check_output(
+              ["git", "-C", "source", "ls-tree", "-d", "--name-only", "HEAD"],
+              text=True
+          ).splitlines()
+          selected = []
+          used = 0
+          for folder in sorted(root, key=str.casefold):
+              if folder.startswith(".") or folder.casefold() in ignored:
+                  continue
+              if (games_dir / folder).exists():
+                  continue
+              listing = subprocess.check_output(
+                  ["git", "-C", "source", "ls-tree", "-r", "-l", "HEAD", "--", folder],
+                  text=True
+              )
+              files = []
+              total = 0
+              has_index = False
+              too_large = False
+              for line in listing.splitlines():
+                  if "\t" not in line:
+                      continue
+                  metadata, path = line.split("\t", 1)
+                  fields = metadata.split()
+                  if len(fields) < 4 or fields[1] != "blob":
+                      continue
+                  size = int(fields[3])
+                  files.append((path, size))
+                  total += size
+                  if path == folder + "/index.html":
+                      has_index = True
+                  if size > 95_000_000:
+                      too_large = True
+              if not has_index or too_large or total == 0 or total > budget - used:
+                  continue
+              selected.append(folder)
+              used += total
+          with open("selected-games.txt", "w", encoding="utf-8") as f:
+              f.write("\n".join(selected))
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"count={len(selected)}\n")
+              f.write(f"bytes={used}\n")
+          print(f"Selected {len(selected)} folders, {used / 1_000_000:.1f} MB; existing games folder: {existing_bytes / 1_000_000:.1f} MB.")
+          PY
+
+      - name: Copy selected game folders
+        if: steps.select.outputs.count != '0'
+        run: |
+          mapfile -t folders < selected-games.txt
+          git -C source sparse-checkout set -- "${folders[@]}"
+          git -C source checkout --detach
+          mkdir -p games
+          while IFS= read -r folder; do
+            [ -n "$folder" ] || continue
+            cp -a "source/$folder" "games/"
+          done < selected-games.txt
+          rm -f selected-games.txt
+
+      - name: Commit copied games
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add games
+          if git diff --cached --quiet; then
+            echo "No new game folders fit the configured size limit."
+            exit 0
+          fi
+          git commit -m "Add a size-safe batch of self-hosted games"
+          git push origin HEAD:main
