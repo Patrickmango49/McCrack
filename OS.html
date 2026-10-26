@@ -672,6 +672,63 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
       transform: scale(.985);
     }
 
+    /* === McCrack-COS console polish: spacious Xbox-inspired surfaces === */
+    :root {
+      --brand-main: #107c10; --brand-secondary: #52e36b;
+      --brand-glow: rgba(16,124,16,.24); --focus-color: #52e36b;
+      --surface-tint: rgba(15,18,22,.72); --surface-tint-strong: rgba(12,15,19,.88);
+      --glass-bg: rgba(19,22,27,.78); --glass-bg-light: rgba(255,255,255,.075);
+      --glass-border: rgba(255,255,255,.12); --glass-border-glow: rgba(82,227,107,.48);
+      --glass-blur: blur(22px) saturate(145%); --text-sub: rgba(237,241,245,.68);
+      --mc-motion: cubic-bezier(.2,.8,.2,1);
+    }
+    body {
+      background-color:#080a0d;
+      background-image:radial-gradient(ellipse at 12% 0%,rgba(16,124,16,.16),transparent 42%),linear-gradient(135deg,rgba(5,7,10,.42),rgba(5,7,10,.78)),url('https://i.imgur.com/mRkcSg6.png');
+      background-size:cover; background-position:center;
+    }
+    button,input,select,textarea { font:inherit; }
+    button,[role="button"],.nav-btn,.dock-item,.library-side-btn,.tile,.poster-tile,.media-card,.content-card,.pinned-card,.last-card { -webkit-tap-highlight-color:transparent; }
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible { outline:2px solid var(--focus-color)!important; outline-offset:3px; }
+    .console-header { padding:clamp(1rem,2.2vw,1.65rem) clamp(1rem,3vw,2.5rem) 1rem; gap:clamp(.75rem,1.8vw,1.5rem); }
+    #sys-user-pfp { border-color:rgba(82,227,107,.48); }
+    .nav-btn.active { background:linear-gradient(135deg,rgba(82,227,107,.17),rgba(255,255,255,.055)); border-color:rgba(82,227,107,.34); box-shadow:inset 3px 0 0 #52e36b,0 8px 24px rgba(0,0,0,.18); }
+    .nav-btn:hover,.nav-btn:focus-visible,.nav-btn.focused { background:rgba(255,255,255,.09); border-color:rgba(82,227,107,.42); box-shadow:0 8px 24px rgba(0,0,0,.2); }
+    .search-bar,.setting-tab,.settings-layout,.settings-section,.settings-card,.profile-section,.achievement-card,.guide-menu,.wizard-box,.lock-box,.hud,.native-app {
+      border-color:rgba(255,255,255,.115); box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 12px 34px rgba(0,0,0,.2);
+    }
+    .library-heading { margin-bottom:clamp(1rem,2.2vw,1.65rem); }
+    .library-heading h2 { letter-spacing:-.045em; }
+    .media-grid,.library-grid,.content-grid,.home-grid,.settings-grid,.advanced-grid,.profile-grid,.achievement-grid,.movie-cast-grid,.movie-recommendation-grid { gap:clamp(12px,1.5vw,20px); }
+    .media-card,.poster-tile,.content-card,.pinned-card,.last-card,.tile {
+      border-color:rgba(255,255,255,.11); background-color:rgba(16,19,24,.72); box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 8px 24px rgba(0,0,0,.16);
+    }
+    .media-card:hover,.poster-tile:hover,.content-card:hover,.pinned-card:hover,.last-card:hover,.tile:hover {
+      border-color:rgba(82,227,107,.42); box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 16px 34px rgba(0,0,0,.26);
+    }
+    .small-btn,.library-filter-btn,.guide-btn,.theme-card,.wallpaper-card { border-color:rgba(255,255,255,.13); border-radius:12px; }
+    .small-btn:hover,.library-filter-btn:hover,.guide-btn:hover { background:rgba(82,227,107,.09); border-color:rgba(82,227,107,.4); }
+    .settings-layout { gap:clamp(1rem,2vw,1.65rem); padding:clamp(1rem,2vw,1.5rem); border-radius:24px; }
+    .settings-sidebar { gap:.65rem; }
+    .settings-content-area { padding:.5rem .65rem 2rem; }
+    .settings-section,.settings-card,.profile-section { border-radius:18px; }
+    .form-group input,.form-group select,.form-group textarea,.form-input,input,select,textarea { max-width:100%; }
+    .details-card,.modal-content,.profile-modal-card { border:1px solid rgba(255,255,255,.15); box-shadow:0 28px 90px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.07); }
+    .empty-glass { border-color:rgba(255,255,255,.12); }
+    ::selection { color:#fff; background:rgba(16,124,16,.7); }
+    * { scrollbar-color:rgba(255,255,255,.22) transparent; scrollbar-width:thin; }
+    *::-webkit-scrollbar { width:9px; height:9px; }
+    *::-webkit-scrollbar-thumb { background:rgba(255,255,255,.19); border:2px solid transparent; background-clip:padding-box; border-radius:999px; }
+    *::-webkit-scrollbar-thumb:hover { background:rgba(82,227,107,.45); border:2px solid transparent; background-clip:padding-box; }
+    @media(min-width:1500px) { .console-header { padding-left:3rem; padding-right:3rem; } .library-heading { margin-bottom:1.8rem; } }
+    @media(max-width:900px) { .console-header { grid-template-columns:minmax(0,1fr) auto; padding:1rem; } .settings-layout { gap:1rem; } }
+    @media(max-width:600px) {
+      .console-header { gap:.65rem; } #sys-user-pfp { width:46px; height:46px; } #sys-username { font-size:1rem; }
+      .library-heading { align-items:flex-start; flex-wrap:wrap; } .settings-layout { padding:.8rem; border-radius:18px; }
+      .settings-content-area { padding:.25rem .1rem 1.25rem; }
+      .media-grid,.library-grid,.content-grid,.home-grid,.settings-grid,.advanced-grid,.profile-grid,.achievement-grid,.movie-cast-grid,.movie-recommendation-grid { column-gap:10px; row-gap:12px; }
+    }
+
   </style>
 </head>
 <body>
