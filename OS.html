@@ -729,6 +729,14 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
       .media-grid,.library-grid,.content-grid,.home-grid,.settings-grid,.advanced-grid,.profile-grid,.achievement-grid,.movie-cast-grid,.movie-recommendation-grid { column-gap:10px; row-gap:12px; }
     }
 
+  
+    /* Local file library */
+    .upload-help{font-size:.82rem;line-height:1.45;color:var(--text-sub);margin-top:.25rem}
+    .upload-quota{display:grid;gap:.35rem;padding:1rem 1.1rem;border:1px solid var(--glass-border);border-radius:16px;background:rgba(0,0,0,.2);font-size:.82rem;line-height:1.45;color:var(--text-sub);margin:.25rem 0 1rem}
+    .upload-quota strong{color:var(--text-main);font-size:.9rem}
+    #custom-file-label{display:block;width:100%;overflow-wrap:anywhere}
+    #custom-file:focus-visible + #custom-file-label{outline:2px solid var(--focus-color);outline-offset:3px}
+
   </style>
 </head>
 <body>
@@ -1035,12 +1043,14 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
       <div>
         <div class="details-kicker">Custom Embed</div>
         <h2 id="custom-embed-title">Add Your Own</h2>
-        <div class="form-group"><label>Name</label><input id="custom-name" class="form-input focusable" placeholder="My embed"></div>
-        <div class="form-group"><label>Link / URL</label><input id="custom-url" class="form-input focusable" placeholder="https://example.com"></div>
-        <div class="form-group"><label>Details / Description</label><input id="custom-desc" class="form-input focusable" placeholder="Optional"></div>
-        <div class="form-group"><label>Image URL</label><input id="custom-img" class="form-input focusable" placeholder="Optional; favicon used if blank"></div>
+        <div class="form-group"><label for="custom-name">Name</label><input id="custom-name" class="form-input focusable" placeholder="My game, movie, or app" maxlength="100"></div>
+        <div class="form-group" id="custom-file-group"><label for="custom-file">Upload an actual file</label><input id="custom-file" type="file" class="focusable" accept=".html,.htm,.xhtml,.mp4,.m4v,.webm,.ogv,.ogg,.mov,.3gp,video/*"><label for="custom-file" class="file-upload-btn" id="custom-file-label">Choose a file from this device</label><p id="custom-file-status" class="upload-help">Games and apps: a browser-ready HTML file. Movies: a video file your browser can play. Files stay on this device in this browser.</p></div>
+        <div class="form-group"><label for="custom-url">Or use an external embed URL</label><input id="custom-url" class="form-input focusable" placeholder="https://example.com"></div>
+        <div class="form-group"><label for="custom-desc">Details / Description</label><input id="custom-desc" class="form-input focusable" placeholder="Optional description" maxlength="500"></div>
+        <div class="form-group"><label for="custom-img">Artwork URL (optional)</label><input id="custom-img" class="form-input focusable" placeholder="https://…"></div>
+        <div class="upload-quota"><strong>Local library limits</strong><span>Up to 200 MB per file, 500 MB total, and 100 uploaded items. Your browser may enforce a lower storage limit. Nothing is uploaded to the McCrack server.</span><span id="custom-storage-usage">Checking local storage…</span></div>
         <div class="details-actions">
-          <button class="small-btn focusable" type="button" data-action="save-custom-embed" style="background:var(--brand-main); color:#fff; border:none;">Add Embed</button>
+          <button class="small-btn focusable" type="button" data-action="save-custom-embed" style="background:var(--brand-main); color:#fff; border:none;">Add to Library</button>
           <button class="small-btn focusable" type="button" data-action="close-custom-embed">Cancel</button>
         </div>
       </div>
@@ -1930,9 +1940,26 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
       }
     });
 
-    function launchItem(item) {
+    async function launchItem(item) {
       if (!item) return;
       if (item.target) { playSound('select'); switchPage(item.target); return; }
+      if (item.fileId) {
+        try {
+          const stored = await mcFileDbRequest('readonly', 'get', item.fileId);
+          if (!stored || !stored.blob) throw new Error('The uploaded file is missing from this browser.');
+          const previous = window.__mcLocalFileUrl;
+          const frame = document.getElementById('game-frame');
+          frame.src = 'about:blank';
+          if (previous) { try { URL.revokeObjectURL(previous); } catch (_) {} }
+          const localUrl = URL.createObjectURL(stored.blob);
+          window.__mcLocalFileUrl = localUrl;
+          item = { ...item, link: localUrl };
+        } catch (error) {
+          console.error('Could not open uploaded McCrack-COS file:', error);
+          alert('This uploaded file could not be found in this browser. It may have been cleared by browser storage cleanup. You can remove the broken library item and upload it again.');
+          return;
+        }
+      }
       if (item.link) {
         playSound('select');
         currentLaunchedItem = item;
@@ -2091,9 +2118,71 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
       }
     }
 
+    // Uploaded files are kept as Blobs in IndexedDB, not base64 in localStorage.
+    // localStorage only contains lightweight library metadata, so large videos do not overflow cookie/storage limits.
+    const MC_FILE_DB = 'mccrack_cos_local_files_v1';
+    const MC_FILE_STORE = 'uploads';
+    const MC_FILE_MAX = 200 * 1024 * 1024;
+    const MC_FILE_TOTAL_MAX = 500 * 1024 * 1024;
+    const MC_FILE_COUNT_MAX = 100;
+    let mcFileDbPromise;
+    function openMcFileDb() {
+      if (mcFileDbPromise) return mcFileDbPromise;
+      mcFileDbPromise = new Promise((resolve, reject) => {
+        if (!('indexedDB' in window)) { reject(new Error('This browser does not support persistent local file storage.')); return; }
+        const request = indexedDB.open(MC_FILE_DB, 1);
+        request.onupgradeneeded = () => { const db = request.result; if (!db.objectStoreNames.contains(MC_FILE_STORE)) db.createObjectStore(MC_FILE_STORE, { keyPath: 'id' }); };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error || new Error('Could not open local file storage.'));
+      });
+      return mcFileDbPromise;
+    }
+    async function mcFileDbRequest(mode, action, value) {
+      const db = await openMcFileDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(MC_FILE_STORE, mode);
+        const store = tx.objectStore(MC_FILE_STORE);
+        let req;
+        try { req = action === 'get' ? store.get(value) : action === 'getAll' ? store.getAll() : action === 'delete' ? store.delete(value) : store.put(value); }
+        catch (error) { reject(error); return; }
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error || new Error('Local file storage request failed.'));
+        tx.onabort = () => reject(tx.error || new Error('Local file storage transaction failed.'));
+      });
+    }
+    function mcGetUploadedItems() {
+      const custom = readCustomEmbeds();
+      return ['game','movie','app'].flatMap(kind => custom[kind] || []).filter(item => item && item.fileId);
+    }
+    function mcGetStoredBytes() { return mcGetUploadedItems().reduce((sum, item) => sum + (Number(item.fileSize) || 0), 0); }
+    function mcFormatBytes(bytes) {
+      if (bytes < 1024 * 1024) return Math.max(1, Math.round(bytes / 1024)) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+    function mcUpdateStorageUsage() {
+      const el = document.getElementById('custom-storage-usage');
+      if (el) el.textContent = `Used by uploaded files: ${mcFormatBytes(mcGetStoredBytes())} / 500 MB • ${mcGetUploadedItems().length} / 100 items`;
+    }
+    function mcUpdateFileAccept() {
+      const input = document.getElementById('custom-file');
+      const help = document.querySelector('#custom-file-group .upload-help');
+      const label = document.getElementById('custom-file-label');
+      if (!input) return;
+      input.accept = customEmbedKind === 'movie' ? 'video/*,.mp4,.m4v,.webm,.ogv,.ogg,.mov,.3gp' : '.html,.htm,.xhtml,text/html';
+      if (help) help.textContent = customEmbedKind === 'movie'
+        ? 'Choose a video file (MP4/H.264 and WebM are the safest bets). Playback depends on your browser’s supported codecs.'
+        : 'Choose a self-contained HTML/HTM/XHTML web game or app. EXE, APK, and other native desktop/mobile apps cannot run inside a browser.';
+      if (label) label.textContent = 'Choose a ' + (customEmbedKind === 'movie' ? 'video file' : 'HTML game or app') + ' from this device';
+    }
     function openCustomEmbedModal(kind = 'game') {
       customEmbedKind = kind === 'movie' ? 'movie' : (kind === 'app' ? 'app' : 'game');
       ['custom-name', 'custom-url', 'custom-desc', 'custom-img'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      const fileInput = document.getElementById('custom-file');
+      if (fileInput) fileInput.value = '';
+      const status = document.getElementById('custom-file-status');
+      if (status) status.textContent = 'No file selected.';
+      mcUpdateFileAccept();
+      mcUpdateStorageUsage();
       document.getElementById('custom-embed-title').textContent = `Add Your Own ${customEmbedKind[0].toUpperCase()}${customEmbedKind.slice(1)}`;
       document.getElementById('custom-embed-modal').classList.add('active');
       document.getElementById('custom-embed-modal').setAttribute('aria-hidden', 'false');
@@ -2108,24 +2197,60 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
       setFocus(0);
       playSound('back');
     }
-    function saveCustomEmbed() {
+    async function saveCustomEmbed() {
       const title = document.getElementById('custom-name').value.trim();
-      const link = normalizeUrl(document.getElementById('custom-url').value);
-      if (!title || !link) { alert('Name and a valid URL are required.'); return; }
+      const rawUrl = document.getElementById('custom-url').value.trim();
+      const link = normalizeUrl(rawUrl);
+      const fileInput = document.getElementById('custom-file');
+      const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+      if (!title) { alert('Please enter a name for this library item.'); return; }
+      if (!file && rawUrl && !link) { alert('Please enter a valid http:// or https:// URL.'); return; }
+      if (!file && !link) { alert('Choose a supported file or enter an external embed URL.'); return; }
+      let fileId = '';
+      if (file) {
+        if (file.size > MC_FILE_MAX) { alert('This file is larger than the 200 MB per-file limit.'); return; }
+        const validVideo = /\.(mp4|m4v|webm|ogv|ogg|mov|3gp)$/i.test(file.name) || /^video\//i.test(file.type);
+        const validHtml = /\.(html?|xhtml)$/i.test(file.name) && (!file.type || /text\/html|application\/xhtml\+xml|application\/octet-stream/i.test(file.type));
+        if (customEmbedKind === 'movie' && !validVideo) { alert('For Movies, choose a video file such as MP4, WebM, OGG, MOV, or M4V.'); return; }
+        if (customEmbedKind !== 'movie' && !validHtml) { alert('For Games and Apps, upload a browser-ready .html, .htm, or .xhtml file.'); return; }
+        const existing = mcGetUploadedItems();
+        const total = mcGetStoredBytes();
+        if (existing.length >= MC_FILE_COUNT_MAX) { alert('You have reached the 100 uploaded-item limit. Remove an uploaded item to add another.'); return; }
+        if (total + file.size > MC_FILE_TOTAL_MAX) { alert('This upload would exceed the 500 MB total local-file budget. Remove an uploaded item or choose a smaller file.'); return; }
+        try {
+          fileId = `local-${customEmbedKind}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+          await mcFileDbRequest('readwrite', 'put', { id: fileId, blob: file, name: file.name, size: file.size, type: file.type || (customEmbedKind === 'movie' ? 'video/mp4' : 'text/html') });
+        } catch (error) {
+          console.error('McCrack-COS local file save failed:', error);
+          alert('The browser could not store this file. It may have reached its storage quota. Try a smaller file or free up browser storage.');
+          return;
+        }
+      }
       const custom = readCustomEmbeds();
+      const id = `custom-${customEmbedKind}-${Date.now()}`;
       const item = {
-        id: `custom-${customEmbedKind}-${Date.now()}`,
-        title,
-        link,
-        img: document.getElementById('custom-img').value.trim() || faviconFor(link),
+        id, title,
+        link: fileId ? `mc-local-file:${fileId}` : link,
+        fileId: fileId || undefined,
+        fileName: file ? file.name : undefined,
+        fileSize: file ? file.size : undefined,
+        fileType: file ? (file.type || (customEmbedKind === 'movie' ? 'video/mp4' : 'text/html')) : undefined,
+        img: document.getElementById('custom-img').value.trim() || (link ? faviconFor(link) : 'favicon.png'),
         type: customEmbedKind,
-        description: document.getElementById('custom-desc').value.trim() || 'Custom embed added by you.',
+        description: document.getElementById('custom-desc').value.trim() || (file ? `Uploaded from this device: ${file.name}` : 'Custom embed added by you.'),
         custom: true
       };
       custom[customEmbedKind] = [item, ...(custom[customEmbedKind] || [])].slice(0, 250);
-      saveCustomEmbeds(custom);
+      try { saveCustomEmbeds(custom); }
+      catch (error) {
+        if (fileId) { try { await mcFileDbRequest('readwrite', 'delete', fileId); } catch (_) {} }
+        alert('Could not save the library details. Your browser storage may be full.');
+        return;
+      }
       closeCustomEmbedModal();
       refreshLibraries();
+      mcUpdateStorageUsage();
+      showToast(file ? `Added ${title} from this device` : `Added ${title} to your library`);
     }
     function removeCustomEmbed(item) {
       if (!item?.custom) return;
@@ -2134,9 +2259,21 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
       const custom = readCustomEmbeds();
       custom[kind] = (custom[kind] || []).filter(entry => entry.id !== item.id);
       saveCustomEmbeds(custom);
+      if (item.fileId) mcFileDbRequest('readwrite', 'delete', item.fileId).then(mcUpdateStorageUsage).catch(err => console.warn('Could not remove local upload blob:', err));
       refreshLibraries();
+      mcUpdateStorageUsage();
       playSound('back');
     }
+
+    const mcFileInput = document.getElementById('custom-file');
+    if (mcFileInput) mcFileInput.addEventListener('change', () => {
+      const file = mcFileInput.files && mcFileInput.files[0];
+      const status = document.getElementById('custom-file-status');
+      if (status) status.textContent = file ? `${file.name} • ${mcFormatBytes(file.size)} selected` : 'No file selected.';
+      if (file && !document.getElementById('custom-name').value.trim()) {
+        document.getElementById('custom-name').value = file.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
+      }
+    });
 
     /* ==========================================
        Gamepad / Controller API Engine
