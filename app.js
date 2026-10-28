@@ -74,7 +74,7 @@ applyCleanRouting();
 
 (function () {
   const DEFAULT_TITLE = 'McCrack';
-  const DEFAULT_FAVICON = 'favicon.png';
+  const DEFAULT_FAVICON = 'assets/icons/favicon.png';
   const defaultWallpaper = 'linear-gradient(160deg, #000 0%, #020202 48%, #070707 100%)';
   const HOME_SPLASH_MESSAGES = [
     'Now with 99% less school surveillance.',
@@ -885,9 +885,9 @@ applyCleanRouting();
     });
     grid.innerHTML = items.map((item, index) => {
       const title = escapeHtml(item.title || 'Untitled'), url = escapeHtml(item.link || item.nativeapp || item.target || '');
-      const image = escapeHtml(item.img || 'favicon.png'), description = escapeHtml(item.description || 'Details for this library item will be added soon.');
+      const image = escapeHtml(item.img || 'assets/icons/favicon.png'), description = escapeHtml(item.description || 'Details for this library item will be added soon.');
       const id = escapeHtml(item.id || `${kind}-${index + 1}`);
-      return `<button id="${id}" class="media-tile" type="button" data-src="${url}" data-description="${description}" data-catalog-id="${id}"><img src="${image}" alt="${title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='favicon.png';" /><span>${title}</span></button>`;
+      return `<button id="${id}" class="media-tile" type="button" data-src="${url}" data-description="${description}" data-catalog-id="${id}"><img src="${image}" alt="${title}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/icons/favicon.png';" /><span>${title}</span></button>`;
     }).join('');
   }
 
@@ -1359,7 +1359,7 @@ applyCleanRouting();
       activeTile = tile;
       const kind = getTileKind(tile), title = textFromTile(tile), info = findContentInfo(kind, title);
       const local = { title: info.title || title, description: tile.dataset.description || info.description || 'A short description for this title is not available yet.', image: tile.querySelector('img')?.currentSrc || tile.querySelector('img')?.src || '' };
-      const image = escapeHtml(local.image || 'favicon.png'), safeTitle = escapeHtml(local.title), safeDescription = escapeHtml(local.description);
+      const image = escapeHtml(local.image || 'assets/icons/favicon.png'), safeTitle = escapeHtml(local.title), safeDescription = escapeHtml(local.description);
       const sourceUrl = kind === 'game'
         ? 'https://www.google.com/search?q=' + encodeURIComponent(local.title + ' official game')
         : 'https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(local.title);
@@ -1377,7 +1377,7 @@ applyCleanRouting();
             <a class="movie-action mc-source-local" href="${escapeHtml(localUrl)}" data-local-source-link>McCrack self-hosted file ↗</a>
             <p class="mc-source-status" aria-live="polite">Checking whether a local copy exists…</p>
           </div>
-        </div></section><div class="movie-details-body"><img class="details-art movie-poster" src="${image}" alt="${safeTitle}" loading="lazy" onerror="this.onerror=null;this.src='favicon.png';" /><div class="movie-details-main"><section><h3>About this title</h3><p class="details-description">${safeDescription}</p></section></div></div>
+        </div></section><div class="movie-details-body"><img class="details-art movie-poster" src="${image}" alt="${safeTitle}" loading="lazy" onerror="this.onerror=null;this.src='assets/icons/favicon.png';" /><div class="movie-details-main"><section><h3>About this title</h3><p class="details-description">${safeDescription}</p></section></div></div>
       </article>`;
       const sourcePicker = content.querySelector('.mc-source-picker');
       const sourceButton = content.querySelector('[data-movie-action="sources"]');

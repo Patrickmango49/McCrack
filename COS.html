@@ -5807,7 +5807,7 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
     function openDetails(item) {
       activeDetailsItem = item;
       const kind = itemKind(item);
-      const image = item.img || faviconFor(item.link || '') || 'favicon.png';
+      const image = item.img || faviconFor(item.link || '') || 'assets/icons/favicon.png';
       const isDriveMovie = kind === 'movie' && /^https:\/\/(?:drive|docs)\.google\.com\//i.test(item.link || '') && !/\/FILE_ID(?:\/|$)/i.test(item.link || '');
       document.getElementById('details-image').src = image;
       document.getElementById('details-image').alt = `${item.title || 'Item'} artwork`;
