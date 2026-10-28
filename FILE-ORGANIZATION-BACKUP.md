@@ -85,3 +85,16 @@ If the file was moved, first restore/copy the original path from the baseline, t
 - This document is a map and recovery guide; it does not itself contain copies of every file's contents. Git preserves the original snapshot at the baseline commit above.
 - Keep this file in the repository after the reorganization so it remains available as a guide.
 - When asked to roll back, read this file first, compare the current tree to the baseline, and undo only the organization changes unless a full rollback is explicitly requested.
+
+
+## Current organization change (2026-10-28)
+
+The conservative asset organization moves only this repository-owned static image:
+
+| Original path | New path |
+|---|---|
+| `favicon.png` | `assets/icons/favicon.png` |
+
+The move also updates local favicon references in the HTML pages and `app.js`, the icon entries in `manifest.webmanifest`, and the precache list in `sw.js`. The HTML pages and other runtime/configuration files remain in their original locations. The original image blob is reused, so the image itself is unchanged.
+
+To reverse only this organization change, move `assets/icons/favicon.png` back to `favicon.png` and change references to `assets/icons/favicon.png` back to `favicon.png` in the files listed above. Prefer using the original baseline commit for the exact prior contents, while preserving unrelated changes.

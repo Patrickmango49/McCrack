@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>McCrack-COS</title>
-  <link rel="icon" href="favicon.png" />
-  <link rel="apple-touch-icon" href="favicon.png" />
+  <link rel="icon" href="assets/icons/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/icons/favicon.png" />
   <meta name="theme-color" content="#107C10" />
   <meta name="application-name" content="McCrack-COS" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -741,7 +741,7 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
 </head>
 <body>
 
-  <div id="boot-screen" aria-label="McCrack-COS loading screen" role="status"><div class="boot-card"><img class="boot-logo" src="favicon.png" alt="McCrack logo"><div class="boot-title">McCrack-COS</div><div class="boot-byline">Made by Patrick_Mango</div><div class="boot-name">(Patrick Molina)</div><div class="boot-progress" aria-label="Starting McCrack-COS"><span></span></div></div></div>
+  <div id="boot-screen" aria-label="McCrack-COS loading screen" role="status"><div class="boot-card"><img class="boot-logo" src="assets/icons/favicon.png" alt="McCrack logo"><div class="boot-title">McCrack-COS</div><div class="boot-byline">Made by Patrick_Mango</div><div class="boot-name">(Patrick Molina)</div><div class="boot-progress" aria-label="Starting McCrack-COS"><span></span></div></div></div>
 
 
   <div id="setup-wizard">
@@ -1067,8 +1067,8 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
 
   <div id="app-player">
     <iframe id="game-frame" src="" tabindex="-1"></iframe>
-    <div id="embed-loading" aria-live="polite"><div class="embed-load-card"><img class="boot-logo" src="favicon.png" alt=""><div class="embed-load-title">McCrack-COS</div><div class="embed-load-sub">Loading embedded experience…</div><div class="boot-progress"><span></span></div></div></div>
-    <div class="mouse-exit-area" aria-label="Embed quick controls"><button class="player-overlay-btn focusable" type="button" onclick="openGuideMenu()" aria-label="Open guide menu"><img src="favicon.png" alt="McCrack guide"></button><button class="player-overlay-btn focusable" type="button" onclick="refreshEmbed()" aria-label="Refresh embed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.45 10.9 1 1 0 1 0-1.86-.74A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h8V3l-3.35 3.35Z"/></svg></button></div>
+    <div id="embed-loading" aria-live="polite"><div class="embed-load-card"><img class="boot-logo" src="assets/icons/favicon.png" alt=""><div class="embed-load-title">McCrack-COS</div><div class="embed-load-sub">Loading embedded experience…</div><div class="boot-progress"><span></span></div></div></div>
+    <div class="mouse-exit-area" aria-label="Embed quick controls"><button class="player-overlay-btn focusable" type="button" onclick="openGuideMenu()" aria-label="Open guide menu"><img src="assets/icons/favicon.png" alt="McCrack guide"></button><button class="player-overlay-btn focusable" type="button" onclick="refreshEmbed()" aria-label="Refresh embed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.45 10.9 1 1 0 1 0-1.86-.74A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h8V3l-3.35 3.35Z"/></svg></button></div>
   </div>
 
   <div id="native-app-layer" tabindex="-1">
@@ -1377,7 +1377,7 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
     function openDetails(item) {
       activeDetailsItem = item;
       const kind = itemKind(item);
-      const image = item.img || faviconFor(item.link || '') || 'favicon.png';
+      const image = item.img || faviconFor(item.link || '') || 'assets/icons/favicon.png';
       const isDriveMovie = kind === 'movie' && /^https:\/\/(?:drive|docs)\.google\.com\//i.test(item.link || '') && !/\/FILE_ID(?:\/|$)/i.test(item.link || '');
       document.getElementById('details-image').src = image;
       document.getElementById('details-image').alt = `${item.title || 'Item'} artwork`;
@@ -2235,7 +2235,7 @@ button,a,input,select,textarea{touch-action:manipulation}:focus-visible{outline:
         fileName: file ? file.name : undefined,
         fileSize: file ? file.size : undefined,
         fileType: file ? (file.type || (customEmbedKind === 'movie' ? 'video/mp4' : 'text/html')) : undefined,
-        img: document.getElementById('custom-img').value.trim() || (link ? faviconFor(link) : 'favicon.png'),
+        img: document.getElementById('custom-img').value.trim() || (link ? faviconFor(link) : 'assets/icons/favicon.png'),
         type: customEmbedKind,
         description: document.getElementById('custom-desc').value.trim() || (file ? `Uploaded from this device: ${file.name}` : 'Custom embed added by you.'),
         custom: true

@@ -1,5 +1,5 @@
 const CACHE='mccrack-cos-v2';
-const ASSETS=['./OS.html','./manifest.webmanifest','./favicon.png'];
+const ASSETS=['./OS.html','./manifest.webmanifest','./assets/icons/favicon.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',event=>{
