@@ -22,15 +22,11 @@ Block Post | https://cdn.myunblockedgames.com/games/blockpost-poki/index.html
 Bowmasters | https://mathtut0r1ng.github.io/gamespage/games/bowmasters/
 Brawl Stars | https://definitelyscience.freetls.fastly.net/assets/keylesson/2025/more-gg/brave-stars/index.html
 BuildNow.GG | https://gnhustgames.org/buildnowgg-source/
-Call of Duty: Black Ops 2 | https://vibeslops.luckeysystems.com
-Call of Duty: Black Ops Zombies | https://vel.gg/bo1z
-Call of Duty: Modern Warfare 2 | https://ovz-game-production.up.railway.app
 Champion Island Games | https://gameblabla.github.io/doodle-champion-island-games-Google/
 Cheese Chompers 3D | https://mathtut0r1ng.github.io/gamespage/games/cheese-chompers-3d/
 Cluster Rush | https://jasongamesdev.github.io/cluster-rush/
 Cookie Clicker | https://unblocked-cookie-clicker.pages.dev/unblocked/
 CoreBall | https://www.iqutest.com/games/coreball/index.html
-Counter-Strike 1.6 / Half-Life | https://x8bitrain.github.io/webXash/
 Crazy Cattle 3D | https://crazy-cattle-3d.bitbucket.io/crazycattle3d/
 Crossy Road | https://cdn.wouterplanet.com/games/crossy_road/
 CS Surf | https://surfd.net
@@ -195,9 +191,6 @@ Granny (Knock-Off Version) | https://cdn.myunblockedgames.com/games/granny/index
 Grow-A-Garden (Fake Roblox) | https://dubdoo.com/games/growagarden.html
 GTA 5 | https://web.archive.org/web/20261006055917/https://playgta5.com/
 GTA: Vice City | https://joncodeofficial.github.io/gta-vice-city-wasm/
-Half-Life | https://pixelsuft.github.io/hl/
-Halo CE Mobile | https://hcemobile.com
-Halo: Combat Evolved | https://mitchellhynes.com/halo
 Hedgewars | https://webwars.link
 Hill Climb Racing | https://classroom-6x.org/games/hill-climb/
 Hill Climb Racing (Scratch) | https://scratch.mit.edu/projects/56667360/embed
@@ -221,9 +214,6 @@ Paper.io 2 | https://ubg365.github.io/paper-io-2/play.html
 PES 6 | https://pes6.optijuegos.net
 Pokemon Emerald | https://mkgamesdev.github.io/MKGBA2.0/launcher.html#pokemonemerald
 Polytrack | https://app-polytrack.kodub.com/0.5.1/
-Quake | https://q1.pieter.com
-Quake II | https://q2.pieter.com
-Quake III Arena | https://q3.pieter.com
 R.E.P.O. | https://mathtut0r1ng.github.io/gamespage/games/repo/
 Raft | https://mathtut0r1ng.github.io/gamespage/games/raft/
 Ragdoll Hit | https://classroom-6x.org/games/ragdoll-hit/
@@ -231,7 +221,6 @@ Raldi's Crack House | https://biology.science.geometry.project.computer.archivom
 Red Ball 4 | https://class811.github.io/g177/red-ball-4/
 Retro Bowl | https://cdn.myunblockedgames.com/games/Retro-Bowl/index.html
 Retro Bowl | https://cdn.myunblockedgames.com/games/Retro-Bowl/index.html
-Return to Castle Wolfenstein | https://rtcw.pieter.com
 Roblox | https://db2.duckmath.org/2001/cloud/index.html
 Rocket League | https://rocketgoal.io/
 Rooftop Run | https://games.crazygames.com/en_US/rooftop-run/index.html?isNewUser=false&v=1.351
@@ -268,7 +257,6 @@ Tomb of the Mask | https://ubgwtf.gitlab.io/tomb-of-the-mask/
 Trees Hate You | https://ext.minijuegosgratis.com/trees-hate-you/index.html
 Tunnel Road | https://files.twoplayergames.org/files/games/g1/tunnel-road/index.html
 UltraKill | https://html-classic.itch.zone/html/15139480/ultrakill/index.html
-Unreal Tournament | https://ut.pieter.com
 Veck.io | https://veck.io
 Vex 7 | https://crazygames-unblocked.github.io/c9/vex-7/
 WorldGuessr | https://www.worldguessr.com/
@@ -277,7 +265,6 @@ WorldGuessr | https://www.worldguessr.com/
 10minutestilldawn | https://patrickmango49.github.io/game/10minutestilldawn/
 2 3 4 Player Game | https://patrickmango49.github.io/game/2-3-4-player-game/
 2 Minute Football | https://patrickmango49.github.io/game/2%20minute%20football/
-2doom | https://patrickmango49.github.io/game/2doom/
 5b | https://patrickmango49.github.io/game/5b/
 664x Main | https://patrickmango49.github.io/game/664x-main/
 A Day In The Office | https://patrickmango49.github.io/game/a%20day%20in%20the%20office/
@@ -409,7 +396,6 @@ Grindcraft | https://patrickmango49.github.io/game/grindcraft/
 Grn | https://patrickmango49.github.io/game/grn/
 Grow Your Garden | https://patrickmango49.github.io/game/grow-your-garden/
 Gts | https://patrickmango49.github.io/game/gts/
-Half Life | https://patrickmango49.github.io/game/half%20life/
 Happy Room | https://patrickmango49.github.io/game/happy%20room/
 Hardware Tycoon | https://patrickmango49.github.io/game/hardware%20tycoon/
 Haunted School | https://patrickmango49.github.io/game/haunted-school/
@@ -487,7 +473,6 @@ Par72golf | https://patrickmango49.github.io/game/par72golf/
 Penguin Diner | https://patrickmango49.github.io/game/penguin%20diner/
 Perfect Hotel | https://patrickmango49.github.io/game/perfect-hotel/
 Pico 8 Games | https://patrickmango49.github.io/game/pico%208%20games/
-Pixel Combat 2 | https://patrickmango49.github.io/game/pixel%20combat%202/
 Planet Life | https://patrickmango49.github.io/game/planet%20life/
 Please Dont Touch | https://patrickmango49.github.io/game/please-dont-touch/
 Plinko | https://patrickmango49.github.io/game/plinko/
@@ -585,7 +570,6 @@ Superhot | https://patrickmango49.github.io/game/superhot/
 Survival Race V2 | https://patrickmango49.github.io/game/survival%20race%20v2/
 Sushi Unroll | https://patrickmango49.github.io/game/sushi%20unroll/
 Swamp Attack | https://patrickmango49.github.io/game/swamp-attack/
-Table Tanks | https://patrickmango49.github.io/game/table%20tanks/
 Table Tennis Cn | https://patrickmango49.github.io/game/table%20tennis%20cn/
 Table Tennis World Tour | https://patrickmango49.github.io/game/table%20tennis%20world%20tour/
 Tag Cm | https://patrickmango49.github.io/game/tag-cm/
